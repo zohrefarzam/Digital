@@ -7,8 +7,8 @@ import {
   widthPercentageToDP as wp,
   heightPercentageToDP as hp,
 } from 'react-native-responsive-screen';
-import styles from 'app/config/styles';
-import images from 'app/config/images';
+import styles from '../../config/styles';
+import images from '../../config/images';
 import {Text} from '../../utils/Kit';
 import normalize from 'react-native-normalize';
 
@@ -54,7 +54,11 @@ export default class ProfileScreen extends Component {
             resizeMode="contain"
             tintColor={styles.color.ColorGreen}
             source={images.tab.profile}
-            style={{height: hp(15), width: wp(20)}}
+            style={{
+              height: hp(15),
+              width: wp(20),
+              tintColor: styles.color.ColorGreen,
+            }}
           />
           <Text style={{color: styles.color.ColorGreen, fontSize: 16}}>
             پروفایل من

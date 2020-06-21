@@ -1,16 +1,15 @@
 import React, {Component} from 'react';
-import {View, StyleSheet, StatusBar, Image} from 'react-native';
+import {View, StyleSheet, Image} from 'react-native';
 import {
   widthPercentageToDP as wp,
   heightPercentageToDP as hp,
 } from 'react-native-responsive-screen';
-import {Item, Input, Content} from 'native-base';
-import {Text} from 'app/utils/Kit';
-import styles from 'app/config/styles';
-import {TextNumber} from '../../utils/Kit';
-import {Button, Icon, normalize} from 'react-native-elements';
-import images from 'app/config/images';
-import WebCard1 from 'app/components/WebCard1';
+import {Content} from 'native-base';
+import {Text} from '../../utils/Kit';
+import styles from '../../config/styles';
+import normalize from 'react-native-normalize';
+import images from '../../config/images';
+import WebCard1 from '../../components/WebCard1';
 export default class WeblogScreen extends Component {
   constructor(props) {
     super(props);

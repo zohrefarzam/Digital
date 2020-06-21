@@ -4,9 +4,9 @@ import {
   widthPercentageToDP as wp,
   heightPercentageToDP as hp,
 } from 'react-native-responsive-screen';
-import {persianNumber} from 'app/lib/persian';
-import styles from 'app/config/styles';
-import {Text} from 'app/utils/Kit';
+import {persianNumber} from '../../../lib/persian';
+import styles from '../../../config/styles';
+import {Text} from '../../../utils/Kit';
 import normalize from 'react-native-normalize';
 
 export default class Tab5 extends Component {
@@ -45,7 +45,7 @@ export default class Tab5 extends Component {
               <Text style={style.title}>نام پدر</Text>
             </View>
             <View style={style.js}>
-              <Text style={style.number}>هحمد</Text>
+              <Text style={style.number}>احمد</Text>
             </View>
           </View>
         </View>
@@ -85,7 +85,7 @@ const style = StyleSheet.create({
     zIndex: -1,
     right: wp(2),
 
-    bottom: hp(5),
+    bottom: normalize(38, 'height'),
     backgroundColor: styles.color.colorBackground_Gray,
     paddingHorizontal: 7,
     paddingLeft: 10,

@@ -4,12 +4,11 @@ import {
   widthPercentageToDP as wp,
   heightPercentageToDP as hp,
 } from 'react-native-responsive-screen';
-import {Button, normalize} from 'react-native-elements';
+import {Button} from 'react-native-elements';
+import normalize from 'react-native-normalize';
 import LinearGradient from 'react-native-linear-gradient';
-import {persianNumber} from 'app/lib/persian';
-import styles from 'app/config/styles';
-import {Text} from 'app/utils/Kit';
-import BankCard from 'app/components/BankCard';
+import styles from '../../../config/styles';
+import {Text} from '../../../utils/Kit';
 import WalletCard from '../../../components/WalletCard';
 export default class Tab2 extends Component {
   constructor(props) {
@@ -48,7 +47,7 @@ export default class Tab2 extends Component {
 }
 const style = StyleSheet.create({
   btn: {borderRadius: 30},
-  medium: {fontSize: normalize(14), fontFamily: 'IRANSansMobile'},
+  medium: {fontSize: normalize(16), fontFamily: 'IRANSansMobile'},
   shadow: {
     elevation: 5,
     shadowColor: '#000',

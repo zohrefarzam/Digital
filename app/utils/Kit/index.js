@@ -1,6 +1,6 @@
 import React from 'react';
 import {Text} from 'react-native';
-import {persianNumber} from 'app/lib/persian';
+import {persianNumber} from '../../lib/persian';
 import styles from './Text/TextStyles';
 import AppStyles from './../../config/styles';
 

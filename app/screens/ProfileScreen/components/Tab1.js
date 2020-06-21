@@ -6,11 +6,8 @@ import {
 } from 'react-native-responsive-screen';
 import {Button} from 'react-native-elements';
 import LinearGradient from 'react-native-linear-gradient';
-import {persianNumber} from 'app/lib/persian';
-import styles from 'app/config/styles';
-import {Text} from 'app/utils/Kit';
-import BankCard from 'app/components/BankCard';
-import ShabaCard from '../../../components/ShabaCard';
+import styles from '../../../config/styles';
+import {Text} from '../../../utils/Kit';
 import normalize from 'react-native-normalize';
 export default class Tab3 extends Component {
   constructor(props) {
@@ -64,7 +61,7 @@ export default class Tab3 extends Component {
 }
 const style = StyleSheet.create({
   btn: {borderRadius: 30},
-  medium: {fontSize: normalize(15), fontFamily: 'IRANSansMobile'},
+  medium: {fontSize: normalize(16), fontFamily: 'IRANSansMobile'},
   shadow: {
     elevation: 5,
     shadowColor: '#000',

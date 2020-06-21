@@ -6,13 +6,10 @@ import {
 } from 'react-native-responsive-screen';
 import {Item, Input} from 'native-base';
 import normalize from 'react-native-normalize';
-import {Text} from 'app/utils/Kit';
-import styles from 'app/config/styles';
-import {TextNumber} from '../../utils/Kit';
-import {Button, Icon} from 'react-native-elements';
-import images from 'app/config/images';
-import PriceCard1 from 'app/components/PriceCard1';
-import PriceCard2 from 'app/components/PriceCard2';
+import {Text} from '../../utils/Kit';
+import styles from '../../config/styles';
+import images from '../../config/images';
+import PriceCard1 from '../../components/PriceCard1';
 export default class PricesScreen extends Component {
   constructor(props) {
     super(props);
@@ -35,19 +32,19 @@ export default class PricesScreen extends Component {
             />
             <Image
               source={images.global.search}
-              style={style.img}
+              style={[style.img, {tintColor: styles.color.ColorGreen}]}
               resizeMode="contain"
               tintColor={styles.color.ColorGreen}
             />
           </Item>
           <View style={style.view1}>
             <View style={style.view2}>
-              <Text style={style.txt}>تغییرات</Text>
-              <Text style={style.txt}>قیمت به دلار</Text>
-              <Text style={style.txt}>قیمت به ریال</Text>
+              <Text style={[style.txt, {flex: 1.3}]}>تغییرات</Text>
+              <Text style={[style.txt, {flex: 1.6}]}>قیمت به دلار</Text>
+              <Text style={[style.txt, {flex: 1.7}]}>قیمت به ریال</Text>
               <Text style={style.txt}>نماد ارز</Text>
               <Text style={style.txt}>نام ارز</Text>
-              <Text style={style.txt}>تصویر</Text>
+              <Text style={[style.txt, {flex: 0.7}]}>تصویر</Text>
             </View>
           </View>
           <PriceCard1 />
@@ -62,8 +59,8 @@ const style = StyleSheet.create({
     color: styles.color.colorText_GrAY,
     fontSize: normalize(30),
     alignSelf: 'center',
-    marginTop: hp(3),
-    marginBottom: hp(2),
+    marginTop: hp(2),
+    marginBottom: hp(3),
   },
   mh: {marginHorizontal: wp(2)},
   view1: {
@@ -72,13 +69,16 @@ const style = StyleSheet.create({
     borderRadius: 25,
     height: hp(6.5),
     marginVertical: hp(2),
+    justifyContent: 'center',
+    paddingHorizontal: wp(1),
   },
   view2: {
     borderRadius: 25,
     backgroundColor: styles.color.ColorGray,
     height: hp(4.7),
-    margin: 5,
-    marginBottom: 10,
+    paddingHorizontal: wp(2),
+    //margin: 5,
+    //marginBottom:normalize(15,'height') ,
     flexDirection: 'row-reverse',
     flexWrap: 'nowrap',
     alignItems: 'center',
@@ -95,7 +95,10 @@ const style = StyleSheet.create({
   img: {height: hp(6), width: wp(6)},
   txt: {
     color: styles.color.colorText_GrAY,
-    paddingHorizontal: wp(2.5),
-    fontSize: normalize(13),
+    // paddingHorizontal: normalize(10),
+    flexDirection: 'row',
+    flex: 1,
+    justifyContent: 'center',
+    fontSize: normalize(14),
   },
 });

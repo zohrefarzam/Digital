@@ -1,5 +1,5 @@
 import React, {Component} from 'react';
-import {View, StyleSheet, StatusBar, Image} from 'react-native';
+import {View, StyleSheet, StatusBar} from 'react-native';
 import {
   widthPercentageToDP as wp,
   heightPercentageToDP as hp,
@@ -7,10 +7,10 @@ import {
 import LinearGradient from 'react-native-linear-gradient';
 import {Button} from 'react-native-elements';
 import normalize from 'react-native-normalize';
-import {Text} from 'app/utils/Kit';
-import styles from 'app/config/styles';
-import PayCard from 'app/components/PayCard';
-import RecieveCard from 'app/components/RecieveCard';
+import {Text} from '../../utils/Kit';
+import styles from '../../config/styles';
+import PayCard from '../../components/PayCard';
+import RecieveCard from '../../components/RecieveCard';
 import {TextNumber} from '../../utils/Kit';
 
 export default class BuyingScreen extends Component {
@@ -77,15 +77,15 @@ export default class BuyingScreen extends Component {
 }
 const style = StyleSheet.create({
   main: {flex: 1, backgroundColor: 'white'},
-  logoCon: {alignItems: 'center', marginVertical: hp(7)},
+  logoCon: {alignItems: 'center', marginVertical: normalize(50, 'height')},
   title: {color: styles.color.colorText_GrAY, fontSize: normalize(45)},
   grayTxt: {color: styles.color.colorText_GrAY},
   //normal: {fontSize: 16},
-  txtView: {marginRight: wp(17), marginVertical: hp(1)},
+  txtView: {marginRight: wp(17), marginVertical: normalize(1, 'height')},
   black: {color: 'black'},
   center: {alignSelf: 'center'},
   rowRev: {flexDirection: 'row-reverse', flexWrap: 'nowrap'},
-  btn: {borderRadius: 25, paddingVertical: hp(1)},
+  btn: {borderRadius: normalize(25), paddingVertical: hp(1)},
   medium: {fontSize: normalize(20), fontFamily: 'IRANSansMobile'},
   shadow: {
     elevation: 3,
@@ -97,5 +97,5 @@ const style = StyleSheet.create({
     shadowOpacity: 0.22,
     shadowRadius: 2.22,
   },
-  btnView: {marginHorizontal: wp(10), marginTop: hp(7)},
+  btnView: {marginHorizontal: wp(10), marginTop: normalize(20, 'height')},
 });

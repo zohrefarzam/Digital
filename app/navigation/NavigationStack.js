@@ -11,6 +11,7 @@ import {Buying, Prices, Profile, Weblog} from '../screens';
 import navigationStyle from './navigationStyle';
 import images from '../config/images';
 import styles from '../config/styles';
+import normalize from 'react-native-normalize';
 const HomeStack = createBottomTabNavigator(
   {
     Profile: {
@@ -80,7 +81,7 @@ const HomeStack = createBottomTabNavigator(
             tintColor={tintColor}
             source={source}
             resizeMode="contain"
-            style={navigationStyle.imageIcon}
+            style={[navigationStyle.imageIcon, {tintColor: tintColor}]}
           />
         );
       },
@@ -97,9 +98,16 @@ const HomeStack = createBottomTabNavigator(
       labelStyle: navigationStyle.lable,
       style: {
         backgroundColor: styles.color.COLOR_WHITE,
-        height: hp(6.8),
-        paddingTop: 5,
+        height: hp(8.5),
+        paddingTop: normalize(15, 'height'),
         elevation: 15,
+        shadowColor: '#000',
+        shadowOffset: {
+          width: 0,
+          height: 7,
+        },
+        shadowOpacity: 0.43,
+        shadowRadius: 9.51,
       },
     },
   },
