@@ -1,5 +1,5 @@
 import React, {Component} from 'react';
-import {View, Image, StyleSheet} from 'react-native';
+import {View, Image, StyleSheet, TouchableOpacity} from 'react-native';
 import {
   widthPercentageToDP as wp,
   heightPercentageToDP as hp,
@@ -41,6 +41,7 @@ export default class PayCard extends Component {
                     Bitcoin
                   </Text>
                 </View>
+              
                 <Image
                   resizeMode="contain"
                   source={images.global.arrow_down}
