@@ -64,7 +64,7 @@ const style = StyleSheet.create({
     zIndex: -1,
     right: wp(2),
 
-    bottom: normalize(65, 'height'),
+    marginTop: -normalize(15, 'height'),
     backgroundColor: 'white',
     paddingHorizontal: 5,
     paddingLeft: 10,

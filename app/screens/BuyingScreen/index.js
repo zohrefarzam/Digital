@@ -1,5 +1,11 @@
 import React, {Component} from 'react';
-import {View, StyleSheet, StatusBar} from 'react-native';
+import {
+  View,
+  StyleSheet,
+  StatusBar,
+  TouchableOpacity,
+  Alert,
+} from 'react-native';
 import {
   widthPercentageToDP as wp,
   heightPercentageToDP as hp,
@@ -59,6 +65,7 @@ export default class BuyingScreen extends Component {
         </View>
         <View style={style.btnView}>
           <Button
+            TouchableComponent={TouchableOpacity}
             ViewComponent={LinearGradient} // Don't forget this!
             title="ثبت درخواست"
             containerStyle={style.shadow}

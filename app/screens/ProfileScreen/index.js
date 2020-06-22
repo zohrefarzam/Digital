@@ -1,6 +1,6 @@
 /* eslint-disable react-native/no-inline-styles */
 import React, {Component} from 'react';
-import {View, StyleSheet, Image} from 'react-native';
+import {View, StyleSheet, Image, TouchableOpacity} from 'react-native';
 import {Container, Content, Segment, Button} from 'native-base';
 import {Hesab, Wallet, Bank, Sheba, Auth} from './components';
 import {
