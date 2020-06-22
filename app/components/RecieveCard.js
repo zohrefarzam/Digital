@@ -1,5 +1,5 @@
 import React, {Component} from 'react';
-import {View, Image, StyleSheet} from 'react-native';
+import {View, Image, StyleSheet, TouchableOpacity} from 'react-native';
 import {
   widthPercentageToDP as wp,
   heightPercentageToDP as hp,
@@ -39,11 +39,13 @@ export default class RecieveCard extends Component {
                   </Text>
                   <Text style={style.grayTxt}>Perfectmoney</Text>
                 </View>
-                <Image
-                  resizeMode="contain"
-                  source={images.global.arrow_down}
-                  style={{width: wp(3), height: hp(3)}}
-                />
+                <TouchableOpacity>
+                  <Image
+                    resizeMode="contain"
+                    source={images.global.arrow_down}
+                    style={{width: wp(3), height: hp(3)}}
+                  />
+                </TouchableOpacity>
               </View>
             </View>
           </View>

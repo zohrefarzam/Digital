@@ -7,11 +7,27 @@ import {
   widthPercentageToDP as wp,
   heightPercentageToDP as hp,
 } from 'react-native-responsive-screen';
-import {Buying, Prices, Profile, Weblog} from '../screens';
+import {Buying, Prices, Profile, Weblog, Login, Splash} from '../screens';
 import navigationStyle from './navigationStyle';
 import images from '../config/images';
 import styles from '../config/styles';
 import normalize from 'react-native-normalize';
+const SplashScreen = createStackNavigator({
+  Login: {
+    screen: Splash,
+    navigationOptions: {
+      headerShown: false,
+    },
+  },
+});
+const AuthStack = createStackNavigator({
+  Login: {
+    screen: Login,
+    navigationOptions: {
+      headerShown: false,
+    },
+  },
+});
 const HomeStack = createBottomTabNavigator(
   {
     Profile: {
@@ -112,7 +128,12 @@ const HomeStack = createBottomTabNavigator(
     },
   },
 );
+
 const RNApp = createSwitchNavigator({
+  SplashScreen: {screen: SplashScreen},
+  AuthStack: {
+    screen: AuthStack,
+  },
   HomeStack: {
     screen: HomeStack,
   },
