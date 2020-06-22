@@ -1,5 +1,5 @@
 import {Platform, StyleSheet} from 'react-native';
-import styles from 'app/config/styles';
+import styles from '../../../config/styles';
 import normalize from 'react-native-normalize';
 const isIOS = Platform.OS === 'ios';
 

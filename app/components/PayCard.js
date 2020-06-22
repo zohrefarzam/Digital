@@ -4,11 +4,11 @@ import {
   widthPercentageToDP as wp,
   heightPercentageToDP as hp,
 } from 'react-native-responsive-screen';
-import {Text, TextNumber} from 'app/utils/Kit';
-import styles from 'app/config/styles';
-import images from 'app/config/images';
-import {persianNumber} from 'app/lib/persian';
-import {normalize} from 'react-native-elements';
+import {Text, TextNumber} from '../utils/Kit';
+import styles from '../config/styles';
+import images from '../config/images';
+import {persianNumber} from '../lib/persian';
+import normalize from 'react-native-normalize';
 export default class PayCard extends Component {
   constructor(props) {
     super(props);
@@ -67,7 +67,7 @@ const style = StyleSheet.create({
     zIndex: -1,
     right: wp(2),
 
-    bottom: hp(8.5),
+    bottom: normalize(65, 'height'),
     backgroundColor: 'white',
     paddingHorizontal: 5,
     paddingLeft: 10,

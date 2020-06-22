@@ -4,6 +4,7 @@ import {
   widthPercentageToDP as wp,
   heightPercentageToDP as hp,
 } from 'react-native-responsive-screen';
+import normalize from 'react-native-normalize';
 const navigationStyle = StyleSheet.create({
   imageIcon: {height: hp(6.2), width: wp(6.2)},
   leftcontainer: {
@@ -70,8 +71,11 @@ const navigationStyle = StyleSheet.create({
     height: 70,
     elevation: 6,
   },
-  lable: {fontSize: hp(1.5)},
-  // bar: { backgroundColor: styles.color.COLOR_WHITE },
+  lable: {
+    fontSize: normalize(14),
+    fontFamily: 'IRANSansMobile',
+    paddingTop: normalize(10, 'height'),
+  },
 });
 
 export default navigationStyle;

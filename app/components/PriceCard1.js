@@ -4,10 +4,10 @@ import {
   widthPercentageToDP as wp,
   heightPercentageToDP as hp,
 } from 'react-native-responsive-screen';
-import {Text} from 'app/utils/Kit';
-import styles from 'app/config/styles';
-import {TextNumber} from 'app/utils/Kit';
-import images from 'app/config/images';
+import {Text} from '../utils/Kit';
+import styles from '../config/styles';
+import {TextNumber} from '../utils/Kit';
+import images from '../config/images';
 import normalize from 'react-native-normalize';
 
 export default class PriceCard1 extends Component {
@@ -58,5 +58,5 @@ const style = StyleSheet.create({
     flex: 1,
     fontSize: normalize(14),
   },
-  img: {height: hp(9), width: wp(9)},
+  img: {height: hp(8), width: wp(8)},
 });

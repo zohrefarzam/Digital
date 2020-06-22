@@ -5,14 +5,14 @@ import {
   heightPercentageToDP as hp,
 } from 'react-native-responsive-screen';
 import LinearGradient from 'react-native-linear-gradient';
-import {Text} from 'app/utils/Kit';
-import styles from 'app/config/styles';
-import {TextNumber} from 'app/utils/Kit';
-import images from 'app/config/images';
+import {Text} from '../utils/Kit';
+import styles from '../config/styles';
+import {TextNumber} from '../utils/Kit';
+import images from '../config/images';
 import {TouchableOpacity} from 'react-native-gesture-handler';
-import {persianNumber} from 'app/lib/persian';
+import {persianNumber} from '../lib/persian';
 import {Thumbnail} from 'native-base';
-import {normalize} from 'react-native-elements';
+import normalize from 'react-native-normalize';
 export default class PriceCard1 extends Component {
   constructor(props) {
     super(props);
@@ -31,7 +31,7 @@ export default class PriceCard1 extends Component {
               <TouchableOpacity>
                 <Image
                   source={images.global.arrow_back}
-                  style={style.img2}
+                  style={[style.img2,{tintColor:styles.color.ColorGreen}]}
                   tintColor={styles.color.ColorGreen}
                   resizeMode="contain"
                 />

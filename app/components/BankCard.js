@@ -4,11 +4,9 @@ import {
   widthPercentageToDP as wp,
   heightPercentageToDP as hp,
 } from 'react-native-responsive-screen';
-import {Text} from 'app/utils/Kit';
-import styles from 'app/config/styles';
-import {TextNumber} from 'app/utils/Kit';
-import images from 'app/config/images';
-import {persianNumber} from 'app/lib/persian';
+import {Text} from '../utils/Kit';
+import images from '../config/images';
+import {persianNumber} from '../lib/persian';
 import normalize from 'react-native-normalize';
 export default class BankCard extends Component {
   constructor(props) {
