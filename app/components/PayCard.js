@@ -30,18 +30,20 @@ export default class PayCard extends Component {
                 </Text>
               </View>
               <View style={style.subView}>
-                <Image
-                  resizeMode="contain"
-                  source={images.example.bit}
-                  style={{width: wp(6), height: hp(6)}}
-                />
+                <TouchableOpacity>
+                  <Image
+                    resizeMode="contain"
+                    source={images.example.bit}
+                    style={{width: wp(6), height: hp(6)}}
+                  />
+                </TouchableOpacity>
                 <View style={{marginRight: wp(4), marginLeft: wp(8)}}>
                   <Text style={[style.grayTxt]}>بیت کوین</Text>
                   <Text style={[style.grayTxt, {marginRight: wp(0.5)}]}>
                     Bitcoin
                   </Text>
                 </View>
-              
+
                 <Image
                   resizeMode="contain"
                   source={images.global.arrow_down}

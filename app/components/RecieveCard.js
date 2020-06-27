@@ -1,5 +1,5 @@
 import React, {Component} from 'react';
-import {View, Image, StyleSheet} from 'react-native';
+import {View, Image, StyleSheet, TouchableOpacity} from 'react-native';
 import {
   widthPercentageToDP as wp,
   heightPercentageToDP as hp,
@@ -28,11 +28,13 @@ export default class RecieveCard extends Component {
                 <Text style={style.number}>{persianNumber('0/05')}</Text>
               </View>
               <View style={style.subView}>
-                <Image
-                  resizeMode="contain"
-                  source={images.example.pm}
-                  style={{width: wp(6), height: hp(6)}}
-                />
+                <TouchableOpacity>
+                  <Image
+                    resizeMode="contain"
+                    source={images.example.pm}
+                    style={{width: wp(6), height: hp(6)}}
+                  />
+                </TouchableOpacity>
                 <View style={{marginRight: wp(3), marginLeft: wp(3)}}>
                   <Text style={[style.grayTxt, {marginRight: wp(2)}]}>
                     پرفکت مانی

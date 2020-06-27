@@ -4,6 +4,8 @@ const images = {
     arrow_down: require('../assets/images/global/arrow_down.png'),
     calender: require('../assets/images/global/calendar.png'),
     search: require('../assets/images/global/search.png'),
+    phone: require('../assets/images/global/phone.png'),
+    key: require('../assets/images/global/key.png'),
     arrow_back: require('../assets/images/global/arrow_back.png'),
   },
   tab: {
