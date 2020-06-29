@@ -1,5 +1,5 @@
 import React, {Component} from 'react';
-import {View, StyleSheet} from 'react-native';
+import {View, StyleSheet, TouchableOpacity} from 'react-native';
 import {
   widthPercentageToDP as wp,
   heightPercentageToDP as hp,
@@ -25,6 +25,7 @@ export default class Tab3 extends Component {
           </Text>
           <View style={{marginTop: hp(3), marginHorizontal: wp(25)}}>
             <Button
+              TouchableComponent={TouchableOpacity}
               ViewComponent={LinearGradient} // Don't forget this!
               title="ارسال عکس کارت ملی"
               containerStyle={style.shadow}

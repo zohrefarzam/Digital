@@ -31,7 +31,7 @@ export default class PriceCard1 extends Component {
               <TouchableOpacity>
                 <Image
                   source={images.global.arrow_back}
-                  style={[style.img2,{tintColor:styles.color.ColorGreen}]}
+                  style={[style.img2, {tintColor: styles.color.ColorGreen}]}
                   tintColor={styles.color.ColorGreen}
                   resizeMode="contain"
                 />

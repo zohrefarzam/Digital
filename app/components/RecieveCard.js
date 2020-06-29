@@ -28,11 +28,13 @@ export default class RecieveCard extends Component {
                 <Text style={style.number}>{persianNumber('0/05')}</Text>
               </View>
               <View style={style.subView}>
-                <Image
-                  resizeMode="contain"
-                  source={images.example.pm}
-                  style={{width: wp(6), height: hp(6)}}
-                />
+                <TouchableOpacity>
+                  <Image
+                    resizeMode="contain"
+                    source={images.example.pm}
+                    style={{width: wp(6), height: hp(6)}}
+                  />
+                </TouchableOpacity>
                 <View style={{marginRight: wp(3), marginLeft: wp(3)}}>
                   <Text style={[style.grayTxt, {marginRight: wp(2)}]}>
                     پرفکت مانی
@@ -66,7 +68,7 @@ const style = StyleSheet.create({
     zIndex: -1,
     right: wp(2),
 
-    bottom: normalize(65, 'height'),
+    marginTop: -normalize(15, 'height'),
     backgroundColor: 'white',
     paddingHorizontal: 5,
     paddingLeft: 10,

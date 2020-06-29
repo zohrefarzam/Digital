@@ -13,22 +13,22 @@ import images from '../config/images';
 import styles from '../config/styles';
 import normalize from 'react-native-normalize';
 const SplashScreen = createStackNavigator({
-  Login: {
+  Splash: {
     screen: Splash,
     navigationOptions: {
       headerShown: false,
     },
   },
 });
-const AuthStack = createStackNavigator({
-  Login: {
+const Auth = createStackNavigator({
+  Auth: {
     screen: Login,
     navigationOptions: {
       headerShown: false,
     },
   },
 });
-const HomeStack = createBottomTabNavigator(
+const Home = createBottomTabNavigator(
   {
     Profile: {
       screen: Profile,
@@ -130,12 +130,10 @@ const HomeStack = createBottomTabNavigator(
 );
 
 const RNApp = createSwitchNavigator({
-  SplashScreen: {screen: SplashScreen},
-  AuthStack: {
-    screen: AuthStack,
-  },
-  HomeStack: {
-    screen: HomeStack,
+  SplashScreen,
+  Auth,
+  Home: {
+    screen: Home,
   },
 });
 

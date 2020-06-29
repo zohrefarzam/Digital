@@ -30,11 +30,13 @@ export default class PayCard extends Component {
                 </Text>
               </View>
               <View style={style.subView}>
-                <Image
-                  resizeMode="contain"
-                  source={images.example.bit}
-                  style={{width: wp(6), height: hp(6)}}
-                />
+                <TouchableOpacity>
+                  <Image
+                    resizeMode="contain"
+                    source={images.example.bit}
+                    style={{width: wp(6), height: hp(6)}}
+                  />
+                </TouchableOpacity>
                 <View style={{marginRight: wp(4), marginLeft: wp(8)}}>
                   <Text style={[style.grayTxt]}>بیت کوین</Text>
                   <Text style={[style.grayTxt, {marginRight: wp(0.5)}]}>
@@ -67,8 +69,12 @@ const style = StyleSheet.create({
     position: 'absolute',
     zIndex: -1,
     right: wp(2),
+<<<<<<< HEAD
 
     bottom: hp(8.5),
+=======
+    marginTop: -normalize(15, 'height'),
+>>>>>>> fd9b092f822b250d16c21ce69af351420213358f
     backgroundColor: 'white',
     paddingHorizontal: 5,
     paddingLeft: 10,
