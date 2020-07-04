@@ -7,7 +7,15 @@ import {
   widthPercentageToDP as wp,
   heightPercentageToDP as hp,
 } from 'react-native-responsive-screen';
-import {Buying, Prices, Profile, Weblog, Login, Splash} from '../screens';
+import {
+  Buying,
+  Prices,
+  Profile,
+  Weblog,
+  Login,
+  Splash,
+  WeblogDetail,
+} from '../screens';
 import navigationStyle from './navigationStyle';
 import images from '../config/images';
 import styles from '../config/styles';
@@ -28,6 +36,21 @@ const Auth = createStackNavigator({
     },
   },
 });
+const WeblogScreen = createStackNavigator({
+  Weblog: {
+    screen: Weblog,
+    navigationOptions: {
+      headerShown: false,
+    },
+  },
+  WeblogDetail: {
+    screen: WeblogDetail,
+    navigationOptions: {
+      headerShown: false,
+    },
+  },
+});
+
 const Home = createBottomTabNavigator(
   {
     Profile: {
@@ -36,8 +59,8 @@ const Home = createBottomTabNavigator(
         tabBarLabel: 'پروفایل',
       },
     },
-    Weblog: {
-      screen: Weblog,
+    WeblogScreen: {
+      screen: WeblogScreen,
       navigationOptions: {
         tabBarLabel: 'وبلاگ',
       },
@@ -77,7 +100,7 @@ const Home = createBottomTabNavigator(
             // source = focused ? images.Main.home : '';
             source = images.tab.profile;
             break;
-          case 'Weblog':
+          case 'WeblogScreen':
             // source = focused ? images.Main.view : '';
             source = images.tab.weblog;
             break;

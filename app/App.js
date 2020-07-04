@@ -8,11 +8,11 @@
 
 import React, {Component} from 'react';
 import {ActivityIndicator} from 'react-native';
-import Navigator from './navigation';
+import AppNavigator from './navigation';
 import {Provider} from 'react-redux';
 import {PersistGate} from 'redux-persist/es/integration/react';
 import configureStore from 'app/store/configureStore';
-import {View} from 'native-base';
+import {View, Text} from 'native-base';
 const {persistor, store} = configureStore();
 class App extends Component {
   componentDidMount() {
@@ -22,11 +22,11 @@ class App extends Component {
   }
   render() {
     return (
-   
-        <Provider store={store}>
-          <Navigator />;
-        </Provider>
-   
+      <Provider store={store}>
+        <PersistGate loading={<ActivityIndicator />} persistor={persistor}>
+          <AppNavigator />
+        </PersistGate>
+      </Provider>
     );
   }
 }

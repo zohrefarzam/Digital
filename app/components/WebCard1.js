@@ -20,11 +20,13 @@ export default class PriceCard1 extends Component {
   }
 
   render() {
+    const {data} = this.props;
+    alert(data+"")
     return (
       <View style={style.view1}>
         <View style={style.view2}>
           <View>
-            <Text style={style.title}>خطرات امنیتی برای تغییر صاحبان</Text>
+            <Text style={style.title}>{data.Text}</Text>
 
             <View style={style.fe}>
               <Text style={style.greenTxt}>بیشتر بدانید</Text>
