@@ -151,6 +151,7 @@ const Home = createBottomTabNavigator(
     },
   },
 );
+
 const RNApp = createSwitchNavigator({
   SplashScreen,
   Auth,

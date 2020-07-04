@@ -4,11 +4,11 @@ import {
   widthPercentageToDP as wp,
   heightPercentageToDP as hp,
 } from 'react-native-responsive-screen';
-import {Text, TextNumber} from '../utils/Kit';
-import styles from '../config/styles';
-import images from '../config/images';
-import {persianNumber} from '../lib/persian';
-import normalize from 'react-native-normalize';
+import {Text, TextNumber} from 'app/utils/Kit';
+import styles from 'app/config/styles';
+import images from 'app/config/images';
+import {persianNumber} from 'app/lib/persian';
+import {normalize} from 'react-native-elements';
 export default class PayCard extends Component {
   constructor(props) {
     super(props);
@@ -43,12 +43,13 @@ export default class PayCard extends Component {
                     Bitcoin
                   </Text>
                 </View>
-
-                <Image
-                  resizeMode="contain"
-                  source={images.global.arrow_down}
-                  style={{width: wp(3), height: hp(3)}}
-                />
+                <TouchableOpacity>
+                  <Image
+                    resizeMode="contain"
+                    source={images.global.arrow_down}
+                    style={{width: wp(3), height: hp(3)}}
+                  />
+                </TouchableOpacity>
               </View>
             </View>
           </View>
@@ -68,7 +69,12 @@ const style = StyleSheet.create({
     position: 'absolute',
     zIndex: -1,
     right: wp(2),
+<<<<<<< HEAD
+
+    bottom: hp(8.5),
+=======
     marginTop: -normalize(15, 'height'),
+>>>>>>> fd9b092f822b250d16c21ce69af351420213358f
     backgroundColor: 'white',
     paddingHorizontal: 5,
     paddingLeft: 10,
