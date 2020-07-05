@@ -23,8 +23,7 @@ class App extends Component {
   render() {
     return (
       <Provider store={store}>
-        <PersistGate loading={<ActivityIndicator />} persistor={persistor}>
-          <AppNavigator />
+        <AppNavigator />
         </PersistGate>
       </Provider>
     );
