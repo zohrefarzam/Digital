@@ -16,31 +16,24 @@ import normalize from 'react-native-normalize';
 import {Text, TextNumber} from '../../utils/Kit';
 import styles from '../../config/styles';
 import images from '../../config/images';
-import PriceCard1 from '../../components/PriceCard1';
+import {connect} from 'react-redux';
+import {FetchPrices, FetchSetting} from '../../api/methods/FetchPrices';
 
-export default class PricesScreen extends Component {
+class PricesScreen extends Component {
   constructor(props) {
     super(props);
-    this.state = {
-      data: [],
-      isLoading: true,
-    };
+    this.state = {data: 1234};
   }
-  componentDidMount() {
-    fetch(
-      'https://api.coingecko.com/api/v3/coins/markets?vs_currency=usd&order=market_cap_desc&per_page=250&page=1&sparkline=false',
-    )
-      .then(response => response.json())
-      .then(json => {
-        this.setState({data: json});
-      })
-      .catch(error => console.error(error))
-      .finally(() => {
-        this.setState({isLoading: false});
-      });
+
+  componentWillMount() {
+    this.props.dispatch(FetchPrices());
+    this.props.dispatch(FetchSetting());
   }
+
   render() {
-    const {data, isLoading} = this.state;
+    const {data} = this.state;
+    const {loading, prices, setting} = this.props;
+
     return (
       <View style={style.main}>
         <Text style={style.title}> لوگو</Text>
@@ -71,11 +64,11 @@ export default class PricesScreen extends Component {
               <Text style={[style.txt, {flex: 0.7}]}>تصویر</Text>
             </View>
           </View>
-          {isLoading ? (
+          {loading ? (
             <ActivityIndicator />
           ) : (
             <FlatList
-              data={data}
+              data={prices}
               keyExtractor={({id}, index) => id}
               renderItem={({item, index}) => (
                 <View
@@ -94,15 +87,15 @@ export default class PricesScreen extends Component {
                     </TextNumber>
                   </Text>
                   <Text style={style2.txt}>
-                    <TextNumber dollor>1234</TextNumber>
+                    <TextNumber dollor>{item.current_price}</TextNumber>
                   </Text>
                   <Text style={style2.txt}>
-                    <TextNumber rial>1234</TextNumber>
+                    <TextNumber rial>{this.state.data}</TextNumber>
                   </Text>
-                  <Text style={[style2.txt, {flex: 0.5}]}>BTC</Text>
-                  <Text style={[style2.txt, {flex: 0.8}]}>بیت کوین</Text>
+                  <Text style={[style2.txt, {flex: 0.5}]}>{item.symbol}</Text>
+                  <Text style={[style2.txt, {flex: 0.8}]}>{item.name}</Text>
                   <Image
-                    source={images.example.bit}
+                    source={{uri: `${item.image}`}}
                     style={style2.img}
                     resizeMode="contain"
                   />
@@ -115,6 +108,15 @@ export default class PricesScreen extends Component {
     );
   }
 }
+const mapStateToProps = state => ({
+  prices: state.prices.items,
+  setting: state.setting.items,
+  loading: state.prices.loading,
+  error: state.prices.error,
+});
+
+export default connect(mapStateToProps)(PricesScreen);
+
 const style = StyleSheet.create({
   main: {backgroundColor: 'white', flex: 1},
   title: {

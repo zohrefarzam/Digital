@@ -69,12 +69,7 @@ const style = StyleSheet.create({
     position: 'absolute',
     zIndex: -1,
     right: wp(2),
-<<<<<<< HEAD
-
-    bottom: hp(8.5),
-=======
     marginTop: -normalize(15, 'height'),
->>>>>>> fd9b092f822b250d16c21ce69af351420213358f
     backgroundColor: 'white',
     paddingHorizontal: 5,
     paddingLeft: 10,

@@ -1,7 +1,7 @@
-/*
- * combines all the existing reducers
- */
-
-import * as weblogReducer from './weblogReducer';
-
-export default Object.assign(weblogReducer);
+import {combineReducers} from 'redux';
+import prices from './PricesReducer';
+import setting from './SettingReducer';
+export default combineReducers({
+  prices,
+  setting,
+});

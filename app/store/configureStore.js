@@ -1,33 +1,12 @@
-import {createStore, compose, applyMiddleware} from 'redux';
-import {persistStore, persistCombineReducers} from 'redux-persist';
-import AsyncStorage from '@react-native-community/async-storage';
+import {createStore, applyMiddleware} from 'redux';
+import thunk from 'redux-thunk';
 
 import rootReducers from '../reducers'; // where reducers is a object of reducers
 
-const config = {
-  key: 'root',
-  storage: AsyncStorage,
-  // blacklist: ['loading', 'auth', 'company', 'news'],
-  whitelist: ['user', 'bank', 'basket', 'message'],
-  debug: true, //to get useful logging
-};
+const store = createStore(rootReducers, applyMiddleware(thunk));
 
-const middleware = [];
-
-// if (__DEV__) {
-//   middleware.push(createLogger());
-// }
-
-const reducers = persistCombineReducers(config, rootReducers);
-const enhancers = [applyMiddleware(...middleware)];
-// const initialState = {};
-const persistConfig = {enhancers};
-const store = createStore(reducers, undefined, compose(...enhancers));
-const persistor = persistStore(store, persistConfig, () => {
-  // console.log('Test', store.getState());
-});
 const configureStore = () => {
-  return {persistor, store};
+  return {store};
 };
 
 export default configureStore;
