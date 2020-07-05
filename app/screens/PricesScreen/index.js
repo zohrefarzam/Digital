@@ -1,22 +1,46 @@
 import React, {Component} from 'react';
-import {View, StyleSheet, StatusBar, Image} from 'react-native';
+import {
+  View,
+  StyleSheet,
+  StatusBar,
+  Image,
+  ActivityIndicator,
+  FlatList,
+} from 'react-native';
 import {
   widthPercentageToDP as wp,
   heightPercentageToDP as hp,
 } from 'react-native-responsive-screen';
 import {Item, Input} from 'native-base';
 import normalize from 'react-native-normalize';
-import {Text} from '../../utils/Kit';
+import {Text, TextNumber} from '../../utils/Kit';
 import styles from '../../config/styles';
 import images from '../../config/images';
 import PriceCard1 from '../../components/PriceCard1';
+
 export default class PricesScreen extends Component {
   constructor(props) {
     super(props);
-    this.state = {};
+    this.state = {
+      data: [],
+      isLoading: true,
+    };
   }
-
+  componentDidMount() {
+    fetch(
+      'https://api.coingecko.com/api/v3/coins/markets?vs_currency=usd&order=market_cap_desc&per_page=250&page=1&sparkline=false',
+    )
+      .then(response => response.json())
+      .then(json => {
+        this.setState({data: json});
+      })
+      .catch(error => console.error(error))
+      .finally(() => {
+        this.setState({isLoading: false});
+      });
+  }
   render() {
+    const {data, isLoading} = this.state;
     return (
       <View style={style.main}>
         <Text style={style.title}> لوگو</Text>
@@ -47,7 +71,45 @@ export default class PricesScreen extends Component {
               <Text style={[style.txt, {flex: 0.7}]}>تصویر</Text>
             </View>
           </View>
-          <PriceCard1 />
+          {isLoading ? (
+            <ActivityIndicator />
+          ) : (
+            <FlatList
+              data={data}
+              keyExtractor={({id}, index) => id}
+              renderItem={({item, index}) => (
+                <View
+                  style={[
+                    style2.view1,
+                    {
+                      borderColor:
+                        index % 2 === 0
+                          ? styles.color.colorText_GrAY
+                          : styles.color.COLOR_DARK_SEPERATOR,
+                    },
+                  ]}>
+                  <Text style={style2.txt}>
+                    <TextNumber percent colored>
+                      1234
+                    </TextNumber>
+                  </Text>
+                  <Text style={style2.txt}>
+                    <TextNumber dollor>1234</TextNumber>
+                  </Text>
+                  <Text style={style2.txt}>
+                    <TextNumber rial>1234</TextNumber>
+                  </Text>
+                  <Text style={[style2.txt, {flex: 0.5}]}>BTC</Text>
+                  <Text style={[style2.txt, {flex: 0.8}]}>بیت کوین</Text>
+                  <Image
+                    source={images.example.bit}
+                    style={style2.img}
+                    resizeMode="contain"
+                  />
+                </View>
+              )}
+            />
+          )}
         </View>
       </View>
     );
@@ -101,4 +163,23 @@ const style = StyleSheet.create({
     justifyContent: 'center',
     fontSize: normalize(14),
   },
+});
+const style2 = StyleSheet.create({
+  view1: {
+    borderWidth: 2,
+    borderColor: styles.color.COLOR_DARK_SEPERATOR,
+    borderRadius: 25,
+    height: hp(6.5),
+    marginBottom: hp(2),
+    flexDirection: 'row-reverse',
+    flexWrap: 'nowrap',
+    alignItems: 'center',
+    paddingHorizontal: wp(2),
+  },
+  txt: {
+    color: styles.color.colorText_GrAY,
+    flex: 1,
+    fontSize: normalize(14),
+  },
+  img: {height: hp(8), width: wp(8)},
 });

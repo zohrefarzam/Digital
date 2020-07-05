@@ -201,7 +201,6 @@ const style = StyleSheet.create({
   },
   position: {position: 'absolute', bottom: -hp(2), right: 20},
   radius: {borderRadius: 40},
-  img2: {width: wp(3), height: hp(3)},
   view3: {
     flexDirection: 'row-reverse',
     flexWrap: 'nowrap',
