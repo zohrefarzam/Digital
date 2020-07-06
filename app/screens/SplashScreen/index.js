@@ -1,85 +1,77 @@
 import React, {Component} from 'react';
-import {
-  Platform,
-  StyleSheet,
-  Text,
-  View,
-  Animated,
-  Image,
-  Easing,
-  Dimensions,
-} from 'react-native';
+import {StyleSheet, View, TouchableOpacity, Image} from 'react-native';
 
 import LinearGradient from 'react-native-linear-gradient';
 import images from '../../config/images';
 import styles from '../../config/styles';
-const {width, height} = Dimensions.get('window');
+import {Text} from '../../utils/Kit';
+import {Button} from 'react-native-elements';
+import {
+  widthPercentageToDP as wp,
+  heightPercentageToDP as hp,
+} from 'react-native-responsive-screen';
+import normalize from 'react-native-normalize';
 
 export default class SplashScreen extends Component {
   constructor(props) {
     super(props);
-    this.animatedValue = new Animated.Value(0.6);
-    this.animatedValue2 = new Animated.Value(0);
   }
 
-  componentDidMount() {
-    Animated.spring(this.animatedValue, {
-      toValue: 1,
-      friction: 2,
-      delay: 2500,
-    }).start();
-
-    Animated.timing(this.animatedValue2, {
-      toValue: 1,
-      delay: 200,
-      duration: 3000,
-    }).start();
-    setTimeout(() => {
-      this.props.navigation.navigate('Auth');
-    }, 3000);
-  }
+  //this.props.navigation.navigate('Auth');
 
   render() {
-    const truckStyle = {
-      transform: [{scale: this.animatedValue}],
-    };
-
-    const scaleText = {
-      transform: [{scale: this.animatedValue2}],
-    };
-
     return (
-      <LinearGradient
-        colors={[styles.color.ColorGreen, styles.color.ColorGreenFos]}
-        style={style.container}>
-        <Animated.View style={[style.ring, truckStyle]}>
-          <Animated.Image
-            source={images.tab.weblog}
-            style={[
-              {
-                resizeMode: 'contain',
-                width: 120,
-                height: 120,
-                tintColor: 'white',
-              },
-            ]}
-          />
-        </Animated.View>
-
-        <Animated.View
-          style={[
-            {
-              position: 'absolute',
-              bottom: 20,
-              width: width / 2,
-              height: 4,
-              backgroundColor: '#fff',
-              borderRadius: 2,
-            },
-            scaleText,
-          ]}
-        />
-      </LinearGradient>
+      <View style={{flex: 1}}>
+        <View style={style.container}>
+          <Text color="gray" size="xlarge">
+            لوگو
+          </Text>
+          <View style={style.view2}>
+            <Button
+              TouchableComponent={TouchableOpacity}
+              ViewComponent={LinearGradient} // Don't forget this!
+              title="ثبت نام"
+              containerStyle={style.shadow}
+              buttonStyle={style.btn}
+              titleStyle={style.medium}
+              linearGradientProps={{
+                colors: [styles.color.ColorGreen, styles.color.ColorGreenFos],
+                start: {x: 0, y: 0.5},
+                end: {x: 1, y: 0.5},
+              }}
+              onPress={() => this.props.navigation.navigate('SignIn')}
+            />
+            <Button
+              TouchableComponent={TouchableOpacity}
+              // Don't forget this!
+              title="ورود"
+              containerStyle={style.shadow}
+              buttonStyle={style.btn2}
+              titleStyle={style.medium2}
+              onPress={() => this.props.navigation.navigate('Login')}
+            />
+          </View>
+        </View>
+        <View
+          style={{
+            flexDirection: 'row-reverse',
+            alignItems: 'center',
+            flexWrap: 'nowrap',
+            justifyContent: 'flex-start',
+            margin: normalize(30),
+          }}>
+          <TouchableOpacity
+            onPress={() => this.props.navigation.navigate('Home')}>
+            <Image
+              source={images.global.arrow_right}
+              style={{height: hp(2), width: wp(2), marginHorizontal: wp(2)}}
+            />
+          </TouchableOpacity>
+          <Text color="gray" size="norm">
+            ورود به اپلیکیشن
+          </Text>
+        </View>
+      </View>
     );
   }
 }
@@ -89,28 +81,36 @@ const style = StyleSheet.create({
     flex: 1,
     justifyContent: 'center',
     alignItems: 'center',
-    backgroundColor: '#0277BD',
   },
-  welcome: {
-    fontSize: 20,
-    textAlign: 'center',
-    margin: 10,
+  view2: {
+    alignItems: 'center',
   },
-  instructions: {
-    textAlign: 'center',
-    color: '#333333',
-    marginBottom: 5,
+  btn: {
+    borderRadius: normalize(25),
+    //paddingVertical: hp(1),
+    paddingHorizontal: normalize(40),
   },
-  ring: {
-    //backgroundColor: '#40C4FF',
-    borderRadius: 150,
-    borderWidth: 2,
-    borderColor: '#FFF',
-    padding: 7,
+  medium: {fontSize: normalize(20), fontFamily: 'IRANSansMobile'},
+  medium2: {
+    fontSize: normalize(20),
+    fontFamily: 'IRANSansMobile',
+    color: styles.color.colorText_GrAY,
   },
-  starStyle: {
-    width: 100,
-    height: 20,
-    marginBottom: 20,
+  shadow: {
+    elevation: 3,
+    shadowColor: '#000',
+    shadowOffset: {
+      width: 0,
+      height: 1,
+    },
+    shadowOpacity: 0.22,
+    shadowRadius: 2.22,
+    marginTop: 20,
+  },
+  btn2: {
+    borderRadius: normalize(25),
+    //paddingVertical: hp(1),
+    paddingHorizontal: normalize(50),
+    backgroundColor: 'white',
   },
 });

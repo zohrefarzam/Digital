@@ -14,6 +14,7 @@ import {
   Weblog,
   Login,
   Splash,
+  SignIn,
   WeblogDetail,
 } from '../screens';
 import navigationStyle from './navigationStyle';
@@ -29,8 +30,21 @@ const SplashScreen = createStackNavigator({
   },
 });
 const Auth = createStackNavigator({
-  Auth: {
+  Splash: {
+    screen: Splash,
+    navigationOptions: {
+      headerShown: false,
+    },
+  },
+  Login: {
     screen: Login,
+    navigationOptions: {
+      headerShown: false,
+    },
+  },
+
+  SignIn: {
+    screen: SignIn,
     navigationOptions: {
       headerShown: false,
     },
@@ -153,7 +167,6 @@ const Home = createBottomTabNavigator(
 );
 
 const RNApp = createSwitchNavigator({
-  SplashScreen,
   Auth,
   Home: {
     screen: Home,

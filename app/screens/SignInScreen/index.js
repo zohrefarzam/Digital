@@ -17,16 +17,53 @@ import images from '../../config/images';
 import {Button, CheckBox} from 'react-native-elements';
 import LinearGradient from 'react-native-linear-gradient';
 import normalize from 'react-native-normalize';
-export default function LoginScreen({navigation}) {
+export default function SignInScreen({navigation}) {
   return (
     <Container style={sajamstyles.container}>
-      <View style={{flex: 1, justifyContent: 'center', alignItems: 'center'}}>
+      <View style={{flex: 0.4, justifyContent: 'center', alignItems: 'center'}}>
         <Text size="large" color="gray">
-          ورود
+          ثبت نام جدید
         </Text>
       </View>
       <Content contentContainerStyle={sajamstyles.mainView}>
         <Form style={sajamstyles.formView}>
+          <Item style={sajamstyles.itemStyle}>
+            <Input
+              placeholder="نام"
+              placeholderTextColor="#adb4bc"
+              style={sajamstyles.inputStyle}
+              maxLength={10}
+              keyboardType="phone-pad"
+              containerStyle={sajamstyles.item}
+              autoFocus
+              blurOnSubmit
+            />
+            <Image
+              source={images.login.males}
+              style={sajamstyles.img}
+              resizeMode="contain"
+              tintColor={styles.color.ColorGreen}
+            />
+          </Item>
+
+          <Item style={sajamstyles.itemStyle}>
+            <Input
+              placeholder="نام خانوادگی"
+              placeholderTextColor="#adb4bc"
+              style={sajamstyles.inputStyle}
+              maxLength={10}
+              keyboardType="phone-pad"
+              containerStyle={sajamstyles.item}
+              autoFocus
+              blurOnSubmit
+            />
+            <Image
+              source={images.login.males}
+              style={sajamstyles.img}
+              resizeMode="contain"
+              tintColor={styles.color.ColorGreen}
+            />
+          </Item>
           <Item style={sajamstyles.itemStyle}>
             <Input
               placeholder="شماره موبایل"
@@ -45,9 +82,49 @@ export default function LoginScreen({navigation}) {
               tintColor={styles.color.ColorGreen}
             />
           </Item>
-
-          <View style={{marginTop: 20}} />
           <Item style={sajamstyles.itemStyle}>
+            <Input
+              placeholder="ایمیل"
+              placeholderTextColor="#adb4bc"
+              style={sajamstyles.inputStyle}
+              maxLength={10}
+              keyboardType="phone-pad"
+              containerStyle={sajamstyles.item}
+              autoFocus
+              blurOnSubmit
+            />
+            <Image
+              source={images.login.mail}
+              style={{height: hp(4), width: wp(4)}}
+              resizeMode="contain"
+              tintColor={styles.color.ColorGreen}
+            />
+          </Item>
+          <Item style={sajamstyles.itemStyle}>
+            <Input
+              placeholder="تاریخ تولد"
+              placeholderTextColor="#adb4bc"
+              style={sajamstyles.inputStyle}
+              maxLength={10}
+              keyboardType="phone-pad"
+              containerStyle={sajamstyles.item}
+              autoFocus
+              blurOnSubmit
+            />
+            <Image
+              source={images.login.dates}
+              style={{height: hp(4), width: wp(4)}}
+              resizeMode="contain"
+              tintColor={styles.color.ColorGreen}
+            />
+          </Item>
+          <Item style={sajamstyles.itemStyle}>
+            <Image
+              source={images.login.eye}
+              style={{height: hp(5), width: wp(5)}}
+              resizeMode="contain"
+              //tintColor={styles.color.ColorGreen}
+            />
             <Input
               placeholder="رمز"
               placeholderTextColor="#adb4bc"
@@ -64,40 +141,30 @@ export default function LoginScreen({navigation}) {
               tintColor={styles.color.ColorGreen}
             />
           </Item>
+          <Item style={sajamstyles.itemStyle}>
+            <Input
+              placeholder="تکرار رمز"
+              placeholderTextColor="#adb4bc"
+              style={sajamstyles.inputStyle}
+              maxLength={11}
+              keyboardType="phone-pad"
+              containerStyle={sajamstyles.item}
+              blurOnSubmit
+            />
+            <Image
+              source={images.login.lock}
+              style={sajamstyles.img2}
+              resizeMode="contain"
+              tintColor={styles.color.ColorGreen}
+            />
+          </Item>
         </Form>
-        <View
-          style={{
-            flexDirection: 'row-reverse',
-            flexWrap: 'nowrap',
-            alignItems: 'center',
-            justifyContent: 'space-between',
-            marginRight: 50,
-          }}>
-          <View
-            style={{
-              flexDirection: 'row',
-              flexWrap: 'nowrap',
-              alignItems: 'center',
-              justifyContent: 'flex-end',
-              marginRight: -10,
-            }}>
-            <Text color="gray" size="sm" style={{marginRight: -10}}>
-              مرا به خاطر بسپار
-            </Text>
-            <CheckBox />
-          </View>
-          <View>
-            <Text color="green" size="sm">
-              رمز عبور خود را فراموش کرده ام
-            </Text>
-          </View>
-        </View>
       </Content>
       <View style={sajamstyles.view2}>
         <Button
           TouchableComponent={TouchableOpacity}
           ViewComponent={LinearGradient} // Don't forget this!
-          title="ورود"
+          title="ثبت نام"
           containerStyle={sajamstyles.shadow}
           buttonStyle={sajamstyles.btn}
           titleStyle={sajamstyles.medium}
@@ -117,10 +184,10 @@ export default function LoginScreen({navigation}) {
           justifyContent: 'center',
           marginBottom: normalize(20),
         }}>
-        <Text>ثبت نام نکرده اید؟</Text>
-        <TouchableOpacity onPress={() => navigation.navigate('SignIn')}>
+        <Text>ثبت نام کرده اید؟</Text>
+        <TouchableOpacity onPress={() => navigation.navigate('Login')}>
           <Text color="green" style={{marginRight: 5}}>
-            ثبت نام
+           ورود
           </Text>
         </TouchableOpacity>
       </View>
@@ -138,8 +205,9 @@ const sajamstyles = StyleSheet.create({
   mainView: {flex: 1, justifyContent: 'center'},
 
   formView: {marginHorizontal: '9%'},
-  item: {
+  itemStyle: {
     alignSelf: 'center',
+    marginBottom: 20,
   },
   inputStyle: {
     fontFamily: 'IRANSansMobile',
@@ -154,13 +222,13 @@ const sajamstyles = StyleSheet.create({
   },
   text: {padding: 10},
   view2: {
-    flex: 1,
+    flex: 0.15,
     alignItems: 'center',
   },
   btn: {
     borderRadius: normalize(25),
     paddingVertical: hp(1),
-    paddingHorizontal: normalize(50),
+    paddingHorizontal: normalize(40),
   },
   medium: {fontSize: normalize(20), fontFamily: 'IRANSansMobile'},
   shadow: {

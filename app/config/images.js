@@ -7,6 +7,7 @@ const images = {
     phone: require('../assets/images/global/phone.png'),
     key: require('../assets/images/global/key.png'),
     arrow_back: require('../assets/images/global/arrow_back.png'),
+    arrow_right: require('../assets/images/global/arrow_right.png'),
   },
   tab: {
     bars: require('../assets/images/tab/bars_chart.png'),
@@ -23,6 +24,14 @@ const images = {
     bit: require('../assets/images/example/bit.png'),
     pm: require('../assets/images/example/pm.png'),
     web2: require('../assets/images/example/web2.png'),
+  },
+  login: {
+    dates: require('../assets/images/login/dates.png'),
+    eye: require('../assets/images/login/eye.png'),
+    mail: require('../assets/images/login/mail.png'),
+    males: require('../assets/images/login/males.png'),
+    phone: require('../assets/images/login/phone.png'),
+    lock: require('../assets/images/login/lock.png'),
   },
 };
 export default images;
