@@ -6,21 +6,60 @@ import {
   Image,
   StyleSheet,
 } from 'react-native';
-import {Form, Item, Input, Container, Content} from 'native-base';
+import {Item, Input, Container, Content} from 'native-base';
 import {
   widthPercentageToDP as wp,
   heightPercentageToDP as hp,
 } from 'react-native-responsive-screen';
-import {Text} from '../../utils/Kit';
 import styles from '../../config/styles';
 import images from '../../config/images';
-import {Button, CheckBox} from 'react-native-elements';
-import LinearGradient from 'react-native-linear-gradient';
+import {Text} from '../../utils/Kit';
+import {Field, reduxForm} from 'redux-form';
 import normalize from 'react-native-normalize';
-import {connect} from 'react-redux';
+import {Button} from 'react-native-elements';
+import LinearGradient from 'react-native-linear-gradient';
+
 class SignInScreen extends Component {
+  onSubmit = values => {
+    console.log(values);
+  };
+  renderInput = field => {
+    const {
+      placeholder,
+      maxLength,
+      keyboardType,
+      autoFocus,
+      blurOnSubmit,
+      image,
+      onchangeText,
+      onValue,
+    } = field;
+    return (
+      <Item style={sajamstyles.itemStyle}>
+        <Input
+          onChange={onchangeText}
+          value={onValue}
+          placeholder={placeholder}
+          placeholderTextColor="#adb4bc"
+          style={sajamstyles.inputStyle}
+          maxLength={maxLength}
+          keyboardType={keyboardType}
+          containerStyle={sajamstyles.item}
+          autoFocus={autoFocus}
+          blurOnSubmit={blurOnSubmit}
+        />
+        <Image
+          source={image}
+          style={sajamstyles.img}
+          resizeMode="contain"
+          tintColor={styles.color.ColorGreen}
+        />
+      </Item>
+    );
+  };
   render() {
     const {navigation} = this.props;
+    const {handleSubmit} = this.props;
     return (
       <Container style={sajamstyles.container}>
         <View
@@ -29,7 +68,86 @@ class SignInScreen extends Component {
             ثبت نام جدید
           </Text>
         </View>
-    
+        <Content contentContainerStyle={sajamstyles.mainView}>
+          <View style={sajamstyles.ViewView}>
+            <Field
+              name="name"
+              placeholder="Name"
+              image={images.login.males}
+              component={this.renderInput}
+            />
+            {/* <Item style={sajamstyles.itemStyle}>
+              <Input
+                placeholder="نام"
+                placeholderTextColor="#adb4bc"
+                style={sajamstyles.inputStyle}
+                maxLength={10}
+                keyboardType="phone-pad"
+                containerStyle={sajamstyles.item}
+                autoFocus
+                blurOnSubmit
+              />
+              <Image
+                source={images.login.males}
+                style={sajamstyles.img}
+                resizeMode="contain"
+                tintColor={styles.color.ColorGreen}
+              />
+            </Item> */}
+            <Field
+              name="family"
+              placeholder="Family"
+              image={images.login.males}
+              component={this.renderInput}
+            />
+            <Field
+              name="phone"
+              placeholder="Phone"
+              image={images.login.phone}
+              component={this.renderInput}
+            />
+            <Field
+              name="mail"
+              placeholder="Email"
+              image={images.login.mail}
+              component={this.renderInput}
+            />
+            <Field
+              name="date"
+              placeholder="Date"
+              image={images.login.dates}
+              component={this.renderInput}
+            />
+            <Field
+              name="pass"
+              placeholder="Pass"
+              image={images.login.lock}
+              component={this.renderInput}
+            />
+            <Field
+              name="w"
+              placeholder="W"
+              image={images.login.lock}
+              component={this.renderInput}
+            />
+          </View>
+        </Content>
+        <View style={sajamstyles.view2}>
+          <Button
+            TouchableComponent={TouchableOpacity}
+            ViewComponent={LinearGradient} // Don't forget this!
+            title="ثبت نام"
+            containerStyle={sajamstyles.shadow}
+            buttonStyle={sajamstyles.btn}
+            titleStyle={sajamstyles.medium}
+            linearGradientProps={{
+              colors: [styles.color.ColorGreen, styles.color.ColorGreenFos],
+              start: {x: 0, y: 0.5},
+              end: {x: 1, y: 0.5},
+            }}
+            onPress={handleSubmit(this.onSubmit)}
+          />
+        </View>
         <View
           style={{
             flexDirection: 'row-reverse',
@@ -49,10 +167,10 @@ class SignInScreen extends Component {
     );
   }
 }
-export default connect(
-  null,
-  null,
-)(SignInScreen);
+export default (SignInScreen = reduxForm({
+  // a unique name for the form
+  form: 'register',
+})(SignInScreen));
 const sajamstyles = StyleSheet.create({
   container: {
     flex: 1,
