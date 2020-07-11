@@ -14,7 +14,7 @@ import {
 import LinearGradient from 'react-native-linear-gradient';
 import {Button} from 'react-native-elements';
 import normalize from 'react-native-normalize';
-import {Text} from '../../utils/Kit';
+import {Text, numberWithCommas} from '../../utils/Kit';
 import styles from '../../config/styles';
 import PayCard from '../../components/PayCard';
 import Menu, {MenuDivider} from 'react-native-material-menu';
@@ -26,12 +26,14 @@ import {
   FetchDollar,
 } from '../../api/methods/FetchPrices';
 import images from '../../config/images';
-import {persianNumber} from '../../lib/persian';
+import {persianNumber, latinNumber} from '../../lib/persian';
+import {Item, Input} from 'native-base';
+import {number} from 'prop-types';
 
 class BuyingScreen extends Component {
   constructor(props) {
     super(props);
-    this.state = {dollar: [], menu: 1};
+    this.state = {dollar: [], menu: 1, menu2: 10, rial: '', numb: ''};
   }
   state = {
     visible: false,
@@ -50,7 +52,19 @@ class BuyingScreen extends Component {
   showMenu = () => {
     this._menu.show();
   };
+  _menu2 = null;
 
+  setMenuRef2 = ref2 => {
+    this._menu2 = ref2;
+  };
+
+  hideMenu2 = () => {
+    this._menu2.hide();
+  };
+
+  showMenu2 = () => {
+    this._menu2.show();
+  };
   componentWillMount() {
     this.props.dispatch(FetchPrices());
     this.props.dispatch(FetchSetting());
@@ -62,6 +76,79 @@ class BuyingScreen extends Component {
       })
       .catch(error => console.error(error));
   }
+  renderTitle2 = () => {
+    switch (this.state.menu2) {
+      case 1:
+        return 'بیت کوین';
+      case 2:
+        return 'بیت کوین کش';
+      case 3:
+        return 'ریپل';
+      case 4:
+        return 'ترون';
+      case 5:
+        return 'لایت کوین ';
+      case 6:
+        return 'اتریوم';
+      case 7:
+        return 'دش کوین';
+      case 8:
+        return 'تتر';
+      case 9:
+        return 'پرفکت مانی';
+      case 10:
+        return 'ریال';
+    }
+  };
+  renderSubTitle2 = () => {
+    const {prices} = this.props;
+    switch (this.state.menu2) {
+      case 1:
+        return prices[0]?.name;
+      case 2:
+        return prices[4]?.name;
+      case 3:
+        return prices[3]?.name;
+      case 4:
+        return prices[17]?.name;
+      case 5:
+        return prices[7]?.name;
+      case 6:
+        return prices[1]?.name;
+      case 7:
+        return prices[25]?.name;
+      case 8:
+        return prices[2]?.name;
+      case 9:
+        return 'Perfect Money';
+      case 10:
+        return 'Rial';
+    }
+  };
+  renderImage2 = () => {
+    switch (this.state.menu2) {
+      case 1:
+        return images.example.bit;
+      case 2:
+        return images.example.bitcoinC;
+      case 3:
+        return images.example.xrp;
+      case 4:
+        return images.example.tron;
+      case 5:
+        return images.example.litecoin;
+      case 6:
+        return images.example.ethereum;
+      case 7:
+        return images.example.dash;
+      case 8:
+        return images.example.tether;
+      case 9:
+        return images.example.pm;
+      case 10:
+        return images.example.Rial;
+    }
+  };
   renderTitle = () => {
     switch (this.state.menu) {
       case 1:
@@ -96,7 +183,7 @@ class BuyingScreen extends Component {
       case 3:
         return prices[3]?.name;
       case 4:
-        return prices[16]?.name;
+        return prices[17]?.name;
       case 5:
         return prices[7]?.name;
       case 6:
@@ -112,28 +199,27 @@ class BuyingScreen extends Component {
     }
   };
   renderImage = () => {
-    const {prices} = this.props;
     switch (this.state.menu) {
       case 1:
-        return prices[0]?.image;
+        return images.example.bit;
       case 2:
-        return prices[4]?.image;
+        return images.example.bitcoinC;
       case 3:
-        return prices[3]?.image;
+        return images.example.xrp;
       case 4:
-        return prices[16]?.image;
+        return images.example.tron;
       case 5:
-        return prices[7]?.image;
+        return images.example.litecoin;
       case 6:
-        return prices[1]?.image;
+        return images.example.ethereum;
       case 7:
-        return prices[25]?.image;
+        return images.example.dash;
       case 8:
-        return prices[2]?.image;
+        return images.example.tether;
       case 9:
-        return prices[2]?.image;
+        return images.example.pm;
       case 10:
-        return prices[2]?.image;
+        return images.example.Rial;
     }
   };
   renderCurrent = () => {
@@ -146,7 +232,7 @@ class BuyingScreen extends Component {
       case 3:
         return prices[3]?.current_price;
       case 4:
-        return prices[16]?.current_price;
+        return prices[17]?.current_price;
       case 5:
         return prices[7]?.current_price;
       case 6:
@@ -175,7 +261,7 @@ class BuyingScreen extends Component {
       case 3:
         return Math.abs(prices[3]?.current_price * def);
       case 4:
-        return Math.abs(prices[16]?.current_price * def);
+        return Math.abs(prices[17]?.current_price * def);
       case 5:
         return Math.abs(prices[7]?.current_price * def);
       case 6:
@@ -225,10 +311,226 @@ class BuyingScreen extends Component {
           <Text style={style.title}>لوگو </Text>
         </View>
         <View>
-          <PayCard />
+          <View>
+            <View style={style2.main}>
+              <View style={style2.card}>
+                <View style={style2.titleView}>
+                  <Text style={style2.title}>پرداخت میکنید</Text>
+                </View>
+                {/**
+                 * 
+                 paying
+                 */}
+                <View style={style2.js}>
+                  <View style={style2.right}>
+                    <Input
+                      style={[style.input, {width: 170}]}
+                      value={persianNumber(this.state.rial)}
+                      onChangeText={t => {
+                        this.setState({
+                          rial: latinNumber(t),
+                        });
+                      }}
+                      multiline={true}
+                      keyboardType="numeric"
+                    />
+                  </View>
+                  <View style={[style2.subView]}>
+                    <TouchableOpacity>
+                      <Image
+                        resizeMode="contain"
+                        source={this.renderImage2()}
+                        style={{width: wp(6), height: hp(6)}}
+                      />
+                    </TouchableOpacity>
+                    <View style={{marginRight: wp(3), marginLeft: wp(3)}}>
+                      <Text style={[style2.grayTxt, {marginRight: wp(2)}]}>
+                        {this.renderTitle2()}
+                      </Text>
+                      <Text style={style2.grayTxt}>
+                        {this.renderSubTitle2()}
+                      </Text>
+                    </View>
+                    <Menu
+                      ref={this.setMenuRef2}
+                      button={
+                        <TouchableOpacity onPress={this.showMenu2}>
+                          <Image
+                            resizeMode="contain"
+                            source={images.global.arrow_down}
+                            style={{width: wp(3), height: hp(3)}}
+                          />
+                        </TouchableOpacity>
+                      }>
+                      <MenuDivider />
+                      <TouchableOpacity
+                        onPress={() => {
+                          this.setState({menu2: 1});
+                          this.hideMenu2();
+                        }}
+                        style={style.menuItem}>
+                        <View>
+                          <Text style={style.menuTxt}>بیت کوین</Text>
+                        </View>
+                        <Image
+                          source={images.example.bit}
+                          style={style.imageMenu}
+                          resizeMode="contain"
+                        />
+                      </TouchableOpacity>
+                      <MenuDivider />
+                      <TouchableOpacity
+                        onPress={() => {
+                          this.setState({menu2: 2});
+                          this.hideMenu2();
+                        }}
+                        style={style.menuItem}>
+                        <View>
+                          <Text style={style.menuTxt}>بیت کوین کش</Text>
+                        </View>
+                        <Image
+                          source={images.example.bitcoinC}
+                          style={style.imageMenu}
+                          resizeMode="contain"
+                        />
+                      </TouchableOpacity>
+                      <MenuDivider />
+                      <TouchableOpacity
+                        onPress={() => {
+                          this.setState({menu2: 3});
+                          this.hideMenu2();
+                        }}
+                        style={style.menuItem}>
+                        <View>
+                          <Text style={style.menuTxt}>ریپل</Text>
+                        </View>
+                        <Image
+                          source={images.example.xrp}
+                          style={style.imageMenu}
+                          resizeMode="contain"
+                        />
+                      </TouchableOpacity>
+                      <MenuDivider />
+                      <TouchableOpacity
+                        onPress={() => {
+                          this.setState({menu2: 4});
+                          this.hideMenu2();
+                        }}
+                        style={style.menuItem}>
+                        <View>
+                          <Text style={style.menuTxt}>ترون</Text>
+                        </View>
+                        <Image
+                          source={images.example.tron}
+                          style={style.imageMenu}
+                          resizeMode="contain"
+                        />
+                      </TouchableOpacity>
+                      <MenuDivider />
+                      <TouchableOpacity
+                        onPress={() => {
+                          this.setState({menu2: 5});
+                          this.hideMenu2();
+                        }}
+                        style={style.menuItem}>
+                        <View>
+                          <Text style={style.menuTxt}>لایت کوین</Text>
+                        </View>
+                        <Image
+                          source={images.example.litecoin}
+                          style={style.imageMenu}
+                          resizeMode="contain"
+                        />
+                      </TouchableOpacity>
+                      <MenuDivider />
+                      <TouchableOpacity
+                        onPress={() => {
+                          this.setState({menu2: 6});
+                          this.hideMenu2();
+                        }}
+                        style={style.menuItem}>
+                        <View>
+                          <Text style={style.menuTxt}>اتریوم</Text>
+                        </View>
+                        <Image
+                          source={images.example.ethereum}
+                          style={style.imageMenu}
+                          resizeMode="contain"
+                        />
+                      </TouchableOpacity>
+                      <MenuDivider />
+                      <TouchableOpacity
+                        onPress={() => {
+                          this.setState({menu2: 7});
+                          this.hideMenu2();
+                        }}
+                        style={style.menuItem}>
+                        <View>
+                          <Text style={style.menuTxt}>دش کوین</Text>
+                        </View>
+                        <Image
+                          source={images.example.dash}
+                          style={style.imageMenu}
+                          resizeMode="contain"
+                        />
+                      </TouchableOpacity>
+                      <MenuDivider />
+                      <TouchableOpacity
+                        onPress={() => {
+                          this.setState({menu2: 8});
+                          this.hideMenu2();
+                        }}
+                        style={style.menuItem}>
+                        <View>
+                          <Text style={style.menuTxt}>تتر</Text>
+                        </View>
+                        <Image
+                          source={images.example.tether}
+                          style={style.imageMenu}
+                          resizeMode="contain"
+                        />
+                      </TouchableOpacity>
+                      <MenuDivider />
+                      <TouchableOpacity
+                        onPress={() => {
+                          this.setState({menu2: 9});
+                          this.hideMenu2();
+                        }}
+                        style={style.menuItem}>
+                        <View>
+                          <Text style={style.menuTxt}>پرفکت مانی</Text>
+                        </View>
+                        <Image
+                          source={images.example.pm}
+                          style={style.imageMenu}
+                          resizeMode="contain"
+                        />
+                      </TouchableOpacity>
+                      <MenuDivider />
+                      <TouchableOpacity
+                        onPress={() => {
+                          this.setState({menu2: 10});
+                          this.hideMenu2();
+                        }}
+                        style={style.menuItem}>
+                        <View>
+                          <Text style={style.menuTxt}>ریال</Text>
+                        </View>
+                        <Image
+                          source={images.example.Rial}
+                          style={style.imageMenu}
+                          resizeMode="contain"
+                        />
+                      </TouchableOpacity>
+                    </Menu>
+                  </View>
+                </View>
+              </View>
+            </View>
+          </View>
         </View>
         <View style={style.txtView}>
-          <Text  style={[style.grayTxt, style.normal]}>
+          <Text style={[style.grayTxt, style.normal]}>
             <TextNumber black>{this.renderCurrent()}</TextNumber>
             <Text style={style.black}>دلار </Text>
             <Text>نرخ بین المللی ارز </Text>
@@ -245,13 +547,22 @@ class BuyingScreen extends Component {
               </View>
               <View style={style2.js}>
                 <View style={style2.right}>
-                  <Text style={style2.number}>{persianNumber('0/05')}</Text>
+                  <Input
+                    style={[style.input, {width: 170}]}
+                    value={persianNumber(
+                      numberWithCommas(
+                        Math.abs(this.state.rial / this.renderRial()),
+                      ),
+                    )}
+                    multiline={true}
+                    keyboardType="numeric"
+                  />
                 </View>
                 <View style={style2.subView}>
                   <TouchableOpacity>
                     <Image
                       resizeMode="contain"
-                      source={{uri: this.renderImage()}}
+                      source={this.renderImage()}
                       style={{width: wp(6), height: hp(6)}}
                     />
                   </TouchableOpacity>
@@ -283,7 +594,7 @@ class BuyingScreen extends Component {
                         <Text style={style.menuTxt}>بیت کوین</Text>
                       </View>
                       <Image
-                        source={{uri: prices[0]?.image}}
+                        source={images.example.bit}
                         style={style.imageMenu}
                         resizeMode="contain"
                       />
@@ -299,7 +610,7 @@ class BuyingScreen extends Component {
                         <Text style={style.menuTxt}>بیت کوین کش</Text>
                       </View>
                       <Image
-                        source={{uri: prices[4]?.image}}
+                        source={images.example.bitcoinC}
                         style={style.imageMenu}
                         resizeMode="contain"
                       />
@@ -315,7 +626,7 @@ class BuyingScreen extends Component {
                         <Text style={style.menuTxt}>ریپل</Text>
                       </View>
                       <Image
-                        source={{uri: prices[3]?.image}}
+                        source={images.example.xrp}
                         style={style.imageMenu}
                         resizeMode="contain"
                       />
@@ -331,7 +642,7 @@ class BuyingScreen extends Component {
                         <Text style={style.menuTxt}>ترون</Text>
                       </View>
                       <Image
-                        source={{uri: prices[16]?.image}}
+                        source={images.example.tron}
                         style={style.imageMenu}
                         resizeMode="contain"
                       />
@@ -347,7 +658,7 @@ class BuyingScreen extends Component {
                         <Text style={style.menuTxt}>لایت کوین</Text>
                       </View>
                       <Image
-                        source={{uri: prices[7]?.image}}
+                        source={images.example.litecoin}
                         style={style.imageMenu}
                         resizeMode="contain"
                       />
@@ -363,7 +674,7 @@ class BuyingScreen extends Component {
                         <Text style={style.menuTxt}>اتریوم</Text>
                       </View>
                       <Image
-                        source={{uri: prices[1]?.image}}
+                        source={images.example.ethereum}
                         style={style.imageMenu}
                         resizeMode="contain"
                       />
@@ -379,7 +690,7 @@ class BuyingScreen extends Component {
                         <Text style={style.menuTxt}>دش کوین</Text>
                       </View>
                       <Image
-                        source={{uri: prices[25]?.image}}
+                        source={images.example.dash}
                         style={style.imageMenu}
                         resizeMode="contain"
                       />
@@ -395,7 +706,7 @@ class BuyingScreen extends Component {
                         <Text style={style.menuTxt}>تتر</Text>
                       </View>
                       <Image
-                        source={{uri: prices[2]?.image}}
+                        source={images.example.tether}
                         style={style.imageMenu}
                         resizeMode="contain"
                       />
@@ -417,6 +728,21 @@ class BuyingScreen extends Component {
                       />
                     </TouchableOpacity>
                     <MenuDivider />
+                    <TouchableOpacity
+                      onPress={() => {
+                        this.setState({menu: 10});
+                        this.hideMenu();
+                      }}
+                      style={style.menuItem}>
+                      <View>
+                        <Text style={style.menuTxt}>ریال</Text>
+                      </View>
+                      <Image
+                        source={images.example.Rial}
+                        style={style.imageMenu}
+                        resizeMode="contain"
+                      />
+                    </TouchableOpacity>
                   </Menu>
                 </View>
               </View>
@@ -467,6 +793,12 @@ const mapStateToProps = state => ({
 
 export default connect(mapStateToProps)(BuyingScreen);
 const style = StyleSheet.create({
+  input: {
+    fontSize: 16,
+    fontFamily: 'iranSans',
+    marginRight: wp(5),
+   
+  },
   main: {flex: 1, backgroundColor: 'white'},
   logoCon: {alignItems: 'center', marginVertical: normalize(50, 'height')},
   title: {color: styles.color.colorText_GrAY, fontSize: normalize(45)},

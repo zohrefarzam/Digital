@@ -1,5 +1,3 @@
-import {Alert} from 'react-native';
-
 export const FETCH_PRICES_BEGIN = 'FETCH_PRICES_BEGIN';
 export const FETCH_PRICES_SUCCESS = 'FETCH_PRICES_SUCCESS';
 export const FETCH_PRICES_FAILURE = 'FETCH_PRICES_FAILURE';

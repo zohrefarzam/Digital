@@ -11,9 +11,9 @@ import {ActivityIndicator} from 'react-native';
 import AppNavigator from './navigation';
 import {Provider} from 'react-redux';
 import {PersistGate} from 'redux-persist/es/integration/react';
-import configureStore from 'app/store/configureStore';
 import {View, Text} from 'native-base';
-const {persistor, store} = configureStore();
+import persist from './store';
+const persistStore = persist();
 class App extends Component {
   componentDidMount() {
     if (__DEV__) {
@@ -22,8 +22,10 @@ class App extends Component {
   }
   render() {
     return (
-      <Provider store={store}>
-        <AppNavigator />
+      <Provider store={persistStore.store}>
+        <PersistGate loading={null} persistor={persistStore.persistor}>
+          <AppNavigator />
+        </PersistGate>
       </Provider>
     );
   }
