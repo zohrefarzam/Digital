@@ -18,50 +18,60 @@ import {Field, reduxForm} from 'redux-form';
 import normalize from 'react-native-normalize';
 import {Button} from 'react-native-elements';
 import LinearGradient from 'react-native-linear-gradient';
+import {connect} from 'react-redux';
 
 class SignInScreen extends Component {
-  onSubmit = values => {
-    console.log(values);
-  };
-  renderInput = field => {
-    const {
-      placeholder,
-      maxLength,
-      keyboardType,
-      autoFocus,
-      blurOnSubmit,
-      image,
-      onchangeText,
-      onValue,
-    } = field;
-    return (
-      <Item style={sajamstyles.itemStyle}>
-        <Input
-          onChange={onchangeText}
-          value={onValue}
-          placeholder={placeholder}
-          placeholderTextColor="#adb4bc"
-          style={sajamstyles.inputStyle}
-          maxLength={maxLength}
-          keyboardType={keyboardType}
-          containerStyle={sajamstyles.item}
-          autoFocus={autoFocus}
-          blurOnSubmit={blurOnSubmit}
-        />
-        <Image
-          source={image}
-          style={sajamstyles.img}
-          resizeMode="contain"
-          tintColor={styles.color.ColorGreen}  
-
-          
-        />
-      </Item>
-    );
+  constructor(props) {
+    super(props);
+    this.state = {
+      name: '',
+      father: '',
+      date: '',
+      phone: '',
+      mail: '',
+      password: '',
+      retPass: '',
+    };
+  }
+  updateValue(text, field) {
+    if (field === 'name') {
+      this.setState({name: text});
+    } else if (field === 'father') {
+      this.setState({father: text});
+    } else if (field === 'date') {
+      this.setState({date: text});
+    } else if (field === 'phone') {
+      this.setState({phone: text});
+    } else if (field === 'mail') {
+      this.setState({mail: text});
+    } else if (field === 'password') {
+      this.setState({password: text});
+    } else if (field === 'retPass') {
+      this.setState({retPass: text});
+    }
+  }
+  submit = () => {
+    let collection = {};
+    collection.name = this.state.name;
+    collection.father = this.state.father;
+    collection.date = this.state.date;
+    collection.phone = this.state.phone;
+    collection.mail = this.state.mail;
+    collection.password = this.state.password;
+    console.log(collection);
+    fetch('https://jimbooexchange.com/php_api/insert_user.php', {
+      method: 'POST',
+      headers: {
+        Accept: 'application/json',
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify(collection),
+    })
+      .then(res => res.json())
+      .catch(error => console.error('error', error))
+      .then(response => console.log('success', response));
   };
   render() {
-    const {navigation} = this.props;
-    const {handleSubmit} = this.props;
     return (
       <Container style={sajamstyles.container}>
         <View
@@ -72,13 +82,7 @@ class SignInScreen extends Component {
         </View>
         <Content contentContainerStyle={sajamstyles.mainView}>
           <View style={sajamstyles.ViewView}>
-            <Field
-              name="name"
-              placeholder="Name"
-              image={images.login.males}
-              component={this.renderInput}
-            />
-            {/* <Item style={sajamstyles.itemStyle}>
+            <Item style={sajamstyles.itemStyle}>
               <Input
                 placeholder="نام"
                 placeholderTextColor="#adb4bc"
@@ -88,6 +92,7 @@ class SignInScreen extends Component {
                 containerStyle={sajamstyles.item}
                 autoFocus
                 blurOnSubmit
+                onChangeText={text => this.updateValue(text, 'name')}
               />
               <Image
                 source={images.login.males}
@@ -95,43 +100,121 @@ class SignInScreen extends Component {
                 resizeMode="contain"
                 tintColor={styles.color.ColorGreen}
               />
-            </Item> */}
-            <Field
-              name="family"
-              placeholder="Family"
-              image={images.login.males}
-              component={this.renderInput}
-            />
-            <Field
-              name="phone"
-              placeholder="Phone"
-              image={images.login.phone}
-              component={this.renderInput}
-            />
-            <Field
-              name="mail"
-              placeholder="Email"
-              image={images.login.mail}
-              component={this.renderInput}
-            />
-            <Field
-              name="date"
-              placeholder="Date"
-              image={images.login.dates}
-              component={this.renderInput}
-            />
-            <Field
-              name="pass"
-              placeholder="Pass"
-              image={images.login.lock}
-              component={this.renderInput}
-            />
-            <Field
-              name="w"
-              placeholder="W"
-              image={images.login.lock}
-              component={this.renderInput}
-            />
+            </Item>
+            <Item style={sajamstyles.itemStyle}>
+              <Input
+                placeholder="نام خانوادگی"
+                placeholderTextColor="#adb4bc"
+                style={sajamstyles.inputStyle}
+                maxLength={10}
+                keyboardType="phone-pad"
+                containerStyle={sajamstyles.item}
+                autoFocus
+                blurOnSubmit
+                onChangeText={text => this.updateValue(text, 'father')}
+              />
+              <Image
+                source={images.login.males}
+                style={sajamstyles.img}
+                resizeMode="contain"
+                tintColor={styles.color.ColorGreen}
+              />
+            </Item>
+            <Item style={sajamstyles.itemStyle}>
+              <Input
+                placeholder="شماره موبایل"
+                placeholderTextColor="#adb4bc"
+                style={sajamstyles.inputStyle}
+                maxLength={10}
+                keyboardType="phone-pad"
+                containerStyle={sajamstyles.item}
+                autoFocus
+                blurOnSubmit
+                onChangeText={text => this.updateValue(text, 'phone')}
+              />
+              <Image
+                source={images.login.phone}
+                style={sajamstyles.img}
+                resizeMode="contain"
+                tintColor={styles.color.ColorGreen}
+              />
+            </Item>
+            <Item style={sajamstyles.itemStyle}>
+              <Input
+                placeholder="ایمیل"
+                placeholderTextColor="#adb4bc"
+                style={sajamstyles.inputStyle}
+                maxLength={10}
+                keyboardType="phone-pad"
+                containerStyle={sajamstyles.item}
+                autoFocus
+                blurOnSubmit
+                onChangeText={text => this.updateValue(text, 'mail')}
+              />
+              <Image
+                source={images.login.mail}
+                style={sajamstyles.img}
+                resizeMode="contain"
+                tintColor={styles.color.ColorGreen}
+              />
+            </Item>
+            <Item style={sajamstyles.itemStyle}>
+              <Input
+                placeholder="تاریخ تولد"
+                placeholderTextColor="#adb4bc"
+                style={sajamstyles.inputStyle}
+                maxLength={10}
+                keyboardType="phone-pad"
+                containerStyle={sajamstyles.item}
+                autoFocus
+                blurOnSubmit
+                onChangeText={text => this.updateValue(text, 'date')}
+              />
+              <Image
+                source={images.login.dates}
+                style={sajamstyles.img}
+                resizeMode="contain"
+                tintColor={styles.color.ColorGreen}
+              />
+            </Item>
+            <Item style={sajamstyles.itemStyle}>
+              <Input
+                placeholder="رمز عبور"
+                placeholderTextColor="#adb4bc"
+                style={sajamstyles.inputStyle}
+                maxLength={10}
+                keyboardType="phone-pad"
+                containerStyle={sajamstyles.item}
+                autoFocus
+                blurOnSubmit
+                onChangeText={text => this.updateValue(text, 'password')}
+              />
+              <Image
+                source={images.login.lock}
+                style={sajamstyles.img}
+                resizeMode="contain"
+                tintColor={styles.color.ColorGreen}
+              />
+            </Item>
+            <Item style={sajamstyles.itemStyle}>
+              <Input
+                placeholder="تکرار رمز عبور"
+                placeholderTextColor="#adb4bc"
+                style={sajamstyles.inputStyle}
+                maxLength={10}
+                keyboardType="phone-pad"
+                containerStyle={sajamstyles.item}
+                autoFocus
+                blurOnSubmit
+                onChangeText={text => this.updateValue(text, 'retPass')}
+              />
+              <Image
+                source={images.login.lock}
+                style={sajamstyles.img}
+                resizeMode="contain"
+                tintColor={styles.color.ColorGreen}
+              />
+            </Item>
           </View>
         </Content>
         <View style={sajamstyles.view2}>
@@ -147,7 +230,7 @@ class SignInScreen extends Component {
               start: {x: 0, y: 0.5},
               end: {x: 1, y: 0.5},
             }}
-            onPress={handleSubmit(this.onSubmit)}
+            onPress={() => this.submit()}
           />
         </View>
         <View
@@ -159,7 +242,7 @@ class SignInScreen extends Component {
             marginBottom: normalize(20),
           }}>
           <Text>ثبت نام کرده اید؟</Text>
-          <TouchableOpacity onPress={() => navigation.navigate('Login')}>
+          <TouchableOpacity>
             <Text color="green" style={{marginRight: 5}}>
               ورود
             </Text>
@@ -169,10 +252,7 @@ class SignInScreen extends Component {
     );
   }
 }
-export default (SignInScreen = reduxForm({
-  // a unique name for the form
-  form: 'register',
-})(SignInScreen));
+export default connect(null, null)(SignInScreen);
 const sajamstyles = StyleSheet.create({
   container: {
     flex: 1,
@@ -187,6 +267,7 @@ const sajamstyles = StyleSheet.create({
   itemStyle: {
     alignSelf: 'center',
     marginBottom: 20,
+    paddingRight: wp(5),
   },
   inputStyle: {
     fontFamily: 'IRANSansMobile',

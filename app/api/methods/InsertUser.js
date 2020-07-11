@@ -3,7 +3,7 @@ import {Alert} from 'react-native';
 export const SET_SIGNIN_STATE = 'SET_SIGNIN_STATE';
 export const setSignIn = signInData => ({
   type: SET_SIGNIN_STATE,
-  payload: {signInData},
+  payload: signInData,
 });
 export const SignIn = SignInInput => {
   const {Name, Father_Name, Bourning_Time, Mail, Phone, Password} = SignInInput;
@@ -32,6 +32,7 @@ export const SignIn = SignInInput => {
               phone: Phone,
               password: Password,
             }),
+            alert(SignInInput),
           ); // our action is called here
         } else {
           Alert.alert('Login Failed', 'Username or Password is incorrect');
