@@ -52,7 +52,9 @@ class SignInScreen extends Component {
           source={image}
           style={sajamstyles.img}
           resizeMode="contain"
-          tintColor={styles.color.ColorGreen}
+          tintColor={styles.color.ColorGreen}  
+
+          
         />
       </Item>
     );
