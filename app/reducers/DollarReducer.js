@@ -1,4 +1,4 @@
-import {FETCH_SETTING, FETCH_SETTING_ERROR} from '../api/methods/FetchPrices';
+import {FETCH_DOLLAR, FETCH_DOLLAR_ERROR} from '../api/methods/FetchPrices';
 
 const initialState = {
   items: [],
@@ -6,22 +6,22 @@ const initialState = {
   error: null,
 };
 
-export default function SettingReducer(state = initialState, action) {
+export default function DollarReducer(state = initialState, action) {
   switch (action.type) {
-    case FETCH_SETTING_ERROR:
+    case FETCH_DOLLAR_ERROR:
       return {
         ...state,
         loading: false,
         error: action.payload.error,
         items: [],
       };
-    case FETCH_SETTING:
+    case FETCH_DOLLAR:
       // All done: set loading "false".
       // Also, replace the items with the ones from the server
       return {
         ...state,
         loading: false,
-        items: action.payload.setting,
+        items: action.payload.dollar,
       };
     default:
       // ALWAYS have a default case in a reducer

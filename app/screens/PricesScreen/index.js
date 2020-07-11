@@ -17,23 +17,37 @@ import {Text, TextNumber} from '../../utils/Kit';
 import styles from '../../config/styles';
 import images from '../../config/images';
 import {connect} from 'react-redux';
-import {FetchPrices, FetchSetting} from '../../api/methods/FetchPrices';
+import {
+  FetchPrices,
+  FetchSetting,
+  FetchDollar,
+} from '../../api/methods/FetchPrices';
+import {persianNumber} from '../../lib/persian';
 
 class PricesScreen extends Component {
   constructor(props) {
     super(props);
-    this.state = {data: 1234};
+    this.state = {dollar: []};
   }
 
   componentWillMount() {
     this.props.dispatch(FetchPrices());
     this.props.dispatch(FetchSetting());
+    // this.props.dispatch(FetchDollar());
+    fetch('https://api.tgju.online/v1/data/sana/json')
+      .then(response => response.json())
+      .then(json => {
+        this.setState({dollar: json});
+      })
+      .catch(error => console.error(error));
   }
 
   render() {
-    const {data} = this.state;
+    const {dollar} = this.state;
     const {loading, prices, setting} = this.props;
-
+    const d = parseInt(setting[0]?.Defrent);
+    const p = parseInt(dollar?.sana_buy_usd?.p);
+    //alert(prices[0]?.name);
     return (
       <View style={style.main}>
         <Text style={style.title}> لوگو</Text>
@@ -83,14 +97,16 @@ class PricesScreen extends Component {
                   ]}>
                   <Text style={style2.txt}>
                     <TextNumber percent colored>
-                      1234
+                      {d}
                     </TextNumber>
                   </Text>
                   <Text style={style2.txt}>
                     <TextNumber dollor>{item.current_price}</TextNumber>
                   </Text>
                   <Text style={style2.txt}>
-                    <TextNumber rial>{this.state.data}</TextNumber>
+                    <TextNumber>
+                      {Math.abs((p + d) * item.current_price)}
+                    </TextNumber>
                   </Text>
                   <Text style={[style2.txt, {flex: 0.5}]}>{item.symbol}</Text>
                   <Text style={[style2.txt, {flex: 0.8}]}>{item.name}</Text>
@@ -111,6 +127,7 @@ class PricesScreen extends Component {
 const mapStateToProps = state => ({
   prices: state.prices.items,
   setting: state.setting.items,
+  //dollar: state.dollar.items,
   loading: state.prices.loading,
   error: state.prices.error,
 });

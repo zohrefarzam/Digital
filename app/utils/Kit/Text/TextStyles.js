@@ -43,10 +43,10 @@ export default StyleSheet.create({
     fontSize: normalize(14),
   },
   large: {
-    fontSize: normalize(16),
+    fontSize: normalize(30),
   },
   xlarge: {
-    fontSize: normalize(20),
+    fontSize: normalize(50),
   },
   red: {
     color: styles.color.ColorRed,
@@ -58,7 +58,7 @@ export default StyleSheet.create({
     color: styles.color.ColorBlue,
   },
   green: {
-    color: styles.color.ColorGreenFos,
+    color: styles.color.ColorGreen,
   },
   lightGray: {
     color: styles.color.COLOR_GREY_TRANSP,

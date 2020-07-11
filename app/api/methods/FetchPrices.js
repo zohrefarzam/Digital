@@ -3,9 +3,19 @@ export const FETCH_PRICES_SUCCESS = 'FETCH_PRICES_SUCCESS';
 export const FETCH_PRICES_FAILURE = 'FETCH_PRICES_FAILURE';
 export const FETCH_SETTING = 'FETCH_SETTING';
 export const FETCH_SETTING_ERROR = 'FETCH_SETTING_ERROR';
+export const FETCH_DOLLAR = 'FETCH_DOLLAR';
+export const FETCH_DOLLAR_ERROR = 'FETCH_DOLLAR_ERROR';
 export const fetchSetting = setting => ({
   type: FETCH_SETTING,
   payload: {setting},
+});
+export const fetchDollar = dollar => ({
+  type: FETCH_SETTING,
+  payload: {dollar},
+});
+export const fetchDollarError = error => ({
+  type: FETCH_DOLLAR_ERROR,
+  payload: {error},
 });
 export const fetchPricesBegin = () => ({
   type: FETCH_PRICES_BEGIN,
@@ -24,6 +34,18 @@ export const fetchSettingError = error => ({
   type: FETCH_PRICES_FAILURE,
   payload: {error},
 });
+export function FetchDollar() {
+  return dispatch => {
+    return fetch('https://api.tgju.online/v1/data/sana/json')
+      .then(handleErrors)
+      .then(res => res.json())
+      .then(json => {
+        dispatch(fetchDollar(json));
+        return json;
+      })
+      .catch(error => dispatch(fetchDollarError(error)));
+  };
+}
 export function FetchSetting() {
   return dispatch => {
     return fetch('https://jimbooexchange.com/php_api/get_all_setting.php')
