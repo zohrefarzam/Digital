@@ -5,6 +5,7 @@ import {
   ImageBackground,
   Image,
   StyleSheet,
+  Alert,
 } from 'react-native';
 import {Item, Input, Container, Content} from 'native-base';
 import {
@@ -19,23 +20,31 @@ import normalize from 'react-native-normalize';
 import {Button} from 'react-native-elements';
 import LinearGradient from 'react-native-linear-gradient';
 import {connect} from 'react-redux';
-
+import Dialog from 'react-native-dialog';
+import CustomModal from '../../components/CustomModal';
 class SignInScreen extends Component {
   constructor(props) {
     super(props);
     this.state = {
-      name: '',
+      Name: '',
       father: '',
       date: '',
       phone: '',
       mail: '',
       password: '',
       retPass: '',
+      visible: true,
+      dialog1: false,
+      dialog2: false,
+      dialog3: false,
+      dialog4: false,
+      dialog5: false,
+      dialog6: false,
     };
   }
   updateValue(text, field) {
     if (field === 'Name') {
-      this.setState({name: text});
+      this.setState({Name: text});
     } else if (field === 'Father_Name') {
       this.setState({father: text});
     } else if (field === 'Bourning_Time') {
@@ -52,13 +61,39 @@ class SignInScreen extends Component {
   }
   submit = () => {
     let collection = {};
-    collection.name = this.state.name;
-    collection.father = this.state.father;
-    collection.date = this.state.date;
-    collection.mail = this.state.mail;
-    collection.phone = this.state.phone;
-    collection.password = this.state.password;
+    collection.Name = this.state.Name;
+    collection.Father_Name = this.state.father;
+    collection.Bourning_Time = this.state.date;
+    collection.IsOk = 'no';
+    collection.IsBlock = 'no';
+    collection.Mail = this.state.mail;
+    collection.Phone = this.state.phone;
+    collection.Is_Phone_Ok = 'no';
+    collection.Password = this.state.password;
+
     console.log(collection);
+    // if (collection.password.length < 8) {
+    //   this.setState({dialog1: true});
+    // }
+    // if (this.state.password !== this.state.retPass) {
+    //   this.setState({dialog2: true});
+    // }
+    // if (
+    //   /^[a-z]/.test(collection.Name) ||
+    //   /^[A-Z]/.test(collection.Name) ||
+    //   /^[a-z]/.test(collection.father) ||
+    //   /^[A-Z]/.test(collection.father)
+    // ) {
+    //   this.setState({dialog4: true});
+    // }
+    // if (collection.phone < 11) {
+    //   this.setState({dialog5: true});
+    // }
+    // if (!/[@ ]/g.test(collection.mail) || !/[.com]/g.test(collection.mail)) {
+    //   this.setState({dialog6: true});
+    // }
+
+    this.setState({dialog3: true});
     fetch('https://jimbooexchange.com/php_api/insert_user.php', {
       method: 'POST',
       headers: {
@@ -67,28 +102,33 @@ class SignInScreen extends Component {
       },
       body: JSON.stringify(collection),
     })
-      .then(res => res.json())
-      .catch(error => console.error('error', error))
-      .then(response => console.log('success', response));
+      .then(response => response.ok)
+      .then(response => {
+        console.log('upload succes', response);
+        alert('Upload success!', response);
+      })
+      .catch(error => {
+        console.log('upload error', error);
+        alert('Upload failed!');
+      });
   };
   render() {
     return (
       <Container style={sajamstyles.container}>
-        <View
-          style={{flex: 0.4, justifyContent: 'center', alignItems: 'center'}}>
-          <Text size="large" color="gray">
-            ثبت نام جدید
-          </Text>
-        </View>
         <Content contentContainerStyle={sajamstyles.mainView}>
+          <View
+            style={{flex: 0.4, justifyContent: 'center', alignItems: 'center'}}>
+            <Text size="large" color="gray">
+              ثبت نام جدید
+            </Text>
+          </View>
+
           <View style={sajamstyles.ViewView}>
             <Item style={sajamstyles.itemStyle}>
               <Input
                 placeholder="نام"
                 placeholderTextColor="#adb4bc"
                 style={sajamstyles.inputStyle}
-                maxLength={10}
-                keyboardType="phone-pad"
                 containerStyle={sajamstyles.item}
                 autoFocus
                 blurOnSubmit
@@ -106,8 +146,6 @@ class SignInScreen extends Component {
                 placeholder="نام خانوادگی"
                 placeholderTextColor="#adb4bc"
                 style={sajamstyles.inputStyle}
-                maxLength={10}
-                keyboardType="phone-pad"
                 containerStyle={sajamstyles.item}
                 autoFocus
                 blurOnSubmit
@@ -125,7 +163,7 @@ class SignInScreen extends Component {
                 placeholder="شماره موبایل"
                 placeholderTextColor="#adb4bc"
                 style={sajamstyles.inputStyle}
-                maxLength={10}
+                maxLength={11}
                 keyboardType="phone-pad"
                 containerStyle={sajamstyles.item}
                 autoFocus
@@ -144,8 +182,6 @@ class SignInScreen extends Component {
                 placeholder="ایمیل"
                 placeholderTextColor="#adb4bc"
                 style={sajamstyles.inputStyle}
-                maxLength={10}
-                keyboardType="phone-pad"
                 containerStyle={sajamstyles.item}
                 autoFocus
                 blurOnSubmit
@@ -178,15 +214,25 @@ class SignInScreen extends Component {
               />
             </Item>
             <Item style={sajamstyles.itemStyle}>
+              <TouchableOpacity
+                onPress={() => {
+                  this.setState({visible: false});
+                }}>
+                <Image
+                  source={images.login.eye}
+                  style={{height: hp(5), width: wp(5), marginLeft: wp(5)}}
+                  resizeMode="contain"
+                  // tintColor={styles.color.ColorGreen}
+                />
+              </TouchableOpacity>
               <Input
                 placeholder="رمز عبور"
                 placeholderTextColor="#adb4bc"
                 style={sajamstyles.inputStyle}
                 maxLength={10}
-                keyboardType="phone-pad"
                 containerStyle={sajamstyles.item}
-                autoFocus
-                blurOnSubmit
+                multiline={false}
+                secureTextEntry={this.state.visible}
                 onChangeText={text => this.updateValue(text, 'Password')}
               />
               <Image
@@ -202,10 +248,9 @@ class SignInScreen extends Component {
                 placeholderTextColor="#adb4bc"
                 style={sajamstyles.inputStyle}
                 maxLength={10}
-                keyboardType="phone-pad"
                 containerStyle={sajamstyles.item}
-                autoFocus
-                blurOnSubmit
+                multiline={false}
+                secureTextEntry={true}
                 onChangeText={text => this.updateValue(text, 'retPass')}
               />
               <Image
@@ -239,7 +284,7 @@ class SignInScreen extends Component {
             flexWrap: 'nowrap',
             alignItems: 'center',
             justifyContent: 'center',
-            marginBottom: normalize(20),
+            marginBottom: normalize(20, 'height'),
           }}>
           <Text>ثبت نام کرده اید؟</Text>
           <TouchableOpacity>
@@ -248,14 +293,61 @@ class SignInScreen extends Component {
             </Text>
           </TouchableOpacity>
         </View>
+        <View>
+          <CustomModal
+            isVisible={this.state.dialog1}
+            title="خطا در ورود اطلاعات"
+            describe="رمز عبور نباید کمتر از 8 حرف باشد"
+            onConfirm={() => {
+              this.setState({dialog1: false});
+            }}
+          />
+          <CustomModal
+            isVisible={this.state.dialog2}
+            title="خطا در ثبت اطلاعات"
+            describe="رمز ورود و تکرار آن یکسان نیستند"
+            onConfirm={() => {
+              this.setState({dialog2: false});
+            }}
+          />
+          <CustomModal
+            isVisible={this.state.dialog4}
+            title="خطا در ورود اطلاعات"
+            describe="نام و نام خانوادگی خود را به فارسی تایپ کنید"
+            onConfirm={() => {
+              this.setState({dialog4: false});
+            }}
+          />
+          <CustomModal
+            isVisible={this.state.dialog5}
+            title="خطا در ورود اطلاعات"
+            describe="شماره تماس خود را به درستی وارد کنید"
+            onConfirm={() => {
+              this.setState({dialog5: false});
+            }}
+          />
+          <CustomModal
+            isVisible={this.state.dialog6}
+            title="خطا در ورود اطلاعات"
+            describe="ایمیل خود را درست وارد کنید"
+            onConfirm={() => {
+              this.setState({dialog6: false});
+            }}
+          />
+          <CustomModal
+            isVisible={this.state.dialog3}
+            title="ثبت نام اولیه شما با موفقیت انجام شد"
+            describe="برای انجام معاملات، پس از ورود، ابتدا از بخش احراز حویت، حویت خود را تایید کنید."
+            onConfirm={() => {
+              this.setState({dialog3: false});
+            }}
+          />
+        </View>
       </Container>
     );
   }
 }
-export default connect(
-  null,
-  null,
-)(SignInScreen);
+export default connect(null, null)(SignInScreen);
 const sajamstyles = StyleSheet.create({
   container: {
     flex: 1,
@@ -263,7 +355,7 @@ const sajamstyles = StyleSheet.create({
     justifyContent: 'center',
   },
   img: {height: hp(3), width: wp(3)},
-  img2: {height: hp(3.1), width: wp(3.1)},
+  img2: {height: hp(3.4), width: wp(3.4)},
   mainView: {flex: 1, justifyContent: 'center'},
 
   formView: {marginHorizontal: '9%'},
@@ -285,7 +377,7 @@ const sajamstyles = StyleSheet.create({
   },
   text: {padding: 10},
   view2: {
-    flex: 0.15,
+    flex: 0.12,
     alignItems: 'center',
   },
   btn: {
