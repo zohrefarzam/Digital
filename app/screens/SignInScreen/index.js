@@ -34,17 +34,17 @@ class SignInScreen extends Component {
     };
   }
   updateValue(text, field) {
-    if (field === 'name') {
+    if (field === 'Name') {
       this.setState({name: text});
-    } else if (field === 'father') {
+    } else if (field === 'Father_Name') {
       this.setState({father: text});
-    } else if (field === 'date') {
+    } else if (field === 'Bourning_Time') {
       this.setState({date: text});
-    } else if (field === 'phone') {
-      this.setState({phone: text});
-    } else if (field === 'mail') {
+    } else if (field === 'Mail') {
       this.setState({mail: text});
-    } else if (field === 'password') {
+    } else if (field === 'Phone') {
+      this.setState({phone: text});
+    } else if (field === 'Password') {
       this.setState({password: text});
     } else if (field === 'retPass') {
       this.setState({retPass: text});
@@ -55,8 +55,8 @@ class SignInScreen extends Component {
     collection.name = this.state.name;
     collection.father = this.state.father;
     collection.date = this.state.date;
-    collection.phone = this.state.phone;
     collection.mail = this.state.mail;
+    collection.phone = this.state.phone;
     collection.password = this.state.password;
     console.log(collection);
     fetch('https://jimbooexchange.com/php_api/insert_user.php', {
@@ -92,7 +92,7 @@ class SignInScreen extends Component {
                 containerStyle={sajamstyles.item}
                 autoFocus
                 blurOnSubmit
-                onChangeText={text => this.updateValue(text, 'name')}
+                onChangeText={text => this.updateValue(text, 'Name')}
               />
               <Image
                 source={images.login.males}
@@ -111,7 +111,7 @@ class SignInScreen extends Component {
                 containerStyle={sajamstyles.item}
                 autoFocus
                 blurOnSubmit
-                onChangeText={text => this.updateValue(text, 'father')}
+                onChangeText={text => this.updateValue(text, 'Father_Name')}
               />
               <Image
                 source={images.login.males}
@@ -130,7 +130,7 @@ class SignInScreen extends Component {
                 containerStyle={sajamstyles.item}
                 autoFocus
                 blurOnSubmit
-                onChangeText={text => this.updateValue(text, 'phone')}
+                onChangeText={text => this.updateValue(text, 'Phone')}
               />
               <Image
                 source={images.login.phone}
@@ -149,7 +149,7 @@ class SignInScreen extends Component {
                 containerStyle={sajamstyles.item}
                 autoFocus
                 blurOnSubmit
-                onChangeText={text => this.updateValue(text, 'mail')}
+                onChangeText={text => this.updateValue(text, 'Mail')}
               />
               <Image
                 source={images.login.mail}
@@ -168,7 +168,7 @@ class SignInScreen extends Component {
                 containerStyle={sajamstyles.item}
                 autoFocus
                 blurOnSubmit
-                onChangeText={text => this.updateValue(text, 'date')}
+                onChangeText={text => this.updateValue(text, 'Bourning_Time')}
               />
               <Image
                 source={images.login.dates}
@@ -187,7 +187,7 @@ class SignInScreen extends Component {
                 containerStyle={sajamstyles.item}
                 autoFocus
                 blurOnSubmit
-                onChangeText={text => this.updateValue(text, 'password')}
+                onChangeText={text => this.updateValue(text, 'Password')}
               />
               <Image
                 source={images.login.lock}
