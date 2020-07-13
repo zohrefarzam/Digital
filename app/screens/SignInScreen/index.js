@@ -64,11 +64,11 @@ class SignInScreen extends Component {
     collection.Name = this.state.Name;
     collection.Father_Name = this.state.father;
     collection.Bourning_Time = this.state.date;
-    collection.IsOk = 'no';
-    collection.IsBlock = 'no';
+    //collection.IsOk = 'no';
+    // collection.IsBlock = 'no';
     collection.Mail = this.state.mail;
     collection.Phone = this.state.phone;
-    collection.Is_Phone_Ok = 'no';
+    // collection.Is_Phone_Ok = 'no';
     collection.Password = this.state.password;
 
     console.log(collection);
@@ -94,23 +94,48 @@ class SignInScreen extends Component {
     // }
 
     this.setState({dialog3: true});
+    // fetch('https://jimbooexchange.com/php_api/insert_user.php', {
+    //   method: 'POST',
+    //   headers: {
+    //     Accept: 'application/json',
+    //     'Content-Type': 'application/json',
+    //   },
+    //   body: JSON.stringify(collection),
+    // })
+    //   .then(response => JSON.stringify(response.json()))
+
+    //   .then(response => {
+    //     console.log('upload succes', response);
+    //     alert('Upload success!', response);
+    //   })
+    //   .catch(error => {
+    //     console.log('upload error', error);
+    //     alert('Upload failed!');
+    //   });
+    // let formData = new FormData();
+    // formData.append('firstname', 'test');
+
+    // let data = {
+    //   method: 'POST',
+    //   headers: {
+    //     Accept: 'application/json',
+    //     'Content-Type': 'application/json',
+    //   },
+    //   body: formData,
+    // };
+
+    // fetch('https://jimbooexchange.com/php_api/insert_user.php', data)
+    //   .then(response => response.json())
+    //   .then(responseJson => console.log('response:', responseJson))
+    //   .catch(error => console.error(error));
     fetch('https://jimbooexchange.com/php_api/insert_user.php', {
       method: 'POST',
       headers: {
-        Accept: 'application/json',
-        'Content-Type': 'application/json',
+        'Content-Type': 'application/x-www-form-urlencoded', // <-- Specifying the Content-Type
       },
-      body: JSON.stringify(collection),
-    })
-      .then(response => response.ok)
-      .then(response => {
-        console.log('upload succes', response);
-        alert('Upload success!', response);
-      })
-      .catch(error => {
-        console.log('upload error', error);
-        alert('Upload failed!');
-      });
+      body:
+        'Name=value1&Father_Name=value2&Bourning_Time=value2&Mail=value2&Phone=value&Password=value', // <-- Post parameters
+    });
   };
   render() {
     return (
@@ -287,7 +312,20 @@ class SignInScreen extends Component {
             marginBottom: normalize(20, 'height'),
           }}>
           <Text>ثبت نام کرده اید؟</Text>
-          <TouchableOpacity>
+          <TouchableOpacity
+            onPress={() => {
+              fetch('https://jimbooexchange.com/php_api/insert_user.php', {
+                method: 'POST',
+
+                headers: {
+                  Accept: 'application/json',
+                  'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({
+                  Name: '123',
+                }),
+              });
+            }}>
             <Text color="green" style={{marginRight: 5}}>
               ورود
             </Text>
