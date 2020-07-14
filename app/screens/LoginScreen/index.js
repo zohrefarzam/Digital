@@ -27,13 +27,14 @@ export default class LoginScreen extends Component {
     };
   }
 
-  componentDidMount() {
-    AsyncStorage.getItem('user').then(value => {
-      if (JSON.stringify(value) ) {
-        this.setState({user: value});
-        alert(this.state.user);
-      }
-    });
+  componentWillMount() {
+    fetch('https://jimbooexchange.com/php_api/get_all_users.php')
+      .then(response => response.json())
+      .then(json => {
+        this.setState({user: json.data});
+        alert(JSON.stringify(json.data))
+      })
+      .catch(error => console.error(error));
   }
   render() {
     const {navigation} = this.props;
