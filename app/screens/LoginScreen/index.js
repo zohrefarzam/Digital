@@ -17,115 +17,135 @@ import images from '../../config/images';
 import {Button, CheckBox} from 'react-native-elements';
 import LinearGradient from 'react-native-linear-gradient';
 import normalize from 'react-native-normalize';
-export default function LoginScreen({navigation}) {
-  return (
-    <Container style={sajamstyles.container}>
-      <View style={{flex: 1, justifyContent: 'center', alignItems: 'center'}}>
-        <Text size="large" color="gray">
-          ورود
-        </Text>
-      </View>
-      <Content contentContainerStyle={sajamstyles.mainView}>
-        <Form style={sajamstyles.formView}>
-          <Item style={sajamstyles.itemStyle}>
-            <Input
-              placeholder="شماره موبایل"
-              placeholderTextColor="#adb4bc"
-              style={sajamstyles.inputStyle}
-              maxLength={10}
-              keyboardType="phone-pad"
-              containerStyle={sajamstyles.item}
-              autoFocus
-              blurOnSubmit
-            />
-            <Image
-              source={images.login.phone}
-              style={sajamstyles.img}
-              resizeMode="contain"
-              tintColor={styles.color.ColorGreen}
-            />
-          </Item>
+import {Component} from 'react';
+import AsyncStorage from '@react-native-community/async-storage';
+export default class LoginScreen extends Component {
+  constructor(props) {
+    super(props);
+    this.state = {
+      user: [],
+    };
+  }
 
-          <View style={{marginTop: 20}} />
-          <Item style={sajamstyles.itemStyle}>
-            <Input
-              placeholder="رمز"
-              placeholderTextColor="#adb4bc"
-              style={sajamstyles.inputStyle}
-              maxLength={11}
-              keyboardType="phone-pad"
-              containerStyle={sajamstyles.item}
-              blurOnSubmit
-            />
-            <Image
-              source={images.login.lock}
-              style={sajamstyles.img2}
-              resizeMode="contain"
-              tintColor={styles.color.ColorGreen}
-            />
-          </Item>
-        </Form>
+  componentDidMount() {
+    AsyncStorage.getItem('user').then(value => {
+      if (JSON.stringify(value) ) {
+        this.setState({user: value});
+        alert(this.state.user);
+      }
+    });
+  }
+  render() {
+    const {navigation} = this.props;
+    return (
+      <Container style={sajamstyles.container}>
+        <View style={{flex: 1, justifyContent: 'center', alignItems: 'center'}}>
+          <Text size="large" color="gray">
+            ورود
+          </Text>
+        </View>
+        <Content contentContainerStyle={sajamstyles.mainView}>
+          <Form style={sajamstyles.formView}>
+            <Item style={sajamstyles.itemStyle}>
+              <Input
+                placeholder="شماره موبایل"
+                placeholderTextColor="#adb4bc"
+                style={sajamstyles.inputStyle}
+                maxLength={10}
+                keyboardType="phone-pad"
+                containerStyle={sajamstyles.item}
+                autoFocus
+                blurOnSubmit
+              />
+              <Image
+                source={images.login.phone}
+                style={sajamstyles.img}
+                resizeMode="contain"
+                tintColor={styles.color.ColorGreen}
+              />
+            </Item>
+
+            <View style={{marginTop: 20}} />
+            <Item style={sajamstyles.itemStyle}>
+              <Input
+                placeholder="رمز"
+                placeholderTextColor="#adb4bc"
+                style={sajamstyles.inputStyle}
+                maxLength={11}
+                keyboardType="phone-pad"
+                containerStyle={sajamstyles.item}
+                blurOnSubmit
+              />
+              <Image
+                source={images.login.lock}
+                style={sajamstyles.img2}
+                resizeMode="contain"
+                tintColor={styles.color.ColorGreen}
+              />
+            </Item>
+          </Form>
+          <View
+            style={{
+              flexDirection: 'row-reverse',
+              flexWrap: 'nowrap',
+              alignItems: 'center',
+              justifyContent: 'space-between',
+              marginRight: 50,
+            }}>
+            <View
+              style={{
+                flexDirection: 'row',
+                flexWrap: 'nowrap',
+                alignItems: 'center',
+                justifyContent: 'flex-end',
+                marginRight: -10,
+              }}>
+              <Text color="gray" size="sm" style={{marginRight: -10}}>
+                مرا به خاطر بسپار
+              </Text>
+              <CheckBox />
+            </View>
+            <View>
+              <Text color="green" size="sm">
+                رمز عبور خود را فراموش کرده ام
+              </Text>
+            </View>
+          </View>
+        </Content>
+        <View style={sajamstyles.view2}>
+          <Button
+            TouchableComponent={TouchableOpacity}
+            ViewComponent={LinearGradient} // Don't forget this!
+            title="ورود"
+            containerStyle={sajamstyles.shadow}
+            buttonStyle={sajamstyles.btn}
+            titleStyle={sajamstyles.medium}
+            linearGradientProps={{
+              colors: [styles.color.ColorGreen, styles.color.ColorGreenFos],
+              start: {x: 0, y: 0.5},
+              end: {x: 1, y: 0.5},
+            }}
+            onPress={() => navigation.navigate('Home')}
+          />
+        </View>
         <View
           style={{
             flexDirection: 'row-reverse',
             flexWrap: 'nowrap',
             alignItems: 'center',
-            justifyContent: 'space-between',
-            marginRight: 50,
+            justifyContent: 'center',
+            marginBottom: normalize(20),
           }}>
-          <View
-            style={{
-              flexDirection: 'row',
-              flexWrap: 'nowrap',
-              alignItems: 'center',
-              justifyContent: 'flex-end',
-              marginRight: -10,
-            }}>
-            <Text color="gray" size="sm" style={{marginRight: -10}}>
-              مرا به خاطر بسپار
+          <Text>ثبت نام نکرده اید؟</Text>
+          <TouchableOpacity onPress={() => navigation.navigate('SignIn')}>
+            <Text color="green" style={{marginRight: 5}}>
+              ثبت نام
             </Text>
-            <CheckBox />
-          </View>
-          <View>
-            <Text color="green" size="sm">
-              رمز عبور خود را فراموش کرده ام
-            </Text>
-          </View>
+          </TouchableOpacity>
         </View>
-      </Content>
-      <View style={sajamstyles.view2}>
-        <Button
-          TouchableComponent={TouchableOpacity}
-          ViewComponent={LinearGradient} // Don't forget this!
-          title="ورود"
-          containerStyle={sajamstyles.shadow}
-          buttonStyle={sajamstyles.btn}
-          titleStyle={sajamstyles.medium}
-          linearGradientProps={{
-            colors: [styles.color.ColorGreen, styles.color.ColorGreenFos],
-            start: {x: 0, y: 0.5},
-            end: {x: 1, y: 0.5},
-          }}
-          onPress={() => navigation.navigate('Home')}
-        />
-      </View>
-      <View
-        style={{
-          flexDirection: 'row-reverse',
-          flexWrap: 'nowrap',
-          alignItems: 'center',
-          justifyContent: 'center',
-          marginBottom: normalize(20),
-        }}>
-        <Text>ثبت نام نکرده اید؟</Text>
-        <TouchableOpacity onPress={() => navigation.navigate('SignIn')}>
-          <Text color="green" style={{marginRight: 5}}>
-            ثبت نام
-          </Text>
-        </TouchableOpacity>
-      </View>
-    </Container>
-  );
+      </Container>
+    );
+  }
 }
 const sajamstyles = StyleSheet.create({
   container: {
