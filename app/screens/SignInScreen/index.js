@@ -22,6 +22,7 @@ import LinearGradient from 'react-native-linear-gradient';
 import {connect} from 'react-redux';
 import Dialog from 'react-native-dialog';
 import CustomModal from '../../components/CustomModal';
+import AsyncStorage from '@react-native-community/async-storage';
 class SignInScreen extends Component {
   constructor(props) {
     super(props);
@@ -64,13 +65,9 @@ class SignInScreen extends Component {
     collection.Name = this.state.Name;
     collection.Father_Name = this.state.father;
     collection.Bourning_Time = this.state.date;
-    //collection.IsOk = 'no';
-    // collection.IsBlock = 'no';
     collection.Mail = this.state.mail;
     collection.Phone = this.state.phone;
-    // collection.Is_Phone_Ok = 'no';
     collection.Password = this.state.password;
-
     console.log(collection);
     // if (collection.password.length < 8) {
     //   this.setState({dialog1: true});
@@ -94,48 +91,31 @@ class SignInScreen extends Component {
     // }
 
     this.setState({dialog3: true});
-    // fetch('https://jimbooexchange.com/php_api/insert_user.php', {
-    //   method: 'POST',
-    //   headers: {
-    //     Accept: 'application/json',
-    //     'Content-Type': 'application/json',
-    //   },
-    //   body: JSON.stringify(collection),
-    // })
-    //   .then(response => JSON.stringify(response.json()))
-
-    //   .then(response => {
-    //     console.log('upload succes', response);
-    //     alert('Upload success!', response);
-    //   })
-    //   .catch(error => {
-    //     console.log('upload error', error);
-    //     alert('Upload failed!');
-    //   });
-    // let formData = new FormData();
-    // formData.append('firstname', 'test');
-
-    // let data = {
-    //   method: 'POST',
-    //   headers: {
-    //     Accept: 'application/json',
-    //     'Content-Type': 'application/json',
-    //   },
-    //   body: formData,
-    // };
-
-    // fetch('https://jimbooexchange.com/php_api/insert_user.php', data)
-    //   .then(response => response.json())
-    //   .then(responseJson => console.log('response:', responseJson))
-    //   .catch(error => console.error(error));
     fetch('https://jimbooexchange.com/php_api/insert_user.php', {
       method: 'POST',
       headers: {
         'Content-Type': 'application/x-www-form-urlencoded', // <-- Specifying the Content-Type
       },
-      body:
-        'Name=value1&Father_Name=value2&Bourning_Time=value2&Mail=value2&Phone=value&Password=value', // <-- Post parameters
+      body: `Name=${collection.Name}1&Father_Name=${
+        collection.Father_Name
+      }2&Bourning_Time=${collection.Bourning_Time}&Mail=${
+        collection.Mail
+      }&Phone=${collection.Phone}&Password=${collection.Password}`, // <-- Post parameters
     });
+    const items = [
+      ['user', 'password', 'father', 'date', 'mail', 'phone'],
+      [
+        collection.Name,
+        collection.Password,
+        collection.Father_Name,
+        collection.Bourning_Time,
+        collection.Mail,
+        collection.Phone,
+      ],
+    ];
+    AsyncStorage.multiSet('userInfo', JSON.stringify(items));
+    alert(JSON.stringify(collection));
+    this.props.navigation.navigate('Login');
   };
   render() {
     return (
@@ -385,7 +365,10 @@ class SignInScreen extends Component {
     );
   }
 }
-export default connect(null, null)(SignInScreen);
+export default connect(
+  null,
+  null,
+)(SignInScreen);
 const sajamstyles = StyleSheet.create({
   container: {
     flex: 1,
