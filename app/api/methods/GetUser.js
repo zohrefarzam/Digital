@@ -14,7 +14,7 @@ export const fetchUserBegin = () => ({
   type: FETCH_USER_BEGIN,
 });
 
-export function FetchUSER() {
+export function GetUser() {
   return dispatch => {
     dispatch(fetchUserBegin());
     return fetch('https://jimbooexchange.com/php_api/get_all_users.php')

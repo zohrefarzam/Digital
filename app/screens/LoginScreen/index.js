@@ -18,26 +18,47 @@ import {Button, CheckBox} from 'react-native-elements';
 import LinearGradient from 'react-native-linear-gradient';
 import normalize from 'react-native-normalize';
 import {Component} from 'react';
+import {connect} from 'react-redux';
+import {GetUser} from '../../api/methods/GetUser';
 import AsyncStorage from '@react-native-community/async-storage';
-export default class LoginScreen extends Component {
+import CustomModal from '../../components/CustomModal';
+class LoginScreen extends Component {
   constructor(props) {
     super(props);
     this.state = {
-      user: [],
+      phone: '',
+      password: '',
+      dialog1: false,
+      dialog2: false,
     };
   }
 
   componentWillMount() {
-    fetch('https://jimbooexchange.com/php_api/get_all_users.php')
-      .then(response => response.json())
-      .then(json => {
-        this.setState({user: json.data});
-        alert(JSON.stringify(json.data))
-      })
-      .catch(error => console.error(error));
+    this.props.dispatch(GetUser());
   }
+  CheckUser = (phone, password) => {
+    const {user, navigation} = this.props;
+    // const result = user.find(({Name}) => Name === phone);
+    // const res = JSON.stringify(result.Name);
+    if (user.find(({Name}) => Name === phone)) {
+    } else {
+      this.setState({dialog1: true});
+    }
+    if (user.find(({Password}) => Password === password)) {
+    } else {
+      this.setState({dialog2: true});
+    }
+    // if (
+    //   user.find(({Name}) => Name === phone) &&
+    //   user.find(({Password}) => Password === password)
+    // ) {
+    //   this.setState({dialog3: true});
+    // } else alert('noooo');
+    // navigation.navigate('Home');
+  };
   render() {
-    const {navigation} = this.props;
+    const {user, navigation} = this.props;
+    //const result = user.find(({Phone}) => Phone === 'امیرمحمد کاتب صابر');
     return (
       <Container style={sajamstyles.container}>
         <View style={{flex: 1, justifyContent: 'center', alignItems: 'center'}}>
@@ -53,10 +74,11 @@ export default class LoginScreen extends Component {
                 placeholderTextColor="#adb4bc"
                 style={sajamstyles.inputStyle}
                 maxLength={10}
-                keyboardType="phone-pad"
+                //keyboardType="phone-pad"
                 containerStyle={sajamstyles.item}
                 autoFocus
                 blurOnSubmit
+                onChangeText={t => this.setState({phone: t})}
               />
               <Image
                 source={images.login.phone}
@@ -76,6 +98,7 @@ export default class LoginScreen extends Component {
                 keyboardType="phone-pad"
                 containerStyle={sajamstyles.item}
                 blurOnSubmit
+                onChangeText={t => this.setState({password: t})}
               />
               <Image
                 source={images.login.lock}
@@ -126,7 +149,10 @@ export default class LoginScreen extends Component {
               start: {x: 0, y: 0.5},
               end: {x: 1, y: 0.5},
             }}
-            onPress={() => navigation.navigate('Home')}
+            // onPress={() => navigation.navigate('Home')}
+            onPress={() =>
+              this.CheckUser(this.state.phone, this.state.password)
+            }
           />
         </View>
         <View
@@ -144,10 +170,41 @@ export default class LoginScreen extends Component {
             </Text>
           </TouchableOpacity>
         </View>
+        <CustomModal
+          isVisible={this.state.dialog1}
+          title="خطا در ورود اطلاعات"
+          describe="شماره موبایل خود را به درستی وارد کنید"
+          onConfirm={() => {
+            this.setState({dialog1: false});
+          }}
+        />
+        <CustomModal
+          isVisible={this.state.dialog2}
+          title="خطا در ورود اطلاعات"
+          describe="پسورد خود را به درستی وارد کنید"
+          onConfirm={() => {
+            this.setState({dialog2: false});
+          }}
+        />
+        <CustomModal
+          isVisible={this.state.dialog3}
+          title="خطا در ورود اطلاعات"
+          describe="پسورد خود را به درستی وارد کنید"
+          onConfirm={() => {
+            this.setState({dialog3: false});
+          }}
+        />
       </Container>
     );
   }
 }
+const mapStateToProps = state => ({
+  user: state.user.items,
+  loading: state.prices.loading,
+  error: state.prices.error,
+});
+
+export default connect(mapStateToProps)(LoginScreen);
 const sajamstyles = StyleSheet.create({
   container: {
     flex: 1,
