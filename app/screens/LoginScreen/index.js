@@ -48,12 +48,21 @@ class LoginScreen extends Component {
     } else {
       this.setState({dialog2: true});
     }
-    // if (
-    //   user.find(({Name}) => Name === phone) &&
-    //   user.find(({Password}) => Password === password)
-    // ) {
-    //   this.setState({dialog3: true});
-    // } else alert('noooo');
+    if (
+      user.find(({Name}) => Name === phone) &&
+      user.find(({Password}) => Password === password)
+    ) {
+      this.setState({dialog3: true});
+      const result = user.find(({Name}) => Name === phone);
+      AsyncStorage.setItem('name', result.Name);
+      AsyncStorage.setItem('father', result.Father_Name);
+      AsyncStorage.setItem('date', result.Bourning_Time);
+      AsyncStorage.setItem('mail', result.Mail);
+      AsyncStorage.setItem('phone', result.Phone);
+      AsyncStorage.setItem('password', result.Password);
+      AsyncStorage.setItem('id', result.Id);
+      navigation.navigate('Home');
+    }
     // navigation.navigate('Home');
   };
   render() {
@@ -188,8 +197,7 @@ class LoginScreen extends Component {
         />
         <CustomModal
           isVisible={this.state.dialog3}
-          title="خطا در ورود اطلاعات"
-          describe="پسورد خود را به درستی وارد کنید"
+          title="خوش آمدید"
           onConfirm={() => {
             this.setState({dialog3: false});
           }}

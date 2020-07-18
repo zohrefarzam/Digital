@@ -1,8 +1,10 @@
-import React from 'react';
-import { View, StyleSheet } from 'react-native';
+import React, {useState} from 'react';
+import {View, StyleSheet} from 'react-native';
+import {Picker} from 'native-base';
 import Dialog from 'react-native-dialog';
-import { Text } from 'app/utils/Kit';
-import { persianNumber } from '../lib/persian';
+import {Text} from 'app/utils/Kit';
+import {persianNumber} from '../lib/persian';
+import Selector from '../components/Selector';
 import styles from '../config/styles';
 export default function CustomModal({
   title,
@@ -13,8 +15,15 @@ export default function CustomModal({
   onConfirm,
   onGallery,
   onCamera,
+  input,
+  picker,
+  onChangeText,
   isVisible = false,
 }) {
+  const [selected, setSelected] = useState('');
+  // const onValueChange = value => {
+  //   setSelected(value);
+  // };
   return (
     <Dialog.Container visible={isVisible} contentStyle={style.radius}>
       {title && (
@@ -29,6 +38,8 @@ export default function CustomModal({
           <Text color="gray">{persianNumber(describe)}</Text>
         </Dialog.Description>
       )}
+      {input && <Dialog.Input onChangeText={onChangeText} />}
+      {picker && <Selector />}
       <View style={style.btnView}>
         {!!onCancle && (
           <Dialog.Button
@@ -69,7 +80,7 @@ const style = StyleSheet.create({
     backgroundColor: styles.color.colorBackground_Gray,
     paddingVertical: 20,
   },
-  btnView: { flexDirection: 'row', flexWrap: 'nowrap' },
-  redTxt: { color: styles.color.ColorRed },
-  blueTxt: { color: styles.color.ColorDarkBlue },
+  btnView: {flexDirection: 'row', flexWrap: 'nowrap'},
+  redTxt: {color: styles.color.ColorRed},
+  blueTxt: {color: styles.color.ColorDarkBlue},
 });

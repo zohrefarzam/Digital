@@ -8,14 +8,28 @@ import {persianNumber} from '../../../lib/persian';
 import styles from '../../../config/styles';
 import {Text} from '../../../utils/Kit';
 import normalize from 'react-native-normalize';
-
+import AsyncStorage from '@react-native-community/async-storage';
 export default class Tab5 extends Component {
   constructor(props) {
     super(props);
 
-    this.state = {};
+    this.state = {
+      name: '',
+      father: '',
+      date: '',
+      phone: '',
+    };
   }
-
+  async componentWillMount() {
+    const name = await AsyncStorage.getItem('name');
+    const father = await AsyncStorage.getItem('father');
+    const date = await AsyncStorage.getItem('date');
+    const phone = await AsyncStorage.getItem('phone');
+    this.setState({name: name});
+    this.setState({father: father});
+    this.setState({date: date});
+    this.setState({phone: phone});
+  }
   render() {
     return (
       <View>
@@ -35,7 +49,7 @@ export default class Tab5 extends Component {
               <Text style={style.title}>نام و نام خانوادگی</Text>
             </View>
             <View style={style.js}>
-              <Text style={style.number}>زهره</Text>
+              <Text style={style.number}>{this.state.name}</Text>
             </View>
           </View>
         </View>
@@ -45,7 +59,7 @@ export default class Tab5 extends Component {
               <Text style={style.title}>نام پدر</Text>
             </View>
             <View style={style.js}>
-              <Text style={style.number}>احمد</Text>
+              <Text style={style.number}>{this.state.father}</Text>
             </View>
           </View>
         </View>
@@ -55,7 +69,9 @@ export default class Tab5 extends Component {
               <Text style={style.title}>شماره موبایل</Text>
             </View>
             <View style={style.js}>
-              <Text style={style.number}>{persianNumber('09127793259')}</Text>
+              <Text style={style.number}>
+                {persianNumber(this.state.phone)}
+              </Text>
             </View>
           </View>
         </View>
@@ -65,7 +81,7 @@ export default class Tab5 extends Component {
               <Text style={style.title}>تاریخ تولد</Text>
             </View>
             <View style={style.js}>
-              <Text style={style.number}>{persianNumber('1374/4/26')}</Text>
+              <Text style={style.number}>{persianNumber(this.state.date)}</Text>
             </View>
           </View>
         </View>

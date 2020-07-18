@@ -102,19 +102,6 @@ class SignInScreen extends Component {
         collection.Mail
       }&Phone=${collection.Phone}&Password=${collection.Password}`, // <-- Post parameters
     });
-    const items = [
-      ['user', 'password', 'father', 'date', 'mail', 'phone'],
-      [
-        collection.Name,
-        collection.Password,
-        collection.Father_Name,
-        collection.Bourning_Time,
-        collection.Mail,
-        collection.Phone,
-      ],
-    ];
-    AsyncStorage.multiSet('userInfo', JSON.stringify(items));
-    alert(JSON.stringify(collection));
     this.props.navigation.navigate('Login');
   };
   render() {

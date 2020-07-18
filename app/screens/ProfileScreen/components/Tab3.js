@@ -10,10 +10,13 @@ import styles from '../../../config/styles';
 import {Text} from '../../../utils/Kit';
 import ShabaCard from '../../../components/ShabaCard';
 import LinearGradient from 'react-native-linear-gradient';
+import CustomModal from '../../../components/CustomModal';
 export default class Tab3 extends Component {
   constructor(props) {
     super(props);
-    this.state = {};
+    this.state = {
+      dialog1: false,
+    };
   }
 
   render() {
@@ -37,12 +40,14 @@ export default class Tab3 extends Component {
                 start: {x: 0, y: 0.5},
                 end: {x: 1, y: 0.5},
               }}
+              onPress={() => this.setState({dialog1: true})}
             />
           </View>
           <View style={{marginTop: hp(7)}}>
             <ShabaCard />
           </View>
         </View>
+        <CustomModal isVisible={this.state.dialog1} picker />
       </View>
     );
   }
