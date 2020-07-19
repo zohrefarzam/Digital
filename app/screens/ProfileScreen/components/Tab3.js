@@ -109,6 +109,61 @@ export default class Tab3 extends Component {
     this.setState({id: id});
   }
   updateBank = Bank => this.setState({ Bank: Bank.value });
+  renderBankId = () => {
+    const {Bank} = this.state;
+    switch (Bank) {
+      case 'بانک ملی ایران':
+        return 603799;
+      case 'بانک سپه':
+        return 589210;
+      case  'بانک توسعه صادرات':
+        return 627648;
+      case 627961:
+        return 'بانک صنعت و معدن';
+      case 'بانک کشاورزی':
+        return 603770;
+      case 'بانک مسکن':
+        return 628023;
+      case 'پست بانک ایران':
+        return 627760;
+      case 'بانک توسعه تعاون':
+        return 502908;
+      case 'بانک اقتصاد نوین':
+        return 627412;
+      case 'بانک پارسیان':
+        return 622106;
+      case 'بانک پاسارگاد':
+        return 502229;
+      case 'بانک کارآفرین':
+        return 627488;
+      case 'بانک سامان':
+        return 621986;
+      case 'بانک سینا':
+        return 639346;
+      case 'بانک سرمایه':
+        return 639607;
+      case 'بانک تات':
+        return 636214;
+      case 'بانک شهر':
+        return 502806;
+      case 'بانک دی':
+        return 502938;
+      case 'بانک صادرات':
+        return 603769;
+      case 'بانک ملت':
+        return 610433;
+      case 'بانک تجارت':
+        return 627353;
+      case 'بانک رفاه':
+        return 589463;
+      case 'بانک انصار':
+        return 627381;
+      case 'بانک مهر اقتصاد':
+        return 639370;
+      default:
+        break;
+    }
+  };
   Add = () => {
     const { Bank, ShabaNum ,name,id} = this.state
     alert(id+"")
@@ -124,7 +179,7 @@ export default class Tab3 extends Component {
         },
         body: `Bank_Name=${Bank}&Shaba_Num =${
           ShabaNum
-        }&User_Name=${name}&User_Id=${id}&Bank_Id=${id}`, // <-- Post parameters
+        }&User_Name=${name}&User_Id=${id}&Bank_Id=${this.renderBankId()}`, // <-- Post parameters
       });
     }
     this.setState({ dialog1: false });
