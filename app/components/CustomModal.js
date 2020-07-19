@@ -1,11 +1,12 @@
-import React, {useState} from 'react';
-import {View, StyleSheet} from 'react-native';
-import {Picker} from 'native-base';
+import React, { useState } from 'react';
+import { View, StyleSheet } from 'react-native';
+import { Picker } from 'native-base';
 import Dialog from 'react-native-dialog';
-import {Text} from 'app/utils/Kit';
-import {persianNumber} from '../lib/persian';
+import { Text } from 'app/utils/Kit';
+import { persianNumber } from '../lib/persian';
 import Selector from '../components/Selector';
 import styles from '../config/styles';
+import { onChange } from 'react-native-reanimated';
 export default function CustomModal({
   title,
   describe,
@@ -18,7 +19,13 @@ export default function CustomModal({
   input,
   picker,
   onChangeText,
+  onChangeSelect,
   isVisible = false,
+  data,
+  value,
+  input2,
+  place1, place2,
+  onChangeText2
 }) {
   const [selected, setSelected] = useState('');
   // const onValueChange = value => {
@@ -38,8 +45,16 @@ export default function CustomModal({
           <Text color="gray">{persianNumber(describe)}</Text>
         </Dialog.Description>
       )}
-      {input && <Dialog.Input onChangeText={onChangeText} />}
-      {picker && <Selector />}
+      {input && <Dialog.Input style={{ borderColor: styles.color.ColorGreen, borderWidth: 1, borderRadius: 10 }} onChangeText={onChangeText} placeholder={place1} />}
+      {input2 && <Dialog.Input style={{ borderColor: styles.color.ColorGreen, borderWidth: 1, borderRadius: 10 }} onChangeText={onChangeText2} placeholder={place2} />}
+      {picker && <Selector
+        containerStyle={style.flex2}
+        keyExtractor={item => item.value}
+        label="value"
+        data={data}
+        placeHolder="انتخاب کنید"
+        onChange={onChangeSelect}
+        value={value} />}
       <View style={style.btnView}>
         {!!onCancle && (
           <Dialog.Button
@@ -80,7 +95,7 @@ const style = StyleSheet.create({
     backgroundColor: styles.color.colorBackground_Gray,
     paddingVertical: 20,
   },
-  btnView: {flexDirection: 'row', flexWrap: 'nowrap'},
-  redTxt: {color: styles.color.ColorRed},
-  blueTxt: {color: styles.color.ColorDarkBlue},
+  btnView: { flexDirection: 'row', flexWrap: 'nowrap' },
+  redTxt: { color: styles.color.ColorRed },
+  blueTxt: { color: styles.color.ColorDarkBlue },
 });
