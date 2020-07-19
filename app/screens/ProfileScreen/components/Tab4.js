@@ -1,5 +1,12 @@
 import React, {Component} from 'react';
-import {View, StyleSheet, TouchableOpacity} from 'react-native';
+import {
+  View,
+  StyleSheet,
+  TouchableOpacity,
+  ActivityIndicator,
+  FlatList,
+  Image,
+} from 'react-native';
 import {
   widthPercentageToDP as wp,
   heightPercentageToDP as hp,
@@ -13,6 +20,8 @@ import normalize from 'react-native-normalize';
 import CustomModal from '../../../components/CustomModal';
 import {persianNumber} from '../../../lib/persian';
 import AsyncStorage from '@react-native-community/async-storage';
+import images from '../../../config/images';
+import {Content} from 'native-base';
 export default class Tab4 extends Component {
   constructor(props) {
     super(props);
@@ -22,6 +31,9 @@ export default class Tab4 extends Component {
       bankName: '',
       name: '',
       id: '',
+      loading: true,
+      data: {},
+      check: '',
     };
   }
   async componentWillMount() {
@@ -29,7 +41,88 @@ export default class Tab4 extends Component {
     const id = await AsyncStorage.getItem('id');
     this.setState({name: name});
     this.setState({id: id});
+    fetch(
+      'https://jimbooexchange.com/php_api/get_creadit_card_by_user_id_and_user_name.php',
+      {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/x-www-form-urlencoded', // <-- Specifying the Content-Type
+        },
+        body: `Id=${id}&User_Name=${name}`, // <-- Post parameters
+      },
+    )
+      .then(res => res.json())
+      .then(json => {
+        this.setState({data: json.data});
+        this.setState({loading: false});
+      });
   }
+  renderCheck = check => {
+    switch (check) {
+      case 'wait':
+        return 'درحال بررسی';
+      case 'ok':
+        return 'تایید شده';
+
+      default:
+        break;
+    }
+  };
+  renderBankImage = bankNum => {
+    const Six = Math.abs(bankNum.slice(0, 6));
+    switch (Six) {
+      case 603799:
+        return images.bank.meli;
+      case 589210:
+        return images.bank.sepah;
+      case 627648:
+        return images.bank.tosee;
+      case 627961:
+        return images.bank.sanaat;
+      case 603770:
+        return images.bank.keshvarzi;
+      case 628023:
+        return images.bank.maskan;
+      case 627760:
+        return images.bank.post;
+      case 502908:
+        return images.bank.tosee;
+      case 627412:
+        return images.bank.eghtesad;
+      case 622106:
+        return images.bank.parsian;
+      case 502229:
+        return images.bank.pasar;
+      case 627488:
+        return images.bank.karafarin;
+      case 621986:
+        return images.bank.saman;
+      case 639346:
+        return images.bank.sina;
+      case 639607:
+        return images.bank.sarmaye;
+      case 636214:
+        return images.bank.tat;
+      case 502806:
+        return images.bank.shahr;
+      case 502938:
+        return images.bank.day;
+      case 603769:
+        return images.bank.saderat;
+      case 610433:
+        return images.bank.mellat;
+      case 627353:
+        return images.bank.tejarat;
+      case 589463:
+        return images.bank.refah;
+      case 627381:
+        return images.bank.ansar;
+      case 639370:
+        return images.bank.mehr;
+      default:
+        break;
+    }
+  };
   renderBankName = () => {
     const {bankNum} = this.state;
     const Six = Math.abs(bankNum.slice(0, 6));
@@ -98,6 +191,15 @@ export default class Tab4 extends Component {
     });
     this.setState({dialog1: false});
   };
+  onDelete = Id => {
+    fetch('https://jimbooexchange.com/php_api/delete_cart.php', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/x-www-form-urlencoded', // <-- Specifying the Content-Type
+      },
+      body: `Id=${Id}`, // <-- Post parameters
+    });
+  };
   render() {
     return (
       <View style={{flex: 1}}>
@@ -122,9 +224,52 @@ export default class Tab4 extends Component {
               onPress={() => this.setState({dialog1: true})}
             />
           </View>
-          <View style={{marginTop: hp(7)}}>
-            <BankCard />
-          </View>
+          <Content style={{marginTop: hp(7)}}>
+            {this.state.loading ? (
+              <ActivityIndicator />
+            ) : (
+              <FlatList
+                data={this.state.data}
+                keyExtractor={({id}, index) => id}
+                renderItem={({item, index}) => (
+                  <View
+                    style={[
+                      style.view1,
+                      {
+                        borderColor:
+                          index % 2 === 0
+                            ? styles.color.colorText_GrAY
+                            : styles.color.COLOR_DARK_SEPERATOR,
+                      },
+                    ]}>
+                    <Image
+                      source={this.renderBankImage(item.Card_Num)}
+                      style={style.img}
+                      resizeMode="contain"
+                    />
+                    <Text
+                      style={[
+                        style.txt,
+                        {fontSize: normalize(18), paddingRight: 10},
+                      ]}>
+                      <Text size="norm">{persianNumber(item.Card_Num)}</Text>
+                    </Text>
+
+                    <Text size="norm" style={[style.txt, {flex: 0.5}]}>
+                      {this.renderCheck(item.IsOk)}
+                    </Text>
+                    <TouchableOpacity onPress={()=>this.onDelete(item.Id)}>
+                      <Image
+                        source={images.global.delete}
+                        style={style.img}
+                        resizeMode="contain"
+                      />
+                    </TouchableOpacity>
+                  </View>
+                )}
+              />
+            )}
+          </Content>
           <CustomModal
             isVisible={this.state.dialog1}
             title="وارد کردن شماره کارت"
@@ -132,7 +277,6 @@ export default class Tab4 extends Component {
             onChangeText={t => this.setState({bankNum: t})}
             onConfirm={() => this.Add()}
           />
-          <Text>{this.renderBankName()}</Text>
         </View>
       </View>
     );
@@ -152,4 +296,21 @@ const style = StyleSheet.create({
     shadowRadius: 2.22,
   },
   btnView: {marginHorizontal: wp(30), flex: 1},
+  view1: {
+    backgroundColor: 'white',
+    borderWidth: 2,
+    // borderColor: 'gray',
+    borderRadius: 25,
+    height: hp(6.5),
+    marginBottom: hp(2),
+    flexDirection: 'row-reverse',
+    flexWrap: 'nowrap',
+    alignItems: 'center',
+    paddingHorizontal: wp(2),
+  },
+  txt: {
+    //color: styles.color.colorText_GrAY,
+    flex: 1.2,
+  },
+  img: {height: hp(3), width: wp(3), flex: 0.3},
 });
