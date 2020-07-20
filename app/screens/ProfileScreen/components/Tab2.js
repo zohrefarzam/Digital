@@ -12,6 +12,7 @@ import styles from '../../../config/styles';
 import {Text} from '../../../utils/Kit';
 import WalletCard from '../../../components/WalletCard';
 import CustomModal from '../../../components/CustomModal';
+import images from '../../../config/images';
 let data = [
   {
     value: 'بیت کوین',
@@ -62,6 +63,8 @@ export default class Tab2 extends Component {
       digital: '',
       name: '',
       id: '',
+      data: {},
+      check: '',
     };
   }
   async componentWillMount() {
@@ -69,7 +72,64 @@ export default class Tab2 extends Component {
     const id = await AsyncStorage.getItem('id');
     this.setState({name: name});
     this.setState({id: id});
+    fetch(
+      'https://jimbooexchange.com/php_api/get_wallet_by_user_id_and_user_name.php',
+      {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/x-www-form-urlencoded', // <-- Specifying the Content-Type
+        },
+        body: `Id=${id}&User_Name=${name}`, // <-- Post parameters
+      },
+    )
+      .then(res => res.json())
+      .then(json => {
+        this.setState({data: json.data});
+        this.setState({loading: false});
+      });
   }
+  renderCheck = check => {
+    switch (check) {
+      case 'wait':
+        return 'درحال بررسی';
+      case 'ok':
+        return 'تایید شده';
+
+      default:
+        break;
+    }
+  };
+  renderWalletImage = () => {
+    const {digital} = this.state;
+    switch (digital) {
+      case 'بیت کوین':
+        return images.example.bit;
+      case 'بیت کوین کش':
+        return images.example.bitcoinC;
+      case 'زد کش':
+        return 'zec';
+      case 'ریبل':
+        return images.example.xrp;
+      case 'استالر':
+        return 'xlm';
+      case 'ترون':
+        return images.example.tron;
+      case 'مونرو':
+        return 'xmr';
+      case 'لایت کوین':
+        return images.example.litecoin;
+      case 'اتریوم':
+        return images.example.ethereum;
+      case 'دوج کوین':
+        return 'doge';
+      case 'دش کوین':
+        return images.example.dash;
+      case 'تتر':
+        return images.example.tether;
+      default:
+        break;
+    }
+  };
   renderWallet = () => {
     const {digital} = this.state;
     switch (digital) {
@@ -117,6 +177,15 @@ export default class Tab2 extends Component {
     }
     this.setState({dialog1: false});
   };
+  onDelete = Id => {
+    fetch('https://jimbooexchange.com/php_api/delete_wallet.php', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/x-www-form-urlencoded', // <-- Specifying the Content-Type
+      },
+      body: `Id=${Id}`, // <-- Post parameters
+    });
+  };
   render() {
     return (
       <View style={{flex: 1}}>
@@ -140,9 +209,52 @@ export default class Tab2 extends Component {
               onPress={() => this.setState({dialog1: true})}
             />
           </View>
-          <View style={{marginTop: hp(7)}}>
-            <WalletCard />
-          </View>
+          <Content style={{marginTop: hp(7)}}>
+            {this.state.loading ? (
+              <ActivityIndicator />
+            ) : (
+              <FlatList
+                data={this.state.data}
+                keyExtractor={({id}, index) => id}
+                renderItem={({item, index}) => (
+                  <View
+                    style={[
+                      style.view1,
+                      {
+                        borderColor:
+                          index % 2 === 0
+                            ? styles.color.colorText_GrAY
+                            : styles.color.COLOR_DARK_SEPERATOR,
+                      },
+                    ]}>
+                    <Image
+                      source={this.renderBankImage(item.wallet_Name)}
+                      style={style.img}
+                      resizeMode="contain"
+                    />
+                    <Text
+                      style={[
+                        style.txt,
+                        {fontSize: normalize(18), paddingRight: 10},
+                      ]}>
+                      <Text size="norm">{persianNumber(item.Wallet_Lable)}</Text>
+                    </Text>
+
+                    <Text size="norm" style={[style.txt, {flex: 0.5}]}>
+                      {this.renderCheck(item.IsOk)}
+                    </Text>
+                    <TouchableOpacity onPress={() => this.onDelete(item.Id)}>
+                      <Image
+                        source={images.global.delete}
+                        style={style.img}
+                        resizeMode="contain"
+                      />
+                    </TouchableOpacity>
+                  </View>
+                )}
+              />
+            )}
+          </Content>
         </View>
         <CustomModal
           isVisible={this.state.dialog1}
@@ -182,4 +294,21 @@ const style = StyleSheet.create({
     shadowRadius: 2.22,
   },
   btnView: {marginHorizontal: wp(30), flex: 1},
+  view1: {
+    backgroundColor: 'white',
+    borderWidth: 2,
+    // borderColor: 'gray',
+    borderRadius: 25,
+    height: hp(6.5),
+    marginBottom: hp(2),
+    flexDirection: 'row-reverse',
+    flexWrap: 'nowrap',
+    alignItems: 'center',
+    paddingHorizontal: wp(2),
+  },
+  txt: {
+    //color: styles.color.colorText_GrAY,
+    flex: 1.2,
+  },
+  img: {height: hp(3), width: wp(3), flex: 0.3},
 });
