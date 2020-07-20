@@ -1,9 +1,10 @@
 import React, {Component} from 'react';
-import {View, StyleSheet, TouchableOpacity} from 'react-native';
+import {View, StyleSheet, TouchableOpacity,FlatList,Image} from 'react-native';
 import {
   widthPercentageToDP as wp,
   heightPercentageToDP as hp,
 } from 'react-native-responsive-screen';
+import {Content} from 'native-base'
 import {Button} from 'react-native-elements';
 import normalize from 'react-native-normalize';
 import AsyncStorage from '@react-native-community/async-storage';
