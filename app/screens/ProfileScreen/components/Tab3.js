@@ -100,6 +100,8 @@ export default class Tab3 extends Component {
       ShabaNum: '',
       name: '',
       id: '',
+      data:{},
+      check:''
     };
   }
   async componentWillMount() {
@@ -107,8 +109,88 @@ export default class Tab3 extends Component {
     const id = await AsyncStorage.getItem('id');
     this.setState({name: name});
     this.setState({id: id});
+    fetch(
+      'https://jimbooexchange.com/php_api/get_shaba_by_user_id_and_user_name.php',
+      {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/x-www-form-urlencoded', // <-- Specifying the Content-Type
+        },
+        body: `Id=${id}&User_Name=${name}`, // <-- Post parameters
+      },
+    )
+      .then(res => res.json())
+      .then(json => {
+        this.setState({data: json.data});
+        this.setState({loading: false});
+      });
   }
   updateBank = Bank => this.setState({Bank: Bank.value});
+  renderCheck = check => {
+    switch (check) {
+      case 'wait':
+        return 'درحال بررسی';
+      case 'ok':
+        return 'تایید شده';
+
+      default:
+        break;
+    }
+  };
+  renderBankImage = Bank => {
+    switch (Bank) {
+      case 'بانک ملی ایران':
+        return images.bank.meli;
+      case 'بانک سپه':
+        return images.bank.sepah;
+      case 'بانک توسعه صادرات':
+        return images.bank.tosee;
+      case 'بانک صنعت و معدن':
+        return images.bank.sanaat;
+      case 'بانک کشاورزی':
+        return images.bank.keshvarzi;
+      case 'بانک مسکن':
+        return images.bank.maskan;
+      case 'پست بانک ایران':
+        return images.bank.post;
+      case 'بانک توسعه تعاون':
+        return images.bank.tosee;
+      case 'بانک اقتصاد نوین':
+        return images.bank.eghtesad;
+      case 'بانک پارسیان':
+        return images.bank.parsian;
+      case 'بانک پاسارگاد':
+        return images.bank.pasar;
+      case 'بانک کارآفرین':
+        return images.bank.karafarin;
+      case 'بانک سامان':
+        return images.bank.saman;
+      case 'بانک سینا':
+        return images.bank.sina;
+      case 'بانک سرمایه':
+        return images.bank.sarmaye;
+      case 'بانک تات':
+        return images.bank.tat;
+      case 'بانک شهر':
+        return images.bank.shahr;
+      case 'بانک دی':
+        return images.bank.day;
+      case 'بانک صادرات':
+        return images.bank.saderat;
+      case 'بانک ملت':
+        return images.bank.mellat;
+      case 'بانک تجارت':
+        return images.bank.tejarat;
+      case 'بانک رفاه':
+        return images.bank.refah;
+      case 'بانک انصار':
+        return images.bank.ansar;
+      case 'بانک مهر اقتصاد':
+        return images.bank.mehr;
+      default:
+        break;
+    }
+  };
   renderBankId = () => {
     const {Bank} = this.state;
     switch (Bank) {
@@ -179,6 +261,15 @@ export default class Tab3 extends Component {
     }
     this.setState({dialog1: false});
   };
+  onDelete = Id => {
+    fetch('https://jimbooexchange.com/php_api/delete_shaba.php', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/x-www-form-urlencoded', // <-- Specifying the Content-Type
+      },
+      body: `Id=${Id}`, // <-- Post parameters
+    });
+  };
   render() {
     return (
       <View style={{flex: 1}}>
@@ -203,9 +294,52 @@ export default class Tab3 extends Component {
               onPress={() => this.setState({dialog1: true})}
             />
           </View>
-          <View style={{marginTop: hp(7)}}>
-            <ShabaCard />
-          </View>
+          <Content style={{marginTop: hp(7)}}>
+            {this.state.loading ? (
+              <ActivityIndicator />
+            ) : (
+              <FlatList
+                data={this.state.data}
+                keyExtractor={({id}, index) => id}
+                renderItem={({item, index}) => (
+                  <View
+                    style={[
+                      style.view1,
+                      {
+                        borderColor:
+                          index % 2 === 0
+                            ? styles.color.colorText_GrAY
+                            : styles.color.COLOR_DARK_SEPERATOR,
+                      },
+                    ]}>
+                    <Image
+                      source={this.renderBankImage(item.Bank_Name)}
+                      style={style.img}
+                      resizeMode="contain"
+                    />
+                    <Text
+                      style={[
+                        style.txt,
+                        {fontSize: normalize(18), paddingRight: 10},
+                      ]}>
+                      <Text size="norm">{persianNumber(item.Shaba_Num)}</Text>
+                    </Text>
+
+                    <Text size="norm" style={[style.txt, {flex: 0.5}]}>
+                      {this.renderCheck(item.IsOk)}
+                    </Text>
+                    <TouchableOpacity onPress={()=>this.onDelete(item.Id)}>
+                      <Image
+                        source={images.global.delete}
+                        style={style.img}
+                        resizeMode="contain"
+                      />
+                    </TouchableOpacity>
+                  </View>
+                )}
+              />
+            )}
+          </Content>
         </View>
         <CustomModal
           isVisible={this.state.dialog1}
@@ -242,4 +376,21 @@ const style = StyleSheet.create({
     shadowRadius: 2.22,
   },
   btnView: {marginHorizontal: wp(30), flex: 1},
+  view1: {
+    backgroundColor: 'white',
+    borderWidth: 2,
+    // borderColor: 'gray',
+    borderRadius: 25,
+    height: hp(6.5),
+    marginBottom: hp(2),
+    flexDirection: 'row-reverse',
+    flexWrap: 'nowrap',
+    alignItems: 'center',
+    paddingHorizontal: wp(2),
+  },
+  txt: {
+    //color: styles.color.colorText_GrAY,
+    flex: 1.2,
+  },
+  img: {height: hp(3), width: wp(3), flex: 0.3},
 });
