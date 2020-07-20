@@ -103,8 +103,6 @@ class LoginScreen extends Component {
                 placeholder="رمز"
                 placeholderTextColor="#adb4bc"
                 style={sajamstyles.inputStyle}
-                maxLength={11}
-                keyboardType="phone-pad"
                 containerStyle={sajamstyles.item}
                 blurOnSubmit
                 onChangeText={t => this.setState({password: t})}

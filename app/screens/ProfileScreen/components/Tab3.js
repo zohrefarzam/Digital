@@ -1,10 +1,17 @@
 import React, {Component} from 'react';
-import {View, StyleSheet, TouchableOpacity,FlatList,Image} from 'react-native';
+import {
+  View,
+  StyleSheet,
+  TouchableOpacity,
+  FlatList,
+  Image,
+  ActivityIndicator,
+} from 'react-native';
 import {
   widthPercentageToDP as wp,
   heightPercentageToDP as hp,
 } from 'react-native-responsive-screen';
-import {Content} from 'native-base'
+import {Content} from 'native-base';
 import {Button} from 'react-native-elements';
 import normalize from 'react-native-normalize';
 import AsyncStorage from '@react-native-community/async-storage';
@@ -13,6 +20,8 @@ import {Text} from '../../../utils/Kit';
 import ShabaCard from '../../../components/ShabaCard';
 import LinearGradient from 'react-native-linear-gradient';
 import CustomModal from '../../../components/CustomModal';
+import images from '../../../config/images';
+import {persianNumber} from '../../../lib/persian';
 let data = [
   {
     value: 'بانک ملی ایران',
@@ -101,8 +110,9 @@ export default class Tab3 extends Component {
       ShabaNum: '',
       name: '',
       id: '',
-      data:{},
-      check:''
+      data: {},
+      check: '',
+      loading: false,
     };
   }
   async componentWillMount() {
@@ -110,21 +120,7 @@ export default class Tab3 extends Component {
     const id = await AsyncStorage.getItem('id');
     this.setState({name: name});
     this.setState({id: id});
-    fetch(
-      'https://jimbooexchange.com/php_api/get_shaba_by_user_id_and_user_name.php',
-      {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/x-www-form-urlencoded', // <-- Specifying the Content-Type
-        },
-        body: `Id=${id}&User_Name=${name}`, // <-- Post parameters
-      },
-    )
-      .then(res => res.json())
-      .then(json => {
-        this.setState({data: json.data});
-        this.setState({loading: false});
-      });
+    this.loadingData();
   }
   updateBank = Bank => this.setState({Bank: Bank.value});
   renderCheck = check => {
@@ -247,6 +243,24 @@ export default class Tab3 extends Component {
         break;
     }
   };
+  loadingData = () => {
+    const {name, id} = this.state;
+    fetch(
+      'https://jimbooexchange.com/php_api/get_shaba_by_user_id_and_user_name.php',
+      {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/x-www-form-urlencoded', // <-- Specifying the Content-Type
+        },
+        body: `Id=${id}&User_Name=${name}`, // <-- Post parameters
+      },
+    )
+      .then(res => res.json())
+      .then(json => {
+        this.setState({data: json.data});
+        this.setState({loading: false});
+      });
+  };
   Add = () => {
     const {Bank, ShabaNum, name, id} = this.state;
     if (!/[IR]/g.test(ShabaNum) || /[d d]/g.test(ShabaNum)) {
@@ -261,6 +275,7 @@ export default class Tab3 extends Component {
       });
     }
     this.setState({dialog1: false});
+    this.loadingData();
   };
   onDelete = Id => {
     fetch('https://jimbooexchange.com/php_api/delete_shaba.php', {
@@ -270,6 +285,7 @@ export default class Tab3 extends Component {
       },
       body: `Id=${Id}`, // <-- Post parameters
     });
+    this.loadingData();
   };
   render() {
     return (
@@ -329,7 +345,7 @@ export default class Tab3 extends Component {
                     <Text size="norm" style={[style.txt, {flex: 0.5}]}>
                       {this.renderCheck(item.IsOk)}
                     </Text>
-                    <TouchableOpacity onPress={()=>this.onDelete(item.Id)}>
+                    <TouchableOpacity onPress={() => this.onDelete(item.Id)}>
                       <Image
                         source={images.global.delete}
                         style={style.img}

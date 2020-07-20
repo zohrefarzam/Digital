@@ -27,6 +27,7 @@ const images = {
   },
   global: {
     delete: require('../assets/images/global/delete.png'),
+    no_pic: require('../assets/images/global/no_pic.png'),
     arrow_down: require('../assets/images/global/arrow_down.png'),
     calender: require('../assets/images/global/calendar.png'),
     search: require('../assets/images/global/search.png'),

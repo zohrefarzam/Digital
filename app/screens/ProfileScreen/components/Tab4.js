@@ -36,11 +36,8 @@ export default class Tab4 extends Component {
       check: '',
     };
   }
-  async componentWillMount() {
-    const name = await AsyncStorage.getItem('name');
-    const id = await AsyncStorage.getItem('id');
-    this.setState({name: name});
-    this.setState({id: id});
+  loadingData = () => {
+    const {id, name} = this.state;
     fetch(
       'https://jimbooexchange.com/php_api/get_creadit_card_by_user_id_and_user_name.php',
       {
@@ -56,6 +53,13 @@ export default class Tab4 extends Component {
         this.setState({data: json.data});
         this.setState({loading: false});
       });
+  };
+  async componentWillMount() {
+    const name = await AsyncStorage.getItem('name');
+    const id = await AsyncStorage.getItem('id');
+    this.setState({name: name});
+    this.setState({id: id});
+    this.loadingData();
   }
   renderCheck = check => {
     switch (check) {
@@ -190,6 +194,7 @@ export default class Tab4 extends Component {
       }&User_Name=${this.state.name}&User_Id=${this.state.id}`, // <-- Post parameters
     });
     this.setState({dialog1: false});
+    this.loadingData();
   };
   onDelete = Id => {
     fetch('https://jimbooexchange.com/php_api/delete_cart.php', {
@@ -199,6 +204,7 @@ export default class Tab4 extends Component {
       },
       body: `Id=${Id}`, // <-- Post parameters
     });
+    this.loadingData();
   };
   render() {
     return (
@@ -258,7 +264,7 @@ export default class Tab4 extends Component {
                     <Text size="norm" style={[style.txt, {flex: 0.5}]}>
                       {this.renderCheck(item.IsOk)}
                     </Text>
-                    <TouchableOpacity onPress={()=>this.onDelete(item.Id)}>
+                    <TouchableOpacity onPress={() => this.onDelete(item.Id)}>
                       <Image
                         source={images.global.delete}
                         style={style.img}

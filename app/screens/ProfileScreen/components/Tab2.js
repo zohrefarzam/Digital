@@ -1,10 +1,17 @@
 import React, {Component} from 'react';
-import {View, StyleSheet, TouchableOpacity,FlatList,Image} from 'react-native';
+import {
+  View,
+  StyleSheet,
+  TouchableOpacity,
+  FlatList,
+  Image,
+  ActivityIndicator,
+} from 'react-native';
 import {
   widthPercentageToDP as wp,
   heightPercentageToDP as hp,
 } from 'react-native-responsive-screen';
-import {Content} from 'native-base'
+import {Content} from 'native-base';
 import {Button} from 'react-native-elements';
 import normalize from 'react-native-normalize';
 import AsyncStorage from '@react-native-community/async-storage';
@@ -14,6 +21,7 @@ import {Text} from '../../../utils/Kit';
 import WalletCard from '../../../components/WalletCard';
 import CustomModal from '../../../components/CustomModal';
 import images from '../../../config/images';
+import {persianNumber} from '../../../lib/persian';
 let data = [
   {
     value: 'بیت کوین',
@@ -66,6 +74,7 @@ export default class Tab2 extends Component {
       id: '',
       data: {},
       check: '',
+      symbol:''
     };
   }
   async componentWillMount() {
@@ -73,6 +82,10 @@ export default class Tab2 extends Component {
     const id = await AsyncStorage.getItem('id');
     this.setState({name: name});
     this.setState({id: id});
+    this.loadingData();
+  }
+  loadingData = () => {
+    const {id, name} = this.state;
     fetch(
       'https://jimbooexchange.com/php_api/get_wallet_by_user_id_and_user_name.php',
       {
@@ -88,7 +101,7 @@ export default class Tab2 extends Component {
         this.setState({data: json.data});
         this.setState({loading: false});
       });
-  }
+  };
   renderCheck = check => {
     switch (check) {
       case 'wait':
@@ -108,21 +121,21 @@ export default class Tab2 extends Component {
       case 'بیت کوین کش':
         return images.example.bitcoinC;
       case 'زد کش':
-        return 'zec';
+        return images.example.xrp;
       case 'ریبل':
         return images.example.xrp;
       case 'استالر':
-        return 'xlm';
+        return images.example.xrp;
       case 'ترون':
         return images.example.tron;
       case 'مونرو':
-        return 'xmr';
+        return images.example.xrp;
       case 'لایت کوین':
         return images.example.litecoin;
       case 'اتریوم':
         return images.example.ethereum;
       case 'دوج کوین':
-        return 'doge';
+        return images.example.xrp;
       case 'دش کوین':
         return images.example.dash;
       case 'تتر':
@@ -165,6 +178,7 @@ export default class Tab2 extends Component {
   updateDigital = digital => this.setState({digital: digital.value});
   Add = () => {
     const {wallet, code, digital, name, id} = this.state;
+    alert(digital)
     if (wallet.length === 0 || code.length === 0) {
       this.setState({dialog2: true});
     } else {
@@ -177,6 +191,7 @@ export default class Tab2 extends Component {
       });
     }
     this.setState({dialog1: false});
+    this.loadingData();
   };
   onDelete = Id => {
     fetch('https://jimbooexchange.com/php_api/delete_wallet.php', {
@@ -186,6 +201,7 @@ export default class Tab2 extends Component {
       },
       body: `Id=${Id}`, // <-- Post parameters
     });
+    this.loadingData();
   };
   render() {
     return (
@@ -229,7 +245,7 @@ export default class Tab2 extends Component {
                       },
                     ]}>
                     <Image
-                      source={this.renderBankImage(item.wallet_Name)}
+                      source={this.renderWalletImage(item.Wallet_Name)}
                       style={style.img}
                       resizeMode="contain"
                     />
@@ -238,7 +254,9 @@ export default class Tab2 extends Component {
                         style.txt,
                         {fontSize: normalize(18), paddingRight: 10},
                       ]}>
-                      <Text size="norm">{persianNumber(item.Wallet_Lable)}</Text>
+                      <Text size="norm">
+                        {persianNumber(item.Wallet_Lable)}
+                      </Text>
                     </Text>
 
                     <Text size="norm" style={[style.txt, {flex: 0.5}]}>
