@@ -22,86 +22,210 @@ import images from '../../../config/images';
 import AsyncStorage from '@react-native-community/async-storage';
 import {persianNumber} from '../../../lib/persian';
 import ImagePicker from 'react-native-image-picker';
-import RNFetchBlob from 'rn-fetch-blob';
+import {Item, Input} from 'native-base';
+import {number} from 'prop-types';
+import CustomModal from '../../../components/CustomModal';
+import {picker} from './ImagePicker';
+import {uploader} from './Uploader';
+import RNFetchBlob from 'react-native-fetch-blob';
+import moment from 'moment-jalaali';
 export default class Tab3 extends Component {
   constructor(props) {
     super(props);
     this.state = {
       phone: '',
       ImageSource: null,
+      ImageSource2: null,
+      Image_TAG: '',
+      data2: null,
       name: '',
+      time: '',
       id: '',
+      txt: '',
+      Meli: null,
       data: null,
+      rand: Math.floor(1000 + Math.random() * 9000),
+      btn: 'ارسال SMS',
+      btn2: 'عکس کارت ملی',
+      btn3: 'عکس سلفی',
+      dialog1: false,
+      dialog2: false,
+      dialog3: false,
     };
   }
   async componentWillMount() {
     const name = await AsyncStorage.getItem('name');
     const id = await AsyncStorage.getItem('id');
+    const phone = await AsyncStorage.getItem('phone');
     this.setState({name: name});
     this.setState({id: id});
-    this.loadingData();
+    this.setState({phone: phone});
   }
   selectPhotoTapped() {
-    const options = {
-      quality: 1.0,
-      maxWidth: 500,
-      maxHeight: 500,
-      storageOptions: {
-        skipBackup: true,
-      },
-    };
-
-    ImagePicker.showImagePicker(options, response => {
-      console.log('Response = ', response);
-
-      if (response.didCancel) {
-        console.log('User cancelled photo picker');
-      } else if (response.error) {
-        console.log('ImagePicker Error: ', response.error);
-      } else if (response.customButton) {
-        console.log('User tapped custom button: ', response.customButton);
-      } else {
-        let source = {uri: response.uri};
-
-        this.setState({
-          ImageSource: source,
-          data: response.data,
-        });
-      }
-    });
+    picker((source, data) =>
+      this.setState({ImageSource: source, data}, () => {
+        console.log(this.state);
+      }),
+    );
+    this.setState({btn2: 'ارسال عکس کارت ملی'});
+  }
+  selectPhotoTapped2() {
+    picker((source2, data2) =>
+      this.setState({ImageSource2: source2, data2}, () => {
+        console.log(this.state);
+      }),
+    );
+    this.setState({btn3: 'ارسال عکس سلفی'});
   }
   uploadImageToServer = () => {
     const {name, id} = this.state;
+    const date = persianNumber(moment().format('jYYYY/jM/jD hh:mm:ss '));
     RNFetchBlob.fetch(
       'POST',
-      'https://jimbooexchange.com/php_api/insert_meli.php',
+      'https://jimbooexchange.com/php_api/upload_image.php',
       {
+        Authorization: 'Bearer access-token',
+        otherHeader: 'foo',
+        'Content-Type': 'multipart/form-data',
+      },
+      [
+        {
+          name: 'photo',
+          filename: 'image.png',
+          type: 'image/png',
+          data: this.state.data,
+        },
+      ],
+    ).then(resp => {
+      var tempMSG = resp.data;
+      tempMSG = tempMSG.replace(/^"|"$/g, '');
+      this.setState({Meli: tempMSG});
+      console.log(tempMSG);
+      fetch('https://jimbooexchange.com/php_api/insert_meli.php', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/x-www-form-urlencoded', // <-- Specifying the Content-Type
         },
-        body: `Time =${1234}&Pic_Link=${
-          this.state.ImageSource
-        }&User_Name=${name}&User_Id=${id}`, // <-- Post parameters
-      },
-    )
-      .then(resp => {
-        var tempMSG = resp.data;
-
-        tempMSG = tempMSG.replace(/^"|"$/g, '');
-
-        Alert.alert(tempMSG);
-      })
-      .catch(err => {
-        // ...
+        body: `User_Name=${name}&User_Id=${id}&Time=${date}&Pic_Link=${tempMSG}&kind=${'meli'}`,
       });
+    });
   };
-
-  async componentWillMount() {
-    const phone = await AsyncStorage.getItem('phone');
-    this.setState({phone: phone});
-  }
+  uploadImageToServer2 = () => {
+    const {name, id} = this.state;
+    const date = persianNumber(moment().format('jYYYY/jM/jD hh:mm:ss '));
+    RNFetchBlob.fetch(
+      'POST',
+      'https://jimbooexchange.com/php_api/upload_image.php',
+      {
+        Authorization: 'Bearer access-token',
+        otherHeader: 'foo',
+        'Content-Type': 'multipart/form-data',
+      },
+      [
+        {
+          name: 'photo',
+          filename: 'image.png',
+          type: 'image/png',
+          data: this.state.data2,
+        },
+      ],
+    ).then(resp => {
+      var tempMSG = resp.data;
+      tempMSG = tempMSG.replace(/^"|"$/g, '');
+      this.setState({Meli: tempMSG});
+      console.log(tempMSG);
+      fetch('https://jimbooexchange.com/php_api/insert_selfi.php', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/x-www-form-urlencoded', // <-- Specifying the Content-Type
+        },
+        body: `User_Name=${name}&User_Id=${id}&Time=${date}&Pic_Link=${tempMSG}&kind=${'selfi'}`,
+      });
+    });
+  };
+  onSubmit2 = () => {
+    const {btn2} = this.state;
+    switch (btn2) {
+      case 'عکس کارت ملی':
+        return this.selectPhotoTapped();
+      case 'ارسال عکس کارت ملی':
+        this.uploadImageToServer();
+      default:
+        break;
+    }
+  };
+  onSubmit3 = () => {
+    const {btn3} = this.state;
+    switch (btn3) {
+      case 'عکس سلفی':
+        return this.selectPhotoTapped2();
+      case 'ارسال عکس سلفی':
+        this.uploadImageToServer2();
+      default:
+        break;
+    }
+  };
+  SendCode = () => {
+    const {phone, rand} = this.state;
+    fetch('https://jimbooexchange.com/php_api/send_sms.php', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/x-www-form-urlencoded', // <-- Specifying the Content-Type
+      },
+      body: `code=${rand}&theme=${29440}&phone=${phone}`, // <-- Post parameters
+    });
+    this.setState({btn: 'تایید کد احراز هویت', phone: ''});
+    this.setState({dialog1: true});
+  };
+  ConfirmCode = () => {
+    const {phone, rand} = this.state;
+    const numb = parseInt(phone);
+    if (rand !== numb) {
+      this.setState({dialog2: true});
+    } else {
+      this.setState({dialog3: true});
+    }
+  };
+  onSubmit = () => {
+    const {btn} = this.state;
+    switch (btn) {
+      case 'ارسال SMS':
+        return this.SendCode();
+      case 'تایید کد احراز هویت':
+        this.ConfirmCode();
+      default:
+        break;
+    }
+  };
   render() {
+    const image =
+      this.state.ImageSource === null ? (
+        <Image
+          source={images.global.no_pic}
+          style={style.image}
+          resizeMode="contain"
+        />
+      ) : (
+        <Image
+          source={this.state.ImageSource}
+          style={style.image}
+          resizeMode="contain"
+        />
+      );
+      const image2 =
+      this.state.ImageSource2 === null ? (
+        <Image
+          source={images.global.no_pic}
+          style={style.image}
+          resizeMode="contain"
+        />
+      ) : (
+        <Image
+          source={this.state.ImageSource2}
+          style={style.image}
+          resizeMode="contain"
+        />
+      );
     return (
       <View style={{flex: 1}}>
         <View style={{marginVertical: hp(2), marginHorizontal: wp(5)}}>
@@ -141,17 +265,11 @@ export default class Tab3 extends Component {
           /> */}
           <View style={{marginTop: hp(3)}}>
             <View style={{flexDirection: 'row-reverse', flexWrap: 'nowrap'}}>
-              <View style={style.imageView}>
-                <Image
-                  source={images.global.no_pic}
-                  style={style.image}
-                  resizeMode="contain"
-                />
-              </View>
+              <View style={style.imageView}>{image}</View>
               <Button
                 TouchableComponent={TouchableOpacity}
                 ViewComponent={LinearGradient} // Don't forget this!
-                title="ارسال عکس کارت ملی"
+                title={this.state.btn2}
                 containerStyle={style.shadow}
                 buttonStyle={style.btn}
                 titleStyle={style.medium}
@@ -160,22 +278,17 @@ export default class Tab3 extends Component {
                   start: {x: 0, y: 0.5},
                   end: {x: 1, y: 0.5},
                 }}
+                onPress={() => this.onSubmit2()}
               />
             </View>
           </View>
           <View style={{marginTop: hp(3)}}>
             <View style={{flexDirection: 'row-reverse', flexWrap: 'nowrap'}}>
-              <View style={style.imageView}>
-                <Image
-                  source={images.global.no_pic}
-                  style={style.image}
-                  resizeMode="contain"
-                />
-              </View>
+              <View style={style.imageView}>{image2}</View>
               <Button
                 TouchableComponent={TouchableOpacity}
                 ViewComponent={LinearGradient} // Don't forget this!
-                title="ارسال عکس سلفی"
+                title={this.state.btn3}
                 containerStyle={style.shadow}
                 buttonStyle={[style.btn]}
                 titleStyle={style.medium}
@@ -184,6 +297,7 @@ export default class Tab3 extends Component {
                   start: {x: 0, y: 0.5},
                   end: {x: 1, y: 0.5},
                 }}
+                onPress={() => this.onSubmit3()}
               />
             </View>
           </View>
@@ -198,12 +312,19 @@ export default class Tab3 extends Component {
                     alignItems: 'center',
                   },
                 ]}>
-                <Text>{persianNumber(this.state.phone)}</Text>
+                <Item rounded style={{height: hp(5)}}>
+                  <Input
+                    style={{fontFamily: 'IRANSansMobile'}}
+                    value={this.state.phone}
+                    onChangeText={r => this.setState({phone: r})}
+                  />
+                </Item>
+                {/* <Text>{persianNumber(this.state.phone)}</Text> */}
               </View>
               <Button
                 TouchableComponent={TouchableOpacity}
                 ViewComponent={LinearGradient} // Don't forget this!
-                title="ارسال SMS"
+                title={this.state.btn}
                 containerStyle={style.shadow}
                 buttonStyle={style.btn}
                 titleStyle={style.medium}
@@ -212,6 +333,7 @@ export default class Tab3 extends Component {
                   start: {x: 0, y: 0.5},
                   end: {x: 1, y: 0.5},
                 }}
+                onPress={() => this.onSubmit()}
               />
             </View>
           </View>
@@ -224,6 +346,30 @@ export default class Tab3 extends Component {
            
           </View> */}
         </View>
+        <CustomModal
+          isVisible={this.state.dialog1}
+          onConfirm={() => this.setState({dialog1: false})}
+          title="ارسال شد"
+          describe="کد احراز حویت با موفقیت ارسال شد"
+        />
+        <CustomModal
+          isVisible={this.state.dialog2}
+          onConfirm={() => this.setState({dialog2: false})}
+          title="خطا "
+          describe="کد احراز حویت ناصحیح می باشد"
+        />
+        <CustomModal
+          isVisible={this.state.dialog2}
+          onConfirm={() => this.setState({dialog2: false})}
+          title="خطا "
+          describe="کد احراز حویت ناصحیح می باشد"
+        />
+        <CustomModal
+          isVisible={this.state.dialog3}
+          onConfirm={() => this.setState({dialog3: false})}
+          title="انجام شد"
+          describe=" احراز حویت شما با موفقیت انجام شد"
+        />
       </View>
     );
   }
