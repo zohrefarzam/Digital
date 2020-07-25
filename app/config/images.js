@@ -35,6 +35,7 @@ const images = {
     key: require('../assets/images/global/key.png'),
     arrow_back: require('../assets/images/global/arrow_back.png'),
     arrow_right: require('../assets/images/global/arrow_right.png'),
+    logo: require('../assets/images/global/Jimbo.png'),
   },
   tab: {
     bars: require('../assets/images/tab/bars_chart.png'),

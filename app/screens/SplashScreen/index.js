@@ -23,9 +23,12 @@ export default class SplashScreen extends Component {
     return (
       <View style={{flex: 1}}>
         <View style={style.container}>
-          <Text color="gray" size="xlarge">
-            لوگو
-          </Text>
+          <Image
+            source={images.global.logo}
+            style={{height: hp(35), width: wp(35)}}
+            resizeMode='contain'
+          />
+
           <View style={style.view2}>
             <Button
               TouchableComponent={TouchableOpacity}

@@ -23,6 +23,7 @@ import {connect} from 'react-redux';
 import Dialog from 'react-native-dialog';
 import CustomModal from '../../components/CustomModal';
 import AsyncStorage from '@react-native-community/async-storage';
+import {persianNumber} from '../../lib/persian';
 class SignInScreen extends Component {
   constructor(props) {
     super(props);
@@ -34,6 +35,7 @@ class SignInScreen extends Component {
       mail: '',
       password: '',
       retPass: '',
+      Fix: '',
       visible: true,
       dialog1: false,
       dialog2: false,
@@ -58,6 +60,8 @@ class SignInScreen extends Component {
       this.setState({Password: text});
     } else if (field === 'retPass') {
       this.setState({retPass: text});
+    } else if (field === 'Fix') {
+      this.setState({Fix: text});
     }
   }
   submit = () => {
@@ -68,6 +72,7 @@ class SignInScreen extends Component {
     collection.Mail = this.state.mail;
     collection.Phone = this.state.phone;
     collection.Password = this.state.password;
+    collection.Fix = this.state.Fix;
     console.log(collection);
     // if (collection.password.length < 8) {
     //   this.setState({dialog1: true});
@@ -96,20 +101,20 @@ class SignInScreen extends Component {
       headers: {
         'Content-Type': 'application/x-www-form-urlencoded', // <-- Specifying the Content-Type
       },
-      body: `Name=${collection.Name}1&Father_Name=${
-        collection.Father_Name
-      }2&Bourning_Time=${collection.Bourning_Time}&Mail=${
-        collection.Mail
-      }&Phone=${collection.Phone}&Password=${collection.Password}`, // <-- Post parameters
+      body: `Name=${collection.Name}1&Father_Name=${collection.Father_Name}2&Bourning_Time=${collection.Bourning_Time}&Mail=${collection.Mail}&Phone=${collection.Phone}&Password=${collection.Password}&Fix=${collection.Fix}`, // <-- Post parameters
     });
     this.props.navigation.navigate('Login');
   };
   render() {
     return (
       <Container style={sajamstyles.container}>
-        <Content contentContainerStyle={sajamstyles.mainView}>
+        <View style={sajamstyles.mainView}>
           <View
-            style={{flex: 0.4, justifyContent: 'center', alignItems: 'center'}}>
+            style={{
+              justifyContent: 'center',
+              alignItems: 'center',
+              marginTop: hp(2),
+            }}>
             <Text size="large" color="gray">
               ثبت نام جدید
             </Text>
@@ -171,6 +176,25 @@ class SignInScreen extends Component {
             </Item>
             <Item style={sajamstyles.itemStyle}>
               <Input
+                placeholder="تلفن ثابت"
+                placeholderTextColor="#adb4bc"
+                style={sajamstyles.inputStyle}
+                maxLength={11}
+                keyboardType="phone-pad"
+                containerStyle={sajamstyles.item}
+                autoFocus
+                blurOnSubmit
+                onChangeText={text => this.updateValue(text, 'ّFix')}
+              />
+              <Image
+                source={images.login.phone}
+                style={sajamstyles.img}
+                resizeMode="contain"
+                tintColor={styles.color.ColorGreen}
+              />
+            </Item>
+            <Item style={sajamstyles.itemStyle}>
+              <Input
                 placeholder="ایمیل"
                 placeholderTextColor="#adb4bc"
                 style={sajamstyles.inputStyle}
@@ -188,7 +212,7 @@ class SignInScreen extends Component {
             </Item>
             <Item style={sajamstyles.itemStyle}>
               <Input
-                placeholder="تاریخ تولد"
+                placeholder={persianNumber('(تاریخ تولد (1399/1/1')}
                 placeholderTextColor="#adb4bc"
                 style={sajamstyles.inputStyle}
                 maxLength={10}
@@ -253,7 +277,7 @@ class SignInScreen extends Component {
               />
             </Item>
           </View>
-        </Content>
+        </View>
         <View style={sajamstyles.view2}>
           <Button
             TouchableComponent={TouchableOpacity}
@@ -281,17 +305,7 @@ class SignInScreen extends Component {
           <Text>ثبت نام کرده اید؟</Text>
           <TouchableOpacity
             onPress={() => {
-              fetch('https://jimbooexchange.com/php_api/insert_user.php', {
-                method: 'POST',
-
-                headers: {
-                  Accept: 'application/json',
-                  'Content-Type': 'application/json',
-                },
-                body: JSON.stringify({
-                  Name: '123',
-                }),
-              });
+              this.props.navigation.navigate('Login');
             }}>
             <Text color="green" style={{marginRight: 5}}>
               ورود
@@ -352,10 +366,7 @@ class SignInScreen extends Component {
     );
   }
 }
-export default connect(
-  null,
-  null,
-)(SignInScreen);
+export default connect(null, null)(SignInScreen);
 const sajamstyles = StyleSheet.create({
   container: {
     flex: 1,
@@ -369,7 +380,7 @@ const sajamstyles = StyleSheet.create({
   formView: {marginHorizontal: '9%'},
   itemStyle: {
     alignSelf: 'center',
-    marginBottom: 20,
+    //marginBottom: hp(1),
     paddingRight: wp(5),
   },
   inputStyle: {
@@ -395,6 +406,7 @@ const sajamstyles = StyleSheet.create({
   },
   medium: {fontSize: normalize(20), fontFamily: 'IRANSansMobile'},
   shadow: {
+    marginTop: hp(1),
     elevation: 3,
     shadowColor: '#000',
     shadowOffset: {

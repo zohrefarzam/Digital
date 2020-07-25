@@ -28,8 +28,10 @@ class LoginScreen extends Component {
     this.state = {
       phone: '',
       password: '',
+      log: true,
       dialog1: false,
       dialog2: false,
+      check: false,
     };
   }
 
@@ -40,7 +42,7 @@ class LoginScreen extends Component {
     const {user, navigation} = this.props;
     // const result = user.find(({Name}) => Name === phone);
     // const res = JSON.stringify(result.Name);
-    if (user.find(({Name}) => Name === phone)) {
+    if (user.find(({Phone}) => Phone === phone)) {
     } else {
       this.setState({dialog1: true});
     }
@@ -49,18 +51,20 @@ class LoginScreen extends Component {
       this.setState({dialog2: true});
     }
     if (
-      user.find(({Name}) => Name === phone) &&
+      user.find(({Phone}) => Phone === phone) &&
       user.find(({Password}) => Password === password)
     ) {
       this.setState({dialog3: true});
-      const result = user.find(({Name}) => Name === phone);
-      AsyncStorage.setItem('name', result.Name);
-      AsyncStorage.setItem('father', result.Father_Name);
-      AsyncStorage.setItem('date', result.Bourning_Time);
-      AsyncStorage.setItem('mail', result.Mail);
-      AsyncStorage.setItem('phone', result.Phone);
-      AsyncStorage.setItem('password', result.Password);
-      AsyncStorage.setItem('id', result.Id);
+      const result = user.find(({Phone}) => Phone === phone);
+      if (this.state.check === true) {
+        AsyncStorage.setItem('name', result.Name);
+        AsyncStorage.setItem('father', result.Father_Name);
+        AsyncStorage.setItem('date', result.Bourning_Time);
+        AsyncStorage.setItem('mail', result.Mail);
+        AsyncStorage.setItem('phone', result.Phone);
+        AsyncStorage.setItem('password', result.Password);
+        AsyncStorage.setItem('id', result.Id);
+      }
       navigation.navigate('Home');
     }
     // navigation.navigate('Home');
@@ -75,14 +79,14 @@ class LoginScreen extends Component {
             ورود
           </Text>
         </View>
-        <Content contentContainerStyle={sajamstyles.mainView}>
+        <View style={sajamstyles.mainView}>
           <Form style={sajamstyles.formView}>
             <Item style={sajamstyles.itemStyle}>
               <Input
                 placeholder="شماره موبایل"
                 placeholderTextColor="#adb4bc"
                 style={sajamstyles.inputStyle}
-                maxLength={10}
+                maxLength={11}
                 //keyboardType="phone-pad"
                 containerStyle={sajamstyles.item}
                 autoFocus
@@ -134,15 +138,23 @@ class LoginScreen extends Component {
               <Text color="gray" size="sm" style={{marginRight: -10}}>
                 مرا به خاطر بسپار
               </Text>
-              <CheckBox />
+              <CheckBox
+                checkedColor={styles.color.ColorGreen}
+                onPress={() => {
+                  this.setState({check: true});
+                }}
+                checked={this.state.check}
+              />
             </View>
             <View>
-              <Text color="green" size="sm">
-                رمز عبور خود را فراموش کرده ام
-              </Text>
+              <TouchableOpacity>
+                <Text color="green" size="sm">
+                  رمز عبور خود را فراموش کرده ام
+                </Text>
+              </TouchableOpacity>
             </View>
           </View>
-        </Content>
+        </View>
         <View style={sajamstyles.view2}>
           <Button
             TouchableComponent={TouchableOpacity}
@@ -219,7 +231,7 @@ const sajamstyles = StyleSheet.create({
   },
   img: {height: hp(3), width: wp(3)},
   img2: {height: hp(3.1), width: wp(3.1)},
-  mainView: {flex: 1, justifyContent: 'center'},
+  mainView: {height: hp(50), justifyContent: 'center'},
 
   formView: {marginHorizontal: '9%'},
   item: {
