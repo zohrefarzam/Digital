@@ -29,11 +29,23 @@ import images from '../../config/images';
 import {persianNumber, latinNumber} from '../../lib/persian';
 import {Item, Input} from 'native-base';
 import {number} from 'prop-types';
-
+import AsyncStorage from '@react-native-community/async-storage';
+import RNFetchBlob from 'react-native-fetch-blob';
 class BuyingScreen extends Component {
   constructor(props) {
     super(props);
-    this.state = {dollar: [], menu: 1, menu2: 10, rial: '', numb: ''};
+    this.state = {
+      dollar: [],
+      menu: 1,
+      menu2: 10,
+      rial: '',
+      numb: '',
+      name: '',
+      id: '',
+      phone: '',
+      mail: '',
+      link: '',
+    };
   }
   state = {
     visible: false,
@@ -65,7 +77,7 @@ class BuyingScreen extends Component {
   showMenu2 = () => {
     this._menu2.show();
   };
-  componentWillMount() {
+  async componentWillMount() {
     this.props.dispatch(FetchPrices());
     this.props.dispatch(FetchSetting());
     // this.props.dispatch(FetchDollar());
@@ -75,7 +87,49 @@ class BuyingScreen extends Component {
         this.setState({dollar: json});
       })
       .catch(error => console.error(error));
+    const name = await AsyncStorage.getItem('name');
+    const id = await AsyncStorage.getItem('id');
+    const phone = await AsyncStorage.getItem('phone');
+    const mail = await AsyncStorage.getItem('mail');
+    this.setState({name: name});
+    this.setState({id: id});
+    this.setState({phone: phone});
+    this.setState({mail: mail});
   }
+  submitBuying = () => {
+    const {name, id, phone, mail, link} = this.state;
+    if (name === '') {
+      this.setState({dialog1: true});
+    } else {
+      // fetch(
+      //   `https://jimbooexchange.com/php_api/idpey_webservice_mob.php?costt=1000000&usname=علی خسروی&uid=182&kind=coin&mail=alirezaKhosravee@gmail.com&phone=09127793259&order_id=2&value=بیت کوین`,
+      // )
+      //   .then(response => response)
+      //   .then(responseData => {
+      //     console.log('inside responsejson');
+      //     console.log('response object:', responseData);
+      //   });
+      fetch(
+        `https://jimbooexchange.com/php_api/idpey_webservice_mob.php?costt=1000000&usname=علی خسروی&uid=182&kind=coin&mail=alirezaKhosravee@gmail.com&phone=09127793259&order_id=2&value=بیت کوین`,
+        {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/x-www-form-urlencoded', // <-- Specifying the Content-Type
+          },
+        },
+      )
+        .then(function(response) {
+          return response.text();
+        })
+        .then(async function(text) {
+          return text;
+        })
+        .then(text => this.props.navigation.navigate('Paying', {'link': text}))
+        .catch(function(error) {
+          console.log('Request failed', error);
+        });
+    }
+  };
   renderTitle2 = () => {
     switch (this.state.menu2) {
       case 1:
@@ -324,7 +378,7 @@ class BuyingScreen extends Component {
                 <View style={style2.js}>
                   <View style={style2.right}>
                     <Input
-                      style={[style.input, {width: 170}]}
+                      style={[style.input, {width: wp(32)}]}
                       value={persianNumber(this.state.rial)}
                       onChangeText={t => {
                         this.setState({
@@ -548,7 +602,7 @@ class BuyingScreen extends Component {
               <View style={style2.js}>
                 <View style={style2.right}>
                   <Input
-                    style={[style.input, {width: 170}]}
+                    style={[style.input, {width: wp(32)}]}
                     value={persianNumber(
                       numberWithCommas(
                         Math.abs(this.state.rial / this.renderRial()),
@@ -777,6 +831,7 @@ class BuyingScreen extends Component {
               start: {x: 0, y: 0.5},
               end: {x: 1, y: 0.5},
             }}
+            onPress={() => this.submitBuying()}
           />
         </View>
       </View>
@@ -797,7 +852,6 @@ const style = StyleSheet.create({
     fontSize: 16,
     fontFamily: 'iranSans',
     marginRight: wp(5),
-   
   },
   main: {flex: 1, backgroundColor: 'white'},
   logoCon: {alignItems: 'center', marginVertical: normalize(50, 'height')},

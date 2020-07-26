@@ -16,6 +16,7 @@ import {
   Splash,
   SignIn,
   WeblogDetail,
+  Paying,
 } from '../screens';
 import navigationStyle from './navigationStyle';
 import images from '../config/images';
@@ -64,7 +65,21 @@ const WeblogScreen = createStackNavigator({
     },
   },
 });
-
+const BuyingScreen = createStackNavigator({
+  Buying: {
+    screen: Buying,
+    navigationOptions: {
+      headerShown: false,
+    },
+  },
+  Paying: {
+    screen: Paying,
+    navigationOptions: {
+      headerShown: false,
+    },
+    path: 'Paying',
+  },
+});
 const Home = createBottomTabNavigator(
   {
     Profile: {
@@ -85,8 +100,8 @@ const Home = createBottomTabNavigator(
         tabBarLabel: 'قیمت ها',
       },
     },
-    Buying: {
-      screen: Buying,
+    BuyingScreen: {
+      screen: BuyingScreen,
       navigationOptions: {
         tabBarLabel: 'خرید و فروش',
       },
@@ -122,7 +137,7 @@ const Home = createBottomTabNavigator(
             // source = focused ? images.Main.stock : '';
             source = images.tab.bars;
             break;
-          case 'Buying':
+          case 'BuyingScreen':
             // source = focused ? images.Main.news : '';
             source = images.tab.transfer;
             break;
@@ -139,7 +154,7 @@ const Home = createBottomTabNavigator(
         );
       },
     }),
-    initialRouteName: 'Buying',
+    initialRouteName: 'BuyingScreen',
     barStyle: navigationStyle.bar,
     resetOnBlur: true,
     tabBarOptions: {
