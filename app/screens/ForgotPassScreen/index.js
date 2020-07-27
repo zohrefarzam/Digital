@@ -22,7 +22,7 @@ import {connect} from 'react-redux';
 import {GetUser} from '../../api/methods/GetUser';
 import AsyncStorage from '@react-native-community/async-storage';
 import CustomModal from '../../components/CustomModal';
-class LoginScreen extends Component {
+class ForgotPassScreen extends Component {
   constructor(props) {
     super(props);
     this.state = {
@@ -38,36 +38,18 @@ class LoginScreen extends Component {
   componentWillMount() {
     this.props.dispatch(GetUser());
   }
-  CheckUser = (phone, password) => {
+  CheckUser = phone => {
     const {user, navigation} = this.props;
-    // const result = user.find(({Name}) => Name === phone);
-    // const res = JSON.stringify(result.Name);
-    if (user.find(({Phone}) => Phone === phone)) {
-    } else {
-      this.setState({dialog1: true});
-    }
-    if (user.find(({Password}) => Password === password)) {
-    } else {
-      this.setState({dialog2: true});
-    }
-    if (
-      user.find(({Phone}) => Phone === phone) &&
-      user.find(({Password}) => Password === password)
-    ) {
-      this.setState({dialog3: true});
-      const result = user.find(({Phone}) => Phone === phone);
-      if (this.state.check === true) {
-        AsyncStorage.setItem('name', result.Name);
-        AsyncStorage.setItem('father', result.Father_Name);
-        AsyncStorage.setItem('date', result.Bourning_Time);
-        AsyncStorage.setItem('mail', result.Mail);
-        AsyncStorage.setItem('phone', result.Phone);
-        AsyncStorage.setItem('password', result.Password);
-        AsyncStorage.setItem('id', result.Id);
-      }
-      navigation.navigate('Home');
-    }
-    // navigation.navigate('Home');
+
+    const result = user.find(({Phone}) => Phone === phone);
+    const password = JSON.stringify(parseInt(result.Password));
+    fetch('https://jimbooexchange.com/php_api/send_sms.php', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/x-www-form-urlencoded', // <-- Specifying the Content-Type
+      },
+      body: `code=${password}&theme=${29439}&phone=${phone}`, // <-- Post parameters
+    }).then(this.setState({dialog1: true}));
   };
   toggleSwitch = () => {
     this.setState({check: !this.state.check});
@@ -79,7 +61,7 @@ class LoginScreen extends Component {
       <Container style={sajamstyles.container}>
         <View style={{flex: 1, justifyContent: 'center', alignItems: 'center'}}>
           <Text size="large" color="gray">
-            ورود
+            فراموشی رمز عبور
           </Text>
         </View>
         <View style={sajamstyles.mainView}>
@@ -90,7 +72,7 @@ class LoginScreen extends Component {
                 placeholderTextColor="#adb4bc"
                 style={sajamstyles.inputStyle}
                 maxLength={11}
-                //keyboardType="phone-pad"
+                keyboardType="phone-pad"
                 containerStyle={sajamstyles.item}
                 autoFocus
                 blurOnSubmit
@@ -103,67 +85,13 @@ class LoginScreen extends Component {
                 tintColor={styles.color.ColorGreen}
               />
             </Item>
-
-            <View style={{marginTop: 20}} />
-            <Item style={sajamstyles.itemStyle}>
-              <Input
-                placeholder="رمز"
-                placeholderTextColor="#adb4bc"
-                style={sajamstyles.inputStyle}
-                containerStyle={sajamstyles.item}
-                blurOnSubmit
-                onChangeText={t => this.setState({password: t})}
-              />
-              <Image
-                source={images.login.lock}
-                style={sajamstyles.img2}
-                resizeMode="contain"
-                tintColor={styles.color.ColorGreen}
-              />
-            </Item>
           </Form>
-          <View
-            style={{
-              flexDirection: 'row-reverse',
-              flexWrap: 'nowrap',
-              alignItems: 'center',
-              justifyContent: 'space-between',
-              marginRight: 50,
-            }}>
-            <View
-              style={{
-                flexDirection: 'row',
-                flexWrap: 'nowrap',
-                alignItems: 'center',
-                justifyContent: 'flex-end',
-                marginRight: -10,
-              }}>
-              <Text color="gray" size="sm" style={{marginRight: -10}}>
-                مرا به خاطر بسپار
-              </Text>
-              <CheckBox
-                checkedColor={styles.color.ColorGreen}
-                onPress={() => {
-                  this.toggleSwitch();
-                }}
-                checked={this.state.check}
-              />
-            </View>
-            <View>
-              <TouchableOpacity
-                onPress={() => this.props.navigation.navigate('ForgotPass')}>
-                <Text color="green" size="sm">
-                  رمز عبور خود را فراموش کرده ام
-                </Text>
-              </TouchableOpacity>
-            </View>
-          </View>
         </View>
         <View style={sajamstyles.view2}>
           <Button
             TouchableComponent={TouchableOpacity}
             ViewComponent={LinearGradient} // Don't forget this!
-            title="ورود"
+            title="ارسال کلمه عبور"
             containerStyle={sajamstyles.shadow}
             buttonStyle={sajamstyles.btn}
             titleStyle={sajamstyles.medium}
@@ -173,10 +101,23 @@ class LoginScreen extends Component {
               end: {x: 1, y: 0.5},
             }}
             // onPress={() => navigation.navigate('Home')}
-            onPress={() =>
-              this.CheckUser(this.state.phone, this.state.password)
-            }
+            onPress={() => this.CheckUser(this.state.phone)}
           />
+        </View>
+        <View
+          style={{
+            flexDirection: 'row-reverse',
+            flexWrap: 'nowrap',
+            alignItems: 'center',
+            justifyContent: 'center',
+            marginBottom: normalize(20),
+          }}>
+          <Text> کاربر جدید هستید؟</Text>
+          <TouchableOpacity onPress={() => navigation.navigate('SignIn')}>
+            <Text color="green" style={{marginRight: 5}}>
+              اکنون یک حساب کاربری جدید بسازید
+            </Text>
+          </TouchableOpacity>
         </View>
         <View
           style={{
@@ -195,26 +136,9 @@ class LoginScreen extends Component {
         </View>
         <CustomModal
           isVisible={this.state.dialog1}
-          title="خطا در ورود اطلاعات"
-          describe="شماره موبایل خود را به درستی وارد کنید"
-          onConfirm={() => {
-            this.setState({dialog1: false});
-          }}
-        />
-        <CustomModal
-          isVisible={this.state.dialog2}
-          title="خطا در ورود اطلاعات"
-          describe="پسورد خود را به درستی وارد کنید"
-          onConfirm={() => {
-            this.setState({dialog2: false});
-          }}
-        />
-        <CustomModal
-          isVisible={this.state.dialog3}
-          title="خوش آمدید"
-          onConfirm={() => {
-            this.setState({dialog3: false});
-          }}
+          title="ارسال شد"
+          describe="رمز عبور با موفقیت برای شما ارسال شد "
+          onConfirm={() => this.props.navigation.navigate('Login')}
         />
       </Container>
     );
@@ -226,7 +150,7 @@ const mapStateToProps = state => ({
   error: state.prices.error,
 });
 
-export default connect(mapStateToProps)(LoginScreen);
+export default connect(mapStateToProps)(ForgotPassScreen);
 const sajamstyles = StyleSheet.create({
   container: {
     flex: 1,
@@ -235,7 +159,7 @@ const sajamstyles = StyleSheet.create({
   },
   img: {height: hp(3), width: wp(3)},
   img2: {height: hp(3.1), width: wp(3.1)},
-  mainView: {height: hp(50), justifyContent: 'center'},
+  mainView: {height: hp(17), justifyContent: 'center'},
 
   formView: {marginHorizontal: '9%'},
   item: {

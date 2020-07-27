@@ -17,6 +17,7 @@ import {
   SignIn,
   WeblogDetail,
   Paying,
+  ForgotPass,
 } from '../screens';
 import navigationStyle from './navigationStyle';
 import images from '../config/images';
@@ -46,6 +47,12 @@ const Auth = createStackNavigator({
 
   SignIn: {
     screen: SignIn,
+    navigationOptions: {
+      headerShown: false,
+    },
+  },
+  ForgotPass: {
+    screen: ForgotPass,
     navigationOptions: {
       headerShown: false,
     },

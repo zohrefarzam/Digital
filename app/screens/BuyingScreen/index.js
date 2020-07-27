@@ -6,6 +6,7 @@ import {
   TouchableOpacity,
   Alert,
   Image,
+  Linking,
 } from 'react-native';
 import {
   widthPercentageToDP as wp,
@@ -31,6 +32,7 @@ import {Item, Input} from 'native-base';
 import {number} from 'prop-types';
 import AsyncStorage from '@react-native-community/async-storage';
 import RNFetchBlob from 'react-native-fetch-blob';
+import CustomModal from '../../components/CustomModal';
 class BuyingScreen extends Component {
   constructor(props) {
     super(props);
@@ -45,6 +47,7 @@ class BuyingScreen extends Component {
       phone: '',
       mail: '',
       link: '',
+      dialog1:false,
     };
   }
   state = {
@@ -96,40 +99,6 @@ class BuyingScreen extends Component {
     this.setState({phone: phone});
     this.setState({mail: mail});
   }
-  submitBuying = () => {
-    const {name, id, phone, mail, link} = this.state;
-    if (name === '') {
-      this.setState({dialog1: true});
-    } else {
-      // fetch(
-      //   `https://jimbooexchange.com/php_api/idpey_webservice_mob.php?costt=1000000&usname=علی خسروی&uid=182&kind=coin&mail=alirezaKhosravee@gmail.com&phone=09127793259&order_id=2&value=بیت کوین`,
-      // )
-      //   .then(response => response)
-      //   .then(responseData => {
-      //     console.log('inside responsejson');
-      //     console.log('response object:', responseData);
-      //   });
-      fetch(
-        `https://jimbooexchange.com/php_api/idpey_webservice_mob.php?costt=1000000&usname=علی خسروی&uid=182&kind=coin&mail=alirezaKhosravee@gmail.com&phone=09127793259&order_id=2&value=بیت کوین`,
-        {
-          method: 'POST',
-          headers: {
-            'Content-Type': 'application/x-www-form-urlencoded', // <-- Specifying the Content-Type
-          },
-        },
-      )
-        .then(function(response) {
-          return response.text();
-        })
-        .then(async function(text) {
-          return text;
-        })
-        .then(text => this.props.navigation.navigate('Paying', {'link': text}))
-        .catch(function(error) {
-          console.log('Request failed', error);
-        });
-    }
-  };
   renderTitle2 = () => {
     switch (this.state.menu2) {
       case 1:
@@ -154,6 +123,42 @@ class BuyingScreen extends Component {
         return 'ریال';
     }
   };
+  submitBuying = () => {
+    const {name, id, phone, mail, link, rial} = this.state;
+    const rand = Math.floor(Math.random() * 10000) + 1;
+    if (phone === null) {
+      this.setState({dialog1: true});
+    } else {
+      fetch(
+        `https://jimbooexchange.com/php_api/idpey_webservice_mob.php?costt=${rial}&usname=${name}&uid=${id}&kind=coin&mail=${mail}&phone=${phone}&order_id=${rand}&value=${this.renderTitle()}`,
+        {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/x-www-form-urlencoded', // <-- Specifying the Content-Type
+          },
+        },
+      )
+        .then(function(response) {
+          return response.text();
+        })
+        .then(async function(text) {
+          return text;
+        })
+        .then(text =>
+          Linking.canOpenURL(text).then(supported => {
+            if (supported) {
+              Linking.openURL(text);
+            } else {
+              console.log("Don't know how to open URI: " + text);
+            }
+          }),
+        )
+        .catch(function(error) {
+          console.log('Request failed', error);
+        });
+    }
+  };
+
   renderSubTitle2 = () => {
     const {prices} = this.props;
     switch (this.state.menu2) {
@@ -164,7 +169,7 @@ class BuyingScreen extends Component {
       case 3:
         return prices[3]?.name;
       case 4:
-        return prices[17]?.name;
+        return prices[16]?.name;
       case 5:
         return prices[7]?.name;
       case 6:
@@ -237,7 +242,7 @@ class BuyingScreen extends Component {
       case 3:
         return prices[3]?.name;
       case 4:
-        return prices[17]?.name;
+        return prices[16]?.name;
       case 5:
         return prices[7]?.name;
       case 6:
@@ -286,7 +291,7 @@ class BuyingScreen extends Component {
       case 3:
         return prices[3]?.current_price;
       case 4:
-        return prices[17]?.current_price;
+        return prices[16]?.current_price;
       case 5:
         return prices[7]?.current_price;
       case 6:
@@ -362,7 +367,11 @@ class BuyingScreen extends Component {
       <View style={style.main}>
         <StatusBar hidden={true} />
         <View style={style.logoCon}>
-          <Text style={style.title}>لوگو </Text>
+          <Image
+            source={images.global.logo}
+            style={{height: hp(25), width: wp(35)}}
+            resizeMode="contain"
+          />
         </View>
         <View>
           <View>
@@ -804,14 +813,11 @@ class BuyingScreen extends Component {
           </View>
         </View>
         <View style={style.center}>
-          <Text
-            style={[
-              style.grayTxt,
-              style.normal,
-              {paddingRight: wp(8), paddingBottom: hp(1)},
-            ]}>
-            قیمت هر واحد
-          </Text>
+          <View style={style.center}>
+            <Text style={[style.grayTxt, style.normal, {paddingBottom: hp(1)}]}>
+              قیمت هر واحد
+            </Text>
+          </View>
           <View style={style.rowRev}>
             <Text style={style.normal}>{this.renderSymbol()}1 = </Text>
             <TextNumber style={style.normal}>{this.renderRial()}</TextNumber>
@@ -834,6 +840,14 @@ class BuyingScreen extends Component {
             onPress={() => this.submitBuying()}
           />
         </View>
+        <CustomModal
+          isVisible={this.state.dialog1}
+          title="خطا در ورود اطلاعات"
+          describe="ابتدا وارد شوید"
+          onConfirm={() => {
+            this.setState({dialog1: false});
+          }}
+        />
       </View>
     );
   }
@@ -854,7 +868,7 @@ const style = StyleSheet.create({
     marginRight: wp(5),
   },
   main: {flex: 1, backgroundColor: 'white'},
-  logoCon: {alignItems: 'center', marginVertical: normalize(50, 'height')},
+  logoCon: {alignItems: 'center'},
   title: {color: styles.color.colorText_GrAY, fontSize: normalize(45)},
   grayTxt: {color: styles.color.colorText_GrAY},
   //normal: {fontSize: 16},
