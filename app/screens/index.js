@@ -7,6 +7,8 @@ import LoginScreen from './LoginScreen';
 import SignInScreen from './SignInScreen';
 //import PayingScreen from './PayingScreen';
 import WeblogDetailScreen from './WeblogDetailScreen';
+import ForgotPassScreen from './ForgotPassScreen';
+export const ForgotPass = ForgotPassScreen;
 export const Prices = PricesScreen;
 //export const Paying = PayingScreen;
 export const Profile = ProfileScreen;

@@ -12,8 +12,8 @@ export default function AppNavigator() {
       );
     const handlePage = newUrl => {
       const {url} = newUrl;
-      if (url?.toLowerCase().includes('baying')) {
-        goToPage('Baying');
+      if (url?.toLowerCase().includes('buying')) {
+        goToPage('Buying');
       }
     };
     Linking.addEventListener('url', handlePage);
