@@ -12,7 +12,7 @@ import AppNavigator from './navigation';
 import {Provider} from 'react-redux';
 import {PersistGate} from 'redux-persist/es/integration/react';
 import {View, Text} from 'native-base';
-import persist from './store';
+import persist from './Store';
 const persistStore = persist();
 class App extends Component {
   componentDidMount() {

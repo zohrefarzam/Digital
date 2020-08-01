@@ -16,7 +16,7 @@ import {
   Splash,
   SignIn,
   WeblogDetail,
-  Paying,
+  //Paying,
 } from '../screens';
 import navigationStyle from './navigationStyle';
 import images from '../config/images';
@@ -72,13 +72,13 @@ const BuyingScreen = createStackNavigator({
       headerShown: false,
     },
   },
-  Paying: {
-    screen: Paying,
-    navigationOptions: {
-      headerShown: false,
-    },
-    path: 'Paying',
-  },
+  // Paying: {
+  //   screen: Paying,
+  //   navigationOptions: {
+  //     headerShown: false,
+  //   },
+  //   path: 'Paying',
+  // },
 });
 const Home = createBottomTabNavigator(
   {

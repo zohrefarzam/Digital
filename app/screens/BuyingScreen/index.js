@@ -103,31 +103,23 @@ class BuyingScreen extends Component {
     } else {
       // fetch(
       //   `https://jimbooexchange.com/php_api/idpey_webservice_mob.php?costt=1000000&usname=علی خسروی&uid=182&kind=coin&mail=alirezaKhosravee@gmail.com&phone=09127793259&order_id=2&value=بیت کوین`,
+      //   {
+      //     method: 'POST',
+      //     headers: {
+      //       'Content-Type': 'application/x-www-form-urlencoded', // <-- Specifying the Content-Type
+      //     },
+      //   },
       // )
-      //   .then(response => response)
-      //   .then(responseData => {
-      //     console.log('inside responsejson');
-      //     console.log('response object:', responseData);
+      //   .then(function(response) {
+      //     return response.text();
+      //   })
+      //   .then(async function(text) {
+      //     return text;
+      //   })
+      //   .then(text => this.props.navigation.navigate('Paying', {'link': text}))
+      //   .catch(function(error) {
+      //     console.log('Request failed', error);
       //   });
-      fetch(
-        `https://jimbooexchange.com/php_api/idpey_webservice_mob.php?costt=1000000&usname=علی خسروی&uid=182&kind=coin&mail=alirezaKhosravee@gmail.com&phone=09127793259&order_id=2&value=بیت کوین`,
-        {
-          method: 'POST',
-          headers: {
-            'Content-Type': 'application/x-www-form-urlencoded', // <-- Specifying the Content-Type
-          },
-        },
-      )
-        .then(function(response) {
-          return response.text();
-        })
-        .then(async function(text) {
-          return text;
-        })
-        .then(text => this.props.navigation.navigate('Paying', {'link': text}))
-        .catch(function(error) {
-          console.log('Request failed', error);
-        });
     }
   };
   renderTitle2 = () => {
