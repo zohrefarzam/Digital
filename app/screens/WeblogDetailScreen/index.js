@@ -14,6 +14,7 @@ import {
   widthPercentageToDP as wp,
   heightPercentageToDP as hp,
 } from 'react-native-responsive-screen';
+import FullVideo from '../../components/FullVideo';
 export default class WeblogDetailScreen extends Component {
   constructor(props) {
     super(props);
@@ -23,6 +24,8 @@ export default class WeblogDetailScreen extends Component {
       mail: '',
       text: '',
       dialog1: false,
+      video: {width: undefined, height: undefined, duration: undefined},
+      thumbnailUrl: undefined,
     };
   }
   componentWillMount = () => {
@@ -46,13 +49,19 @@ export default class WeblogDetailScreen extends Component {
   };
   render() {
     const {weblog} = this.state;
+    const url = 'https://your-url.com/video.mp4';
     return (
       <View>
         <View>
-          <Image
+          <FullVideo
+            // autoPlay
+            video={url}
+            style={{marginTop: 20}}
+          />
+          {/* <Image
             source={{uri: `${weblog.Pic}`}}
             style={{height: heightPercentageToDP(30), width: '100%'}}
-          />
+          /> */}
           <View style={{margin: 15}}>
             <Text>
               منتشر شده در :

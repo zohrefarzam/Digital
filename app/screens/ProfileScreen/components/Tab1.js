@@ -21,12 +21,9 @@ import normalize from 'react-native-normalize';
 import images from '../../../config/images';
 import AsyncStorage from '@react-native-community/async-storage';
 import {persianNumber} from '../../../lib/persian';
-import ImagePicker from 'react-native-image-picker';
 import {Item, Input} from 'native-base';
-import {number} from 'prop-types';
 import CustomModal from '../../../components/CustomModal';
 import {picker} from './ImagePicker';
-import {uploader} from './Uploader';
 import RNFetchBlob from 'react-native-fetch-blob';
 import moment from 'moment-jalaali';
 export default class Tab3 extends Component {
