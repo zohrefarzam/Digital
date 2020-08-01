@@ -72,7 +72,7 @@ let data = [
     value: 'بانک سرمایه',
   },
   {
-    value: 'بانک تات',
+    value: 'بانک آینده',
   },
   {
     value: 'بانک شهر',
@@ -166,7 +166,7 @@ export default class Tab3 extends Component {
         return images.bank.sina;
       case 'بانک سرمایه':
         return images.bank.sarmaye;
-      case 'بانک تات':
+      case 'بانک آینده':
         return images.bank.tat;
       case 'بانک شهر':
         return images.bank.shahr;
@@ -221,7 +221,7 @@ export default class Tab3 extends Component {
         return 639346;
       case 'بانک سرمایه':
         return 639607;
-      case 'بانک تات':
+      case 'بانک آینده':
         return 636214;
       case 'بانک شهر':
         return 502806;
@@ -409,5 +409,5 @@ const style = StyleSheet.create({
     //color: styles.color.colorText_GrAY,
     flex: 1.2,
   },
-  img: {height: hp(3), width: wp(3), flex: 0.3},
+  img: {height: hp(3.5), width: wp(3.5), flex: 0.4},
 });

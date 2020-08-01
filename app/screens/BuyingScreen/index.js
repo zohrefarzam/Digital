@@ -11,6 +11,7 @@ import {
 import {
   widthPercentageToDP as wp,
   heightPercentageToDP as hp,
+  heightPercentageToDP,
 } from 'react-native-responsive-screen';
 import LinearGradient from 'react-native-linear-gradient';
 import {Button} from 'react-native-elements';
@@ -47,7 +48,10 @@ class BuyingScreen extends Component {
       phone: '',
       mail: '',
       link: '',
-      dialog1:false,
+      wallet: false,
+      dialog1: false,
+      dialog3: false,
+      dialog2: false,
     };
   }
   state = {
@@ -98,7 +102,22 @@ class BuyingScreen extends Component {
     this.setState({id: id});
     this.setState({phone: phone});
     this.setState({mail: mail});
+    fetch(
+      'https://jimbooexchange.com/php_api/get_wallet_by_user_id_and_user_name.php',
+      {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/x-www-form-urlencoded', // <-- Specifying the Content-Type
+        },
+        body: `Id=${id}&User_Name=${name}`, // <-- Post parameters
+      },
+    )
+      .then(response => response.json()) //   <------ this line
+      .then(response => {
+        return this.setState({wallet: response.data});
+      });
   }
+
   renderTitle2 = () => {
     switch (this.state.menu2) {
       case 1:
@@ -123,40 +142,85 @@ class BuyingScreen extends Component {
         return 'ریال';
     }
   };
-  submitBuying = () => {
-    const {name, id, phone, mail, link, rial} = this.state;
+  idPay = () => {
+    const {name, id, phone, mail, rial} = this.state;
     const rand = Math.floor(Math.random() * 10000) + 1;
+    fetch(
+      `https://jimbooexchange.com/php_api/idpey_webservice_mob.pWallet_Namet=${rial}&usname=${name}&uid=${id}&kind=coin&mail=${mail}&phone=${phone}&order_id=${rand}&value=${this.renderTitle()}`,
+      {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/x-www-form-urlencoded', // <-- Specifying the Content-Type
+        },
+      },
+    )
+      .then(function(response) {
+        return response.text();
+      })
+      .then(async function(text) {
+        return text;
+      })
+      .then(text =>
+        Linking.canOpenURL(text).then(supported => {
+          if (supported) {
+            Linking.openURL(text);
+          } else {
+            console.log("Don't know how to open URI: " + text);
+          }
+        }),
+      )
+      .catch(function(error) {
+        console.log('Request failed', error);
+      });
+  };
+
+  submitBuying = () => {
+    const {name, id, phone, mail, rial, wallet} = this.state;
+    const {setting, navigation} = this.props;
+    const result = wallet.filter(({Wallet_Name}) =>
+      Wallet_Name.includes(this.renderTitle()),
+    );
+    const code = result[0]?.Wallet_Code;
+    const result2 = wallet.filter(({Wallet_Name}) =>
+      Wallet_Name.includes(this.renderTitle2()),
+    );
+    const code2 = result2[0]?.Wallet_Code;
+    const wall2 = result2[0]?.Wallet_Name;
     if (phone === null) {
       this.setState({dialog1: true});
-    } else {
-      fetch(
-        `https://jimbooexchange.com/php_api/idpey_webservice_mob.php?costt=${rial}&usname=${name}&uid=${id}&kind=coin&mail=${mail}&phone=${phone}&order_id=${rand}&value=${this.renderTitle()}`,
-        {
-          method: 'POST',
-          headers: {
-            'Content-Type': 'application/x-www-form-urlencoded', // <-- Specifying the Content-Type
-          },
-        },
-      )
-        .then(function(response) {
-          return response.text();
-        })
-        .then(async function(text) {
-          return text;
-        })
-        .then(text =>
-          Linking.canOpenURL(text).then(supported => {
-            if (supported) {
-              Linking.openURL(text);
-            } else {
-              console.log("Don't know how to open URI: " + text);
-            }
-          }),
-        )
-        .catch(function(error) {
-          console.log('Request failed', error);
-        });
     }
+    if (
+      this.renderTitle() !== 'پرفکت مانی' &&
+      this.renderTitle() !== 'ریال' &&
+      code === undefined
+    ) {
+      this.setState({dialog3: true});
+    } else if (this.renderTitle() !== 'ریال') {
+      navigation.navigate('Pay', {title: this.renderTitle()});
+    }
+
+    if (this.renderTitle() === 'ریال' && this.renderTitle2() === 'پرفکت مانی') {
+      navigation.navigate('Paying');
+    }
+    if (
+      this.renderTitle() === 'ریال' &&
+      this.renderTitle2() !== 'پرفکت مانی' &&
+      code2 === undefined
+    ) {
+      this.setState({dialog3: true});
+    } else if (
+      this.renderTitle() === 'ریال' &&
+      (this.renderTitle2() !== 'پرفکت مانی') & (code2 !== undefined)
+    ) {
+      navigation.navigate('Arz', {wallet: code2, title: this.renderTitle2()});
+    }
+    // if (this.renderTitle() === 'ریال') {
+    //   navigation.navigate('Paying');
+    // } else if (this.renderTitle() === 'پرفکت مانی') {
+    //   navigation.navigate('Pay', {title: this.renderTitle()});
+    // } else {
+    //   navigation.navigate('Arz', {wallet: code});
+    // }
   };
 
   renderSubTitle2 = () => {
@@ -282,8 +346,41 @@ class BuyingScreen extends Component {
     }
   };
   renderCurrent = () => {
-    const {prices} = this.props;
+    const {prices, setting} = this.props;
+    const {dollar} = this.state;
+    const d = parseInt(setting[0]?.Defrent);
+    const p = parseInt(dollar?.sana_buy_usd?.p);
+    const def = Math.abs(d + p);
     switch (this.state.menu) {
+      case 1:
+        return prices[0]?.current_price;
+      case 2:
+        return prices[4]?.current_price;
+      case 3:
+        return prices[3]?.current_price;
+      case 4:
+        return prices[16]?.current_price;
+      case 5:
+        return prices[7]?.current_price;
+      case 6:
+        return prices[1]?.current_price;
+      case 7:
+        return prices[25]?.current_price;
+      case 8:
+        return prices[2]?.current_price;
+      case 9:
+        return;
+      case 10:
+        return;
+    }
+  };
+  renderCurrent2 = () => {
+    const {dollar} = this.state;
+    const {prices, setting} = this.props;
+    const d = parseInt(setting[0]?.Defrent);
+    const p = parseInt(dollar?.sana_buy_usd?.p);
+    const def = Math.abs(d + p);
+    switch (this.state.menu2) {
       case 1:
         return prices[0]?.current_price;
       case 2:
@@ -330,13 +427,64 @@ class BuyingScreen extends Component {
       case 8:
         return Math.abs(prices[2]?.current_price * def);
       case 9:
-        return;
+        return Math.abs(def);
+      case 10:
+        return 1;
+    }
+  };
+  renderRial2 = () => {
+    const {dollar} = this.state;
+    const {prices, setting} = this.props;
+    const d = parseInt(setting[0]?.Defrent);
+    const p = parseInt(dollar?.sana_buy_usd?.p);
+    const def = Math.abs(d + p);
+    switch (this.state.menu2) {
+      case 1:
+        return Math.abs(prices[0]?.current_price * def);
+      case 2:
+        return Math.abs(prices[4]?.current_price * def);
+      case 3:
+        return Math.abs(prices[3]?.current_price * def);
+      case 4:
+        return Math.abs(prices[17]?.current_price * def);
+      case 5:
+        return Math.abs(prices[7]?.current_price * def);
+      case 6:
+        return Math.abs(prices[1]?.current_price * def);
+      case 7:
+        return Math.abs(prices[25]?.current_price * def);
+      case 8:
+        return Math.abs(prices[2]?.current_price * def);
+      case 9:
+        return Math.abs(def);
       case 10:
         return;
     }
   };
   renderSymbol = () => {
     switch (this.state.menu) {
+      case 1:
+        return 'BTC';
+      case 2:
+        return 'BCH';
+      case 3:
+        return 'XRP';
+      case 4:
+        return 'TRX';
+      case 5:
+        return 'LTC';
+      case 6:
+        return 'ETH';
+      case 7:
+        return 'DASH';
+      case 8:
+        return 'USDT';
+      case 9:
+        return '$';
+    }
+  };
+  renderSymbol2 = () => {
+    switch (this.state.menu2) {
       case 1:
         return 'BTC';
       case 2:
@@ -369,19 +517,37 @@ class BuyingScreen extends Component {
         <View style={style.logoCon}>
           <Image
             source={images.global.logo}
-            style={{height: hp(25), width: wp(35)}}
+            style={{height: hp(15), width: wp(35)}}
             resizeMode="contain"
           />
         </View>
         <View>
           <View>
+            <Text
+              style={{
+                fontSize: normalize(12),
+                marginVertical: heightPercentageToDP(1),
+                marginRight: '7%',
+              }}
+              color="gray">
+              توجه: اولویت انتخاب با گزینه "دریافت میکنید" میباشد
+            </Text>
+            <Text
+              style={{
+                fontSize: normalize(12),
+                marginVertical: heightPercentageToDP(1),
+                marginRight: '7%',
+              }}
+              color="gray">
+              توجه: نرخ نمایش داده شده بدون محاسبه پورسانت خرید و فروش می باشد
+            </Text>
             <View style={style2.main}>
               <View style={style2.card}>
                 <View style={style2.titleView}>
                   <Text style={style2.title}>پرداخت میکنید</Text>
                 </View>
                 {/**
-                 * 
+                 *
                  paying
                  */}
                 <View style={style2.js}>
@@ -430,6 +596,9 @@ class BuyingScreen extends Component {
                         onPress={() => {
                           this.setState({menu2: 1});
                           this.hideMenu2();
+                          if (this.renderTitle() !== 'ریال') {
+                            this.setState({dialog2: true});
+                          }
                         }}
                         style={style.menuItem}>
                         <View>
@@ -446,6 +615,9 @@ class BuyingScreen extends Component {
                         onPress={() => {
                           this.setState({menu2: 2});
                           this.hideMenu2();
+                          if (this.renderTitle() !== 'ریال') {
+                            this.setState({dialog2: true});
+                          }
                         }}
                         style={style.menuItem}>
                         <View>
@@ -462,6 +634,9 @@ class BuyingScreen extends Component {
                         onPress={() => {
                           this.setState({menu2: 3});
                           this.hideMenu2();
+                          if (this.renderTitle() !== 'ریال') {
+                            this.setState({dialog2: true});
+                          }
                         }}
                         style={style.menuItem}>
                         <View>
@@ -478,6 +653,9 @@ class BuyingScreen extends Component {
                         onPress={() => {
                           this.setState({menu2: 4});
                           this.hideMenu2();
+                          if (this.renderTitle() !== 'ریال') {
+                            this.setState({dialog2: true});
+                          }
                         }}
                         style={style.menuItem}>
                         <View>
@@ -494,6 +672,9 @@ class BuyingScreen extends Component {
                         onPress={() => {
                           this.setState({menu2: 5});
                           this.hideMenu2();
+                          if (this.renderTitle() !== 'ریال') {
+                            this.setState({dialog2: true});
+                          }
                         }}
                         style={style.menuItem}>
                         <View>
@@ -510,6 +691,9 @@ class BuyingScreen extends Component {
                         onPress={() => {
                           this.setState({menu2: 6});
                           this.hideMenu2();
+                          if (this.renderTitle() !== 'ریال') {
+                            this.setState({dialog2: true});
+                          }
                         }}
                         style={style.menuItem}>
                         <View>
@@ -526,6 +710,9 @@ class BuyingScreen extends Component {
                         onPress={() => {
                           this.setState({menu2: 7});
                           this.hideMenu2();
+                          if (this.renderTitle() !== 'ریال') {
+                            this.setState({dialog2: true});
+                          }
                         }}
                         style={style.menuItem}>
                         <View>
@@ -542,6 +729,9 @@ class BuyingScreen extends Component {
                         onPress={() => {
                           this.setState({menu2: 8});
                           this.hideMenu2();
+                          if (this.renderTitle() !== 'ریال') {
+                            this.setState({dialog2: true});
+                          }
                         }}
                         style={style.menuItem}>
                         <View>
@@ -558,6 +748,9 @@ class BuyingScreen extends Component {
                         onPress={() => {
                           this.setState({menu2: 9});
                           this.hideMenu2();
+                          if (this.renderTitle() !== 'ریال') {
+                            this.setState({dialog2: true});
+                          }
                         }}
                         style={style.menuItem}>
                         <View>
@@ -594,12 +787,17 @@ class BuyingScreen extends Component {
         </View>
         <View style={style.txtView}>
           <Text style={[style.grayTxt, style.normal]}>
-            <TextNumber black>{this.renderCurrent()}</TextNumber>
+            <TextNumber black>
+              {this.renderTitle2() !== 'ریال'
+                ? this.renderCurrent2()
+                : this.renderCurrent()}
+            </TextNumber>
             <Text style={style.black}>دلار </Text>
-            <Text>نرخ بین المللی ارز </Text>
-            <TextNumber black>{def}</TextNumber>
-            <Text style={style.black}>ریال </Text>
-            هزینه انتقال
+            <Text color="gray">نرخ بین المللی ارز </Text>
+            <TextNumber size="sm" black>
+              {def}
+            </TextNumber>
+            قیمت هر دلار
           </Text>
         </View>
         <View>
@@ -612,11 +810,19 @@ class BuyingScreen extends Component {
                 <View style={style2.right}>
                   <Input
                     style={[style.input, {width: wp(32)}]}
-                    value={persianNumber(
-                      numberWithCommas(
-                        Math.abs(this.state.rial / this.renderRial()),
-                      ),
-                    )}
+                    value={
+                      this.renderTitle2() === 'ریال'
+                        ? ` ${persianNumber(
+                            numberWithCommas(
+                              Math.abs(this.state.rial / this.renderRial()),
+                            ),
+                          )} `
+                        : ` ${persianNumber(
+                            numberWithCommas(
+                              Math.abs(this.state.rial * this.renderRial2()),
+                            ),
+                          )} `
+                    }
                     multiline={true}
                     keyboardType="numeric"
                   />
@@ -819,8 +1025,17 @@ class BuyingScreen extends Component {
             </Text>
           </View>
           <View style={style.rowRev}>
-            <Text style={style.normal}>{this.renderSymbol()}1 = </Text>
-            <TextNumber style={style.normal}>{this.renderRial()}</TextNumber>
+            <Text style={style.normal}>
+              {this.renderTitle2() !== 'ریال'
+                ? this.renderSymbol2()
+                : this.renderSymbol()}
+              1 ={' '}
+            </Text>
+            <TextNumber style={style.normal}>
+              {this.renderTitle2() !== 'ریال'
+                ? this.renderRial2()
+                : this.renderRial()}
+            </TextNumber>
             <Text style={style.normal}>ریال{'  '}</Text>
           </View>
         </View>
@@ -848,6 +1063,23 @@ class BuyingScreen extends Component {
             this.setState({dialog1: false});
           }}
         />
+        <CustomModal
+          isVisible={this.state.dialog2}
+          title="پرداخت ارزهای دیجیتال"
+          describe="فقط از طریق پرداخت ریالی میتوانید ارزهای دیجیتال تهیه کنید.
+          برای این منظور ابتدا فیلد دوم (دریافت میکنید) را روی ریال تنظیم کنید."
+          onConfirm={() => {
+            this.setState({dialog2: false});
+          }}
+        />
+        <CustomModal
+          isVisible={this.state.dialog3}
+          title="کیف پول"
+          describe="شما هیچ کیف پولی مربوط به ارز دیجیتال مورد نظر ثبت نکرده اید، قبل از خرید باید کیف پول خود را ثبت کنید"
+          onConfirm={() => {
+            this.setState({dialog3: false});
+          }}
+        />
       </View>
     );
   }
@@ -872,7 +1104,7 @@ const style = StyleSheet.create({
   title: {color: styles.color.colorText_GrAY, fontSize: normalize(45)},
   grayTxt: {color: styles.color.colorText_GrAY},
   //normal: {fontSize: 16},
-  txtView: {marginRight: wp(17), marginVertical: normalize(1, 'height')},
+  txtView: {marginRight: wp(10), marginVertical: normalize(1, 'height')},
   black: {color: 'black'},
   center: {alignSelf: 'center'},
   rowRev: {flexDirection: 'row-reverse', flexWrap: 'nowrap'},

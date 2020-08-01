@@ -25,49 +25,19 @@ import AsyncStorage from '@react-native-community/async-storage';
 import {FetchSetting} from '../../api/methods/FetchPrices';
 import {connect} from 'react-redux';
 import CustomModal from '../../components/CustomModal';
-import HTML from 'react-native-render-html';
-import {
-  IGNORED_TAGS,
-  alterNode,
-  makeTableRenderer,
-} from 'react-native-render-html-table-bridge';
-import WebView from 'react-native-webview';
-
-const htmlContent = `
-    <h1>This HTML snippet is now rendered with native components !</h1>
-    <h2>Enjoy a webview-free and blazing fast application</h2>
-    
-    <em style="textAlign: center;">Look at how happy this native cat is</em>
-`;
-const config = {
-  WebViewComponent: WebView,
-};
-
-const renderers = {
-  table: makeTableRenderer(config),
-};
-
-const htmlConfig = {
-  alterNode,
-  renderers,
-  ignoredTags: IGNORED_TAGS,
-};
-class PayingScreen extends Component {
+class Arz2Screen extends Component {
   constructor(props) {
     super(props);
     this.state = {
       title: '',
-      btn: 'ثبت مشخصات ووچر',
+      btn: 'ثبت شناسه تراکنش',
       name: '',
       id: '',
       phone: '',
       mail: '',
       dialog1: false,
-      dollar: [],
-      vocher: '',
       number: '',
       code: '',
-      tran: [],
     };
   }
   async componentWillMount() {
@@ -82,50 +52,18 @@ class PayingScreen extends Component {
     this.setState({title: this.props.navigation.getParam('title')});
     const name = await AsyncStorage.getItem('name');
     const id = await AsyncStorage.getItem('id');
-    const phone = await AsyncStorage.getItem('phone');
-    const mail = await AsyncStorage.getItem('mail');
     this.setState({name: name});
     this.setState({id: id});
-    this.setState({phone: phone});
-    this.setState({mail: mail});
-    fetch(
-      'https://jimbooexchange.com/php_api/get_transaction_by_user_id_and_user_name.php',
-      {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/x-www-form-urlencoded', // <-- Specifying the Content-Type
-        },
-        body: `Id=${id}&User_Name=${name}`,
-      },
-    )
-      .then(response => response.json()) //   <------ this line
-      .then(response => {
-        return this.setState({tran: response.data});
-      });
   }
-  buyVocher = () => {
-    const {number, code, name, id, tran} = this.state;
+  onSubmit = () => {
+    const {number, code, name, id} = this.state;
     const date = persianNumber(moment().format('jYYYY/jM/jD hh:mm:ss '));
-    const result = tran.filter(({Code}) => Code.includes('7318058939'));
-    const cost = result[0]?.Cost;
-    fetch('https://jimbooexchange.com/php_api/evocher_sell.php', {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/x-www-form-urlencoded', // <-- Specifying the Content-Type
-      },
-      body: `en=${number}&ec=${code}`,
-    })
-      .then(response => response.text()) //   <------ this line
-      .then(response => {
-        return this.setState({vocher: response});
-      });
-
     fetch('https://jimbooexchange.com/php_api/insert_transaction.php', {
       method: 'POST',
       headers: {
         'Content-Type': 'application/x-www-form-urlencoded', // <-- Specifying the Content-Type
       },
-      body: `Code=${code}&Time=${date}&Reason=${`فروش ووچر به شماره:${number}`}&Cost=${cost}&User_Name=${name}&User_Id=${id}`,
+      body: `Code=${code}&Time=${date}&Reason=${`خرید ارز دیجیتال:${number}`}&Cost=${'نامعلوم'}&User_Name=${name}&User_Id=${id}`,
     })
       .then(function(json) {
         console.log('request succeeded with json response', json);
@@ -133,17 +71,10 @@ class PayingScreen extends Component {
       .catch(function(error) {
         console.log('request failed', error);
       });
+    this.setState({dialog1: true});
   };
 
-  onSubmit = () => {
-    this.buyVocher();
-  };
   render() {
-    const {title, vocher} = this.state;
-    const {setting} = this.props;
-    const min = parseInt(setting[0]?.Min_Curency);
-    const max = parseInt(setting[0]?.Max_Curency);
-
     return (
       <ScrollView contentContainerStyle={{marginHorizontal: '3%'}}>
         <View style={style.logoCon}>
@@ -176,27 +107,16 @@ class PayingScreen extends Component {
           <Text
             style={{fontSize: 12, marginVertical: heightPercentageToDP(2)}}
             color="gray">
-            پس از ثبت ووچر پرفکت مبلغ دقیق محاسبه و در کمتر از 48 ساعت با
-            استفاده از شماره شبا وجه معادل واریز خواهد شد.
+            تعیین قیمت نهایی زمانی است که شناسه تراکنش کاربر در شبکه بلاکچین
+            کانفرم می‌شود. کاربر پس از واریز ارز به کیف پول جیمبو باید شناسه
+            تراکنش یا همان txid خود و یا itc (بایننس) را ثبت نماید. پس از ثبت
+            مبلغ دقیق محاسبه و در کمتر از 48 ساعت با استفاده از شماره شبا وجه
+            معادل واریز خواهد شد.
           </Text>
-
-          <Text>کد ووچر اکترونیکی</Text>
+          <Text>شناسه تراکنش</Text>
           <Item style={style.item}>
             <Input
-              placeholder="e-voucher"
-              placeholderTextColor="#adb4bc"
-              style={style.inputStyle}
-              //keyboardType="phone-pad"
-              containerStyle={style.item}
-              autoFocus
-              blurOnSubmit
-              onChangeText={t => this.setState({number: t})}
-            />
-          </Item>
-          <Text>کد فعالسازی</Text>
-          <Item style={style.item}>
-            <Input
-              placeholder="Activation code"
+              placeholder="Transaction Id(txid)or Internal Transfer Code for Binance"
               placeholderTextColor="#adb4bc"
               style={style.inputStyle}
               //keyboardType="phone-pad"
@@ -225,24 +145,13 @@ class PayingScreen extends Component {
             }}
             onPress={() => this.onSubmit()}
           />
-
-          <HTML html={`${this.state.vocher}`} {...htmlConfig} />
         </View>
-
         <CustomModal
           isVisible={this.state.dialog1}
-          title="مبلغ نادرست"
-          describe={persianNumber(`حداقل مبلغ معاملات ${min} ریال می باشد `)}
+          title="ثبت موفق بود"
+          describe="اطلاعات پرداخت شما ثبت شد"
           onConfirm={() => {
             this.setState({dialog1: false});
-          }}
-        />
-        <CustomModal
-          isVisible={this.state.dialog2}
-          title="مبلغ نادرست"
-          describe={persianNumber(`حداکثر مبلغ معاملات ${max} ریال می باشد `)}
-          onConfirm={() => {
-            this.setState({dialog2: false});
           }}
         />
       </ScrollView>
@@ -255,7 +164,7 @@ const mapStateToProps = state => ({
   error: state.prices.error,
 });
 
-export default connect(mapStateToProps)(PayingScreen);
+export default connect(mapStateToProps)(Arz2Screen);
 const style = StyleSheet.create({
   logoCon: {alignItems: 'center'},
   btn: {borderRadius: normalize(25), paddingVertical: heightPercentageToDP(1)},
@@ -277,9 +186,10 @@ const style = StyleSheet.create({
   item: {
     alignSelf: 'center',
     marginBottom: '3%',
-    borderColor:AppStyles.color.ColorGreen
+    borderColor: AppStyles.color.ColorGreen,
   },
   inputStyle: {
+    fontSize: normalize(14),
     fontFamily: 'IRANSansMobile',
     textAlign: 'right',
     paddingBottom: heightPercentageToDP(0.8),

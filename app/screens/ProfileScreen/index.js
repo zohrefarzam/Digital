@@ -11,12 +11,13 @@ import styles from '../../config/styles';
 import images from '../../config/images';
 import {Text} from '../../utils/Kit';
 import normalize from 'react-native-normalize';
+import Tab6 from './components/Tab6';
 
 export default class ProfileScreen extends Component {
   constructor(props) {
     super(props);
     this.state = {
-      seg: 5,
+      seg: 6,
     };
     this.updateIndex = this.updateIndex.bind(this);
   }
@@ -30,16 +31,18 @@ export default class ProfileScreen extends Component {
   render() {
     const _renderComponent = () => {
       switch (this.state.seg) {
-        case 1:
-          return <Hesab />;
-        case 2:
-          return <Bank />;
-        case 3:
-          return <Sheba />;
+        case 6:
+          return <Auth />;
+          case 5:
+            return <Tab6 />;
         case 4:
           return <Wallet />;
-        case 5:
-          return <Auth />;
+        case 3:
+          return <Sheba />;
+        case 2:
+          return <Bank />;
+        case 1:
+          return <Hesab />;
       }
     };
     return (
@@ -194,7 +197,7 @@ export default class ProfileScreen extends Component {
               </Text>
             </Button>
             <Button
-              last
+              
               style={[
                 style.tab,
                 {
@@ -216,6 +219,36 @@ export default class ProfileScreen extends Component {
                   {
                     color:
                       this.state.seg === 5
+                        ? styles.color.ColorGreen
+                        : styles.color.colorText_GrAY,
+                  },
+                ]}>
+                تراکنش ها
+              </Text>
+            </Button>
+            <Button
+              last
+              style={[
+                style.tab,
+                {
+                  borderTopColor: styles.color.COLOR_DARK_SEPERATOR,
+                  backgroundColor:
+                    this.state.seg === 6 ? styles.color.ColorGray : 'white',
+                  borderBottomColor:
+                    this.state.seg === 6
+                      ? styles.color.ColorGreen
+                      : styles.color.COLOR_DARK_SEPERATOR,
+                  borderBottomWidth: 2,
+                },
+              ]}
+              active={this.state.seg === 6 ? true : false}
+              onPress={this.selectComponent(6)}>
+              <Text
+                style={[
+                  style.font,
+                  {
+                    color:
+                      this.state.seg === 6
                         ? styles.color.ColorGreen
                         : styles.color.colorText_GrAY,
                   },

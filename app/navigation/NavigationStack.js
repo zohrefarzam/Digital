@@ -18,6 +18,9 @@ import {
   WeblogDetail,
   Paying,
   ForgotPass,
+  Pay,
+  Arz,
+  Arz2,
 } from '../screens';
 import navigationStyle from './navigationStyle';
 import images from '../config/images';
@@ -79,12 +82,29 @@ const BuyingScreen = createStackNavigator({
       headerShown: false,
     },
   },
+  Pay: {
+    screen: Pay,
+    navigationOptions: {
+      headerShown: false,
+    },
+  },
   Paying: {
     screen: Paying,
     navigationOptions: {
       headerShown: false,
     },
-    path: 'Paying',
+  },
+  Arz: {
+    screen: Arz,
+    navigationOptions: {
+      headerShown: false,
+    },
+  },
+  Arz2: {
+    screen: Arz2,
+    navigationOptions: {
+      headerShown: false,
+    },
   },
 });
 const Home = createBottomTabNavigator(

@@ -50,24 +50,15 @@ class PricesScreen extends Component {
     //alert(prices[0]?.name);
     return (
       <View style={style.main}>
-        <Text style={style.title}> لوگو</Text>
+        <View style={{alignItems:'center',justifyContent:'center'}}>
+         <Image
+            source={images.global.logo}
+            style={{height: hp(15), width: wp(35)}}
+            resizeMode="contain"
+          />
+          </View>
         <View style={style.mh}>
-          <Item rounded style={style.item}>
-            <Input
-              placeholderTextColor={styles.color.COLOR_DARK_SEPERATOR}
-              placeholder="جستجو بر اساس نام یا نماد ارز"
-              multiline={false}
-              numberOfLines={1}
-              maxLength={11}
-              style={style.input}
-            />
-            <Image
-              source={images.global.search}
-              style={[style.img, {tintColor: styles.color.ColorGreen}]}
-              resizeMode="contain"
-              tintColor={styles.color.ColorGreen}
-            />
-          </Item>
+      
           <View style={style.view1}>
             <View style={style.view2}>
               <Text style={[style.txt, {flex: 1.3}]}>تغییرات</Text>

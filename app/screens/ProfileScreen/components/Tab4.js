@@ -162,7 +162,7 @@ export default class Tab4 extends Component {
       case 639607:
         return 'بانک سرمایه';
       case 636214:
-        return 'بانک تات';
+        return 'بانک آینده';
       case 502806:
         return 'بانک شهر';
       case 502938:
@@ -318,5 +318,5 @@ const style = StyleSheet.create({
     //color: styles.color.colorText_GrAY,
     flex: 1.2,
   },
-  img: {height: hp(3), width: wp(3), flex: 0.3},
+  img: {height: hp(3.5), width: wp(3.5), flex: 0.4},
 });

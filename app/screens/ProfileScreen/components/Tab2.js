@@ -74,7 +74,7 @@ export default class Tab2 extends Component {
       id: '',
       data: {},
       check: '',
-      symbol:''
+      symbol: '',
     };
   }
   async componentWillMount() {
@@ -102,19 +102,8 @@ export default class Tab2 extends Component {
         this.setState({loading: false});
       });
   };
-  renderCheck = check => {
-    switch (check) {
-      case 'wait':
-        return 'درحال بررسی';
-      case 'ok':
-        return 'تایید شده';
-
-      default:
-        break;
-    }
-  };
-  renderWalletImage = () => {
-    const {digital} = this.state;
+  updateBank = digital => this.setState({digital: digital.value});
+  renderWalletImage = digital => {
     switch (digital) {
       case 'بیت کوین':
         return images.example.bit;
@@ -175,10 +164,9 @@ export default class Tab2 extends Component {
         break;
     }
   };
-  updateDigital = digital => this.setState({digital: digital.value});
+
   Add = () => {
     const {wallet, code, digital, name, id} = this.state;
-    alert(digital)
     if (wallet.length === 0 || code.length === 0) {
       this.setState({dialog2: true});
     } else {
@@ -252,15 +240,12 @@ export default class Tab2 extends Component {
                     <Text
                       style={[
                         style.txt,
-                        {fontSize: normalize(18), paddingRight: 10},
+                        {fontSize: normalize(12), paddingRight: 10},
                       ]}>
-                      <Text size="norm">
-                        {persianNumber(item.Wallet_Lable)}
-                      </Text>
+                      نام کیف پول : {persianNumber(item.Wallet_Lable)}
                     </Text>
-
-                    <Text size="norm" style={[style.txt, {flex: 0.5}]}>
-                      {this.renderCheck(item.IsOk)}
+                    <Text style={[style.txt, {fontSize: normalize(12)}]}>
+                      کد کیف پول : {persianNumber(item.Wallet_Code)}
                     </Text>
                     <TouchableOpacity onPress={() => this.onDelete(item.Id)}>
                       <Image
@@ -282,7 +267,7 @@ export default class Tab2 extends Component {
           picker
           data={data}
           value={this.state.digital}
-          onChangeSelect={this.updateDigital}
+          onChangeSelect={this.updateBank}
           input
           input2
           place1="نام کیف پول را اینجا وارد کنید"
@@ -329,5 +314,5 @@ const style = StyleSheet.create({
     //color: styles.color.colorText_GrAY,
     flex: 1.2,
   },
-  img: {height: hp(3), width: wp(3), flex: 0.3},
+  img: {height: hp(3.5), width: wp(3.5), flex: 0.4},
 });

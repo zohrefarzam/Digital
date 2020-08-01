@@ -1,12 +1,5 @@
 import React, {Component} from 'react';
-import {
-  View,
-  StyleSheet,
-  Image,
-  TouchableOpacity,
-  Linking,
-  ScrollView,
-} from 'react-native';
+import {View, StyleSheet, Image, TouchableOpacity, Linking} from 'react-native';
 import {tsImportEqualsDeclaration} from '@babel/types';
 import {Card, Item, Input} from 'native-base';
 import {persianNumber} from '../../lib/persian';
@@ -25,49 +18,19 @@ import AsyncStorage from '@react-native-community/async-storage';
 import {FetchSetting} from '../../api/methods/FetchPrices';
 import {connect} from 'react-redux';
 import CustomModal from '../../components/CustomModal';
-import HTML from 'react-native-render-html';
-import {
-  IGNORED_TAGS,
-  alterNode,
-  makeTableRenderer,
-} from 'react-native-render-html-table-bridge';
-import WebView from 'react-native-webview';
-
-const htmlContent = `
-    <h1>This HTML snippet is now rendered with native components !</h1>
-    <h2>Enjoy a webview-free and blazing fast application</h2>
-    
-    <em style="textAlign: center;">Look at how happy this native cat is</em>
-`;
-const config = {
-  WebViewComponent: WebView,
-};
-
-const renderers = {
-  table: makeTableRenderer(config),
-};
-
-const htmlConfig = {
-  alterNode,
-  renderers,
-  ignoredTags: IGNORED_TAGS,
-};
-class PayingScreen extends Component {
+class PayScreen extends Component {
   constructor(props) {
     super(props);
     this.state = {
       title: '',
-      btn: 'ثبت مشخصات ووچر',
+      btn: 'پرداخت',
       name: '',
       id: '',
       phone: '',
       mail: '',
       dialog1: false,
       dollar: [],
-      vocher: '',
-      number: '',
-      code: '',
-      tran: [],
+      vocher: [],
     };
   }
   async componentWillMount() {
@@ -88,55 +51,104 @@ class PayingScreen extends Component {
     this.setState({id: id});
     this.setState({phone: phone});
     this.setState({mail: mail});
+  }
+  renderDescribe = () => {
+    const {title} = this.state;
+    if (title === 'پرفکت مانی') {
+      return 'پس از پرداخت وجه ووچر به تناسب مبلغ به صورت آنی ووچر شما صادر خواهد شد';
+    } else {
+      return ' پس از پرداخت، مقدار ارز متناسب با پرداخت در کمتر از 3 ساعت به حساب شما واریز میگردد';
+    }
+  };
+  idPay = arz => {
+    const {name, id, phone, mail, rial, title} = this.state;
+    const rand = Math.floor(Math.random() * 10000) + 1;
+
     fetch(
-      'https://jimbooexchange.com/php_api/get_transaction_by_user_id_and_user_name.php',
+      `https://jimbooexchange.com/php_api/idpey_webservice_mob.php?costt=${rial}&usname=${name}&uid=${id}&kind=${arz}&mail=${mail}&phone=${phone}&order_id=${rand}&value=${title}`,
       {
         method: 'POST',
         headers: {
           'Content-Type': 'application/x-www-form-urlencoded', // <-- Specifying the Content-Type
         },
-        body: `Id=${id}&User_Name=${name}`,
+      },
+    )
+      .then(function(response) {
+        return response.text();
+      })
+      .then(async function(text) {
+        return text;
+      })
+      .then(text =>
+        Linking.canOpenURL(text).then(supported => {
+          if (supported) {
+            Linking.openURL(text);
+          } else {
+            console.log("Don't know how to open URI: " + text);
+          }
+        }),
+      )
+      .catch(function(error) {
+        console.log('Request failed', error);
+      });
+  };
+  buyVocher = () => {
+    const {rial, dollar, vocher, name, id} = this.state;
+    const {setting} = this.props;
+    const d = parseInt(setting[0]?.Defrent);
+    const p = parseInt(dollar?.sana_buy_usd?.p);
+    const def = Math.abs(d + p);
+    const cost = Math.abs(rial / def).toFixed(2);
+    const date = persianNumber(moment().format('jYYYY/jM/jD hh:mm:ss '));
+    fetch(
+      `https://jimbooexchange.com/php_api/evocher_buy_perfect.php?Cost=${cost}`,
+      {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/x-www-form-urlencoded', // <-- Specifying the Content-Type
+        },
       },
     )
       .then(response => response.json()) //   <------ this line
       .then(response => {
-        return this.setState({tran: response.data});
-      });
-  }
-  buyVocher = () => {
-    const {number, code, name, id, tran} = this.state;
-    const date = persianNumber(moment().format('jYYYY/jM/jD hh:mm:ss '));
-    const result = tran.filter(({Code}) => Code.includes('7318058939'));
-    const cost = result[0]?.Cost;
-    fetch('https://jimbooexchange.com/php_api/evocher_sell.php', {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/x-www-form-urlencoded', // <-- Specifying the Content-Type
-      },
-      body: `en=${number}&ec=${code}`,
-    })
-      .then(response => response.text()) //   <------ this line
-      .then(response => {
-        return this.setState({vocher: response});
-      });
-
-    fetch('https://jimbooexchange.com/php_api/insert_transaction.php', {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/x-www-form-urlencoded', // <-- Specifying the Content-Type
-      },
-      body: `Code=${code}&Time=${date}&Reason=${`فروش ووچر به شماره:${number}`}&Cost=${cost}&User_Name=${name}&User_Id=${id}`,
-    })
-      .then(function(json) {
-        console.log('request succeeded with json response', json);
+        return response;
       })
-      .catch(function(error) {
-        console.log('request failed', error);
-      });
+      .then(res =>
+        fetch('https://jimbooexchange.com/php_api/insert_transaction.php', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/x-www-form-urlencoded', // <-- Specifying the Content-Type
+          },
+          body: `Code=${`اعتبار ووچر:${res.VOUCHER_AMOUNT}کد ووچر:${
+            res.VOUCHER_CODE
+          }شماره ووچر:${
+            res.VOUCHER_NUM
+          }`}&Time=${date}&Reason=${'خرید ووچر پرفکت مانی'}&Cost=${cost}&User_Name=${name}&User_Id=${id}`,
+        })
+          .then(function(json) {
+            console.log('request succeeded with json response', json);
+          })
+          .catch(function(error) {
+            console.log('request failed', error);
+          }),
+      );
   };
 
   onSubmit = () => {
-    this.buyVocher();
+    const {rial, title} = this.state;
+    const {setting} = this.props;
+    const min = parseInt(setting[0]?.Min_Curency);
+    const max = parseInt(setting[0]?.Max_Curency);
+    if (rial < min) {
+      this.setState({dialog1: true});
+    } else if (rial > max) {
+      this.setState({dialog2: true});
+    } else if (title !== 'پرفکت مانی') {
+      this.idPay('coin');
+    } else {
+      this.idPay('vocher');
+      this.buyVocher();
+    }
   };
   render() {
     const {title, vocher} = this.state;
@@ -145,7 +157,7 @@ class PayingScreen extends Component {
     const max = parseInt(setting[0]?.Max_Curency);
 
     return (
-      <ScrollView contentContainerStyle={{marginHorizontal: '3%'}}>
+      <View style={{justifyContent: 'center', marginHorizontal: '3%'}}>
         <View style={style.logoCon}>
           <Image
             source={images.global.logo}
@@ -173,37 +185,22 @@ class PayingScreen extends Component {
           </View>
         </Card>
         <Card style={{padding: '3%'}}>
+          <Text> خرید {title} </Text>
           <Text
             style={{fontSize: 12, marginVertical: heightPercentageToDP(2)}}
             color="gray">
-            پس از ثبت ووچر پرفکت مبلغ دقیق محاسبه و در کمتر از 48 ساعت با
-            استفاده از شماره شبا وجه معادل واریز خواهد شد.
+            {this.renderDescribe()}
           </Text>
-
-          <Text>کد ووچر اکترونیکی</Text>
           <Item style={style.item}>
             <Input
-              placeholder="e-voucher"
+              placeholder="مبلغ به ریال"
               placeholderTextColor="#adb4bc"
               style={style.inputStyle}
               //keyboardType="phone-pad"
               containerStyle={style.item}
               autoFocus
               blurOnSubmit
-              onChangeText={t => this.setState({number: t})}
-            />
-          </Item>
-          <Text>کد فعالسازی</Text>
-          <Item style={style.item}>
-            <Input
-              placeholder="Activation code"
-              placeholderTextColor="#adb4bc"
-              style={style.inputStyle}
-              //keyboardType="phone-pad"
-              containerStyle={style.item}
-              autoFocus
-              blurOnSubmit
-              onChangeText={t => this.setState({code: t})}
+              onChangeText={t => this.setState({rial: t})}
             />
           </Item>
         </Card>
@@ -225,10 +222,7 @@ class PayingScreen extends Component {
             }}
             onPress={() => this.onSubmit()}
           />
-
-          <HTML html={`${this.state.vocher}`} {...htmlConfig} />
         </View>
-
         <CustomModal
           isVisible={this.state.dialog1}
           title="مبلغ نادرست"
@@ -245,7 +239,7 @@ class PayingScreen extends Component {
             this.setState({dialog2: false});
           }}
         />
-      </ScrollView>
+      </View>
     );
   }
 }
@@ -255,7 +249,7 @@ const mapStateToProps = state => ({
   error: state.prices.error,
 });
 
-export default connect(mapStateToProps)(PayingScreen);
+export default connect(mapStateToProps)(PayScreen);
 const style = StyleSheet.create({
   logoCon: {alignItems: 'center'},
   btn: {borderRadius: normalize(25), paddingVertical: heightPercentageToDP(1)},
@@ -277,7 +271,7 @@ const style = StyleSheet.create({
   item: {
     alignSelf: 'center',
     marginBottom: '3%',
-    borderColor:AppStyles.color.ColorGreen
+    borderColor: AppStyles.color.ColorGreen,
   },
   inputStyle: {
     fontFamily: 'IRANSansMobile',

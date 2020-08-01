@@ -13,7 +13,7 @@ import {
   heightPercentageToDP as hp,
 } from 'react-native-responsive-screen';
 import {Avatar} from 'react-native-elements';
-import {Content, Thumbnail} from 'native-base';
+import {Content, Thumbnail, Item, Input} from 'native-base';
 import {Text, TextNumber} from '../../utils/Kit';
 import Axios from 'axios';
 import styles from '../../config/styles';
@@ -28,6 +28,7 @@ export default class App extends Component {
     this.state = {
       data: [],
       isLoading: true,
+      txt: '',
     };
   }
 
@@ -42,7 +43,23 @@ export default class App extends Component {
         this.setState({isLoading: false});
       });
   }
-
+  search = () => {
+    const {txt} = this.state;
+    this.setState({isLoading: true});
+    fetch('https://jimbooexchange.com/php_api/search_blog.php', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/x-www-form-urlencoded', // <-- Specifying the Content-Type
+      },
+      body: `TXT=${txt}&Kind=${'word'}`, // <-- Post parameters
+    })
+      .then(response => response.json())
+      .then(json => {
+        this.setState({data: json.data});
+      }).finally(() => {
+        this.setState({isLoading: false});
+      });
+  };
   render() {
     const {data, isLoading} = this.state;
 
@@ -51,18 +68,32 @@ export default class App extends Component {
         <View
           style={{
             alignItems: 'center',
-            flexDirection: 'row',
-            flexWrap: 'nowrap',
-            justifyContent: 'flex-end',
-            marginBottom: normalize(20, 'height'),
           }}>
-          <Text style={style.title2}>لوگو</Text>
           <Image
-            source={images.global.search}
-            style={{height: 20, width: 20}}
+            source={images.global.logo}
+            style={{height: hp(15), width: wp(35)}}
             resizeMode="contain"
           />
         </View>
+        <Item rounded style={style.item}>
+          <Input
+            placeholderTextColor={styles.color.COLOR_DARK_SEPERATOR}
+            placeholder="جستجو"
+            multiline={false}
+            numberOfLines={1}
+            maxLength={11}
+            onChangeText={r => this.setState({txt: r})}
+            style={style.input}
+          />
+          <TouchableOpacity onPress={()=>this.search()}>
+          <Image
+            source={images.global.search}
+            style={[style.img, {tintColor: styles.color.ColorGreen}]}
+            resizeMode="contain"
+            tintColor={styles.color.ColorGreen}
+          />
+          </TouchableOpacity>
+        </Item>
         {isLoading ? (
           <ActivityIndicator />
         ) : (
@@ -81,7 +112,7 @@ export default class App extends Component {
                   },
                 ]}>
                 <View style={style.view2}>
-                  <View>
+                  <View style={{flex: 0.8}}>
                     <Text style={style.title}>{item.Mini_Text}</Text>
 
                     <View style={style.fe}>
@@ -107,7 +138,7 @@ export default class App extends Component {
                     <Avatar
                       rounded
                       source={{uri: `${item.Pic}`}}
-                      size={100}
+                      size={90}
                       resizeMode="contain"
                     />
                   </View>
@@ -211,4 +242,14 @@ const style = StyleSheet.create({
   date: {color: 'white', fontSize: normalize(14), marginRight: 5},
   thumb: {width: wp(30), height: hp(20)},
   img2: {width: wp(3.5), height: hp(3.5)},
+  item: {
+    backgroundColor: 'white',
+    height: hp(6.5),
+    paddingRight: wp(5),
+    borderColor: styles.color.COLOR_DARK_SEPERATOR,
+    borderWidth: 2,
+    elevation: 1,
+    marginBottom: hp(5),
+  },
+  input: {fontFamily: 'IRANSansMobile', fontSize: normalize(14)},
 });

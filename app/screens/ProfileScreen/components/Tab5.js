@@ -90,17 +90,18 @@ export default class Tab5 extends Component {
   }
 }
 const style = StyleSheet.create({
-  main: {marginHorizontal: wp(6), padding: 5, paddingBottom: 20},
+  main: {marginHorizontal: wp(6), padding: 5, paddingBottom: 20,},
   card: {
     borderColor: styles.color.COLOR_DARK_SEPERATOR,
     borderWidth: 2,
     borderRadius: 10,
+    height:hp(7.5),
   },
   titleView: {
     position: 'absolute',
     zIndex: -1,
     right: wp(2),
-
+ 
     bottom: normalize(38, 'height'),
     backgroundColor: styles.color.colorBackground_Gray,
     paddingHorizontal: 7,

@@ -212,7 +212,7 @@ export default class Tab3 extends Component {
           resizeMode="contain"
         />
       );
-      const image2 =
+    const image2 =
       this.state.ImageSource2 === null ? (
         <Image
           source={images.global.no_pic}
@@ -263,43 +263,55 @@ export default class Tab3 extends Component {
             // scalesPageToFit={true}
             viewportContent={'width=device-width, initial-scale=1.0'}
           /> */}
-          <View style={{marginTop: hp(3)}}>
-            <View style={{flexDirection: 'row-reverse', flexWrap: 'nowrap'}}>
+          <View
+            style={{
+              marginTop: hp(3),
+              flexDirection: 'row-reverse',
+              flexWrap: 'nowrap',
+              alignItems: 'center',
+            }}>
+            <View>
               <View style={style.imageView}>{image}</View>
-              <Button
-                TouchableComponent={TouchableOpacity}
-                ViewComponent={LinearGradient} // Don't forget this!
-                title={this.state.btn2}
-                containerStyle={style.shadow}
-                buttonStyle={style.btn}
-                titleStyle={style.medium}
-                linearGradientProps={{
-                  colors: [styles.color.ColorGreen, styles.color.ColorGreenFos],
-                  start: {x: 0, y: 0.5},
-                  end: {x: 1, y: 0.5},
-                }}
-                onPress={() => this.onSubmit2()}
-              />
             </View>
+            <Button
+              TouchableComponent={TouchableOpacity}
+              ViewComponent={LinearGradient} // Don't forget this!
+              title={this.state.btn2}
+              containerStyle={style.shadow}
+              buttonStyle={style.btn}
+              titleStyle={style.medium}
+              linearGradientProps={{
+                colors: [styles.color.ColorGreen, styles.color.ColorGreenFos],
+                start: {x: 0, y: 0.5},
+                end: {x: 1, y: 0.5},
+              }}
+              onPress={() => this.onSubmit2()}
+            />
           </View>
-          <View style={{marginTop: hp(3)}}>
-            <View style={{flexDirection: 'row-reverse', flexWrap: 'nowrap'}}>
+          <View
+            style={{
+              marginTop: hp(3),
+              flexDirection: 'row-reverse',
+              flexWrap: 'nowrap',
+              alignItems: 'center',
+            }}>
+            <View>
               <View style={style.imageView}>{image2}</View>
-              <Button
-                TouchableComponent={TouchableOpacity}
-                ViewComponent={LinearGradient} // Don't forget this!
-                title={this.state.btn3}
-                containerStyle={style.shadow}
-                buttonStyle={[style.btn]}
-                titleStyle={style.medium}
-                linearGradientProps={{
-                  colors: [styles.color.ColorGreen, styles.color.ColorGreenFos],
-                  start: {x: 0, y: 0.5},
-                  end: {x: 1, y: 0.5},
-                }}
-                onPress={() => this.onSubmit3()}
-              />
             </View>
+            <Button
+              TouchableComponent={TouchableOpacity}
+              ViewComponent={LinearGradient} // Don't forget this!
+              title={this.state.btn3}
+              containerStyle={style.shadow}
+              buttonStyle={[style.btn]}
+              titleStyle={style.medium}
+              linearGradientProps={{
+                colors: [styles.color.ColorGreen, styles.color.ColorGreenFos],
+                start: {x: 0, y: 0.5},
+                end: {x: 1, y: 0.5},
+              }}
+              onPress={() => this.onSubmit3()}
+            />
           </View>
           <View style={{marginTop: hp(3)}}>
             <View style={{flexDirection: 'row-reverse', flexWrap: 'nowrap'}}>
@@ -395,6 +407,7 @@ const style = StyleSheet.create({
     borderColor: 'gray',
     borderWidth: 2,
     marginHorizontal: hp(1),
+    paddingHorizontal: 10,
   },
-  image: {height: hp(5), width: wp(40)},
+  image: {height: hp(12), width: wp(35), resizeMode: 'cover'},
 });
